@@ -45,9 +45,10 @@ Task:
    findings with proven production paths consider documentation/integration-test reinforcement
    before broad production-code changes.
 5. Create under `PLANS_DIR` a concrete implementation plan, named like
-   `finding-<NN>-<short-slug>-plan.md`, that another agent/operator can generally follow without
-   duplicating research. This plan is an ephemeral transfer artifact for the implementer; it is not
-   a final trace artifact and the coordinator deletes it after implementation succeeds.
+   `finding-<NN>-<short-slug>-plan.md`, that gives another agent/operator enough guidance to avoid
+   duplicating research without turning the plan into a hard script or scope boundary. This plan is
+   an ephemeral transfer artifact for the implementer; it is not a final trace artifact and the
+   coordinator deletes it after implementation succeeds.
 
 Plan document must include these exact parseable labels near the top:
 - `Finding:` finding number and title
@@ -62,7 +63,9 @@ Plan document must also include:
 - step-by-step implementation instructions
 - expected edge cases and acceptance criteria
 - narrowly scoped formatter/linter/test commands consistent with `COMMON_STAGE_POLICY` repository build/toolchain rules
-- blocker conditions that should stop implementation rather than trigger improvisation
+- true blocker conditions that should stop implementation rather than trigger unsafe or
+  policy-violating changes; do not label ordinary repo-evidenced implementation or verification
+  refinements as blockers
 
 Output contract:
 - Success: return only the absolute path to the created plan file.

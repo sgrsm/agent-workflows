@@ -100,9 +100,11 @@ All run artifacts live under `RUN_DOCS_DIR`.
   orchestrator must not read it; after the implementer returns `done`, the coordinator clears the
   contents of `RUN_DOCS_DIR/plans/` before spawning the independent implementation reviewer.
   Human-driven/manual runs should preserve the same separation and clear plans before review.
-- Implementation plans are guidance, not hard scripts; implementers follow them by default but may
-  make justified, finding-scoped adjustments when repo evidence warrants, while preserving binding
-  preferences, policies, and acceptance needs.
+- Implementation plans are guidance, not hard scripts or scope boundaries; implementers follow them
+  by default but may make reasonable, justified, finding-scoped adjustments/refinements when repo
+  evidence or command results show a safer, simpler, or more verifiable path. They may adapt planned
+  steps, in-scope files, and verification commands while preserving binding preferences, policies,
+  selected-option intent, and acceptance needs.
 - Implementation reviewers and their scouts must remain plan-blind.
 - Until final reconciliation, record outcomes only in the in-memory/per-run outcome ledger; do not
   edit `SOURCE_DOC` early.

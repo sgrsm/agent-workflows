@@ -24,12 +24,21 @@ User answer, if any:
 
 Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
-- Read the plan as guidance/advice, not a hard script; follow it by default to avoid duplicate
-  research, but make justified, finding-scoped adjustments when repo evidence shows a safer/simpler
-  fit.
-- Stop as `blocked`/`failed` if required changes would violate binding preferences/policy, expand
-  scope, or invalidate acceptance/verification; approach-changing deviations need clear repo-based
-  justification.
+- Read the plan as guidance/advice, not a hard script. The current finding, binding user
+  preference/adjustment, stage policies, and acceptance needs define scope; the plan does not.
+- Follow the plan by default to avoid duplicate research, but make reasonable, repo-evidenced,
+  finding-scoped adjustments/refinements when they provide a safer, simpler, or more verifiable
+  fit. This may include adjusting names, entry points, touched in-scope files, sequencing, and
+  verification commands while preserving the selected resolution option's intent.
+- Treat planned verification commands as suggested starting points. If a planned command fails,
+  investigate whether the failure is caused by your changes, stale/overbroad verification, or
+  unrelated baseline/test-wiring debt. Prefer a small justified fix to affected test/fixture wiring,
+  or an equivalent narrower verification command, over failing solely because the plan's exact
+  command is imperfect.
+- Stop as `blocked`/`failed` only when the required adjustment would violate binding preferences or
+  policy, change product behavior/scope beyond the current finding, require broad unrelated
+  refactoring, touch unrelated modules, or leave acceptance needs unverifiable after reasonable
+  adjusted verification.
 - If a handoff path is provided, read it first.
 - Run required formatting/verification for the plan or justified adjustment, following
   `COMMON_STAGE_POLICY` repository build/toolchain rules.
