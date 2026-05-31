@@ -209,6 +209,9 @@ Before running a manually instantiated pack, confirm:
   intentionally retained unreferenced source reviewer templates
 - workflow reviewer rows point only to concrete reviewer prompts and reviewer expected report paths
   are unique
+- instantiated `README.md` includes copy/paste-ready minimal prompt examples for the concrete
+  orchestrator path plus the direct/manual single-agent entry points using actual local prompt
+  paths
 - a tests/proof-strength reviewer prompt exists unless it was explicitly rejected during
   instantiation; if it was auto-generated without an explicit filename override, it should be
   `prompts/reviewers/tests-reviewer.md`

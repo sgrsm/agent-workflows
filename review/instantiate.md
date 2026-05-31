@@ -325,8 +325,20 @@ Derivation rules:
     - remove template-only copy/rename wording so the copied prompt reads as a concrete direct/manual
       entry point
 12. Rewrite copied `README.md` so it reads as the instantiated feature-local review pack rather
-    than the source template guide. Keep paths and workflow semantics accurate. If
-    `keepSourceReviewerTemplates` is false, remove or rewrite any local references to
+    than the source template guide. Keep paths and workflow semantics accurate. At minimum include:
+    - a canonical-path summary with the instantiated review-pack, spec, scope, and report paths
+    - the concrete reviewer prompt/report table from the approved reviewer list
+    - accepted context docs when any were approved
+    - a copy/paste-ready minimal orchestrated-run prompt that points to the concrete
+      `orchestrator.md` under `targetReviewPackPath`
+    - copy/paste-ready minimal direct/manual single-agent prompt examples that use real
+      instantiated paths: one standalone area-review example using an actual concrete reviewer
+      prompt file from the final reviewer list, one consolidation example for
+      `prompts/consolidator.md`, and one per-finding verification example for
+      `prompts/verifier.md` that tells the operator to paste one full consolidated finding block in
+      the same request
+    Do not leave "choose a reviewer prompt" placeholders in those examples; use real local paths.
+    If `keepSourceReviewerTemplates` is false, remove or rewrite any local references to
     `prompts/reviewers/area-reviewer.md` and `prompts/reviewers/tests-reviewer.md` so the README
     does not point at absent local helper files.
 13. In copied `templates/area-report.md`, replace shared instantiation placeholders such as
@@ -344,8 +356,9 @@ Checks:
 - target pack has expected shared files/directories and all requested concrete reviewer prompts
 - no instantiation placeholders remain in active target files, except optional copied helper files
   or intentionally retained unreferenced source reviewer templates
-- copied `README.md` describes the instantiated pack and does not reference absent local source
-  reviewer templates when those helpers were not copied
+- copied `README.md` describes the instantiated pack, includes copy/paste-ready minimal prompt
+  examples for orchestrated use and direct/manual entry points using actual instantiated paths, and
+  does not reference absent local source reviewer templates when those helpers were not copied
 - `workflow.md` reviewer rows point only to concrete copied reviewer prompts, not
   `prompts/reviewers/area-reviewer.md` or `prompts/reviewers/tests-reviewer.md`
 - reviewer expected report paths are unique and clean-output-gate files match workflow outputs

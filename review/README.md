@@ -137,6 +137,10 @@ Choose a mode after instantiation:
 | **Orchestrated multi-agent** | Your harness can launch subagents and you want the full end-to-end review. | `<review_pack_base_path>/orchestrator.md` | Runs one isolated area reviewer per reviewer row in `workflow.md`, consolidates their reports, verifies each consolidated finding, and writes the final evaluation artifact defined by `workflow.md`. |
 | **Direct/manual single-agent** | Subagents are unavailable, or you want to run one review step manually. | A concrete copied reviewer prompt under `<review_pack_base_path>/prompts/reviewers/`, `<review_pack_base_path>/prompts/consolidator.md`, or `<review_pack_base_path>/prompts/verifier.md` | Runs one area review, consolidation, or per-finding verification at a time. Consolidation requires existing reviewer reports; verification requires one full consolidated finding block pasted into the same request. |
 
+When this template is instantiated into a feature-local pack, rewrite the copied `README.md` so it
+keeps copy/paste-ready minimal prompt examples for the concrete orchestrated run and the
+concrete direct/manual single-agent entry points created for that pack.
+
 ## Orchestrated multi-agent mode
 
 Use this mode for the full end-to-end review when the harness can launch subagents.
