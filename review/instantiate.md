@@ -45,8 +45,8 @@ diffBaseline: "default: main...HEAD unless user overrides"
 authoritativeSpecEntryPoint: "repo-root-relative path or none"
 specificationBasePath: "repo-root-relative path, derive from spec entry point if possible, or none"
 reportsBasePath:
-consolidatedReportOutputPath:
-finalEvaluationOutputPath:
+consolidatedReportOutputPath: "default suggestion: <reportsBasePath>/99-consolidated-report.md"
+finalEvaluationOutputPath: "default suggestion: <reportsBasePath>/100-final-evaluation.md"
 acceptedContextDocs: []
 documentationReviewerReportFilenamePreference: "auto | none | <filename>.md"
 reviewThemes: "auto | explicit list"
@@ -62,6 +62,10 @@ acceptedContextDocs:
 
 or as a plain list of paths. If `authoritativeSpecEntryPoint` is `none`, then
 `specificationBasePath` should also be `none`.
+
+If the user omits synthesized output filenames but `reportsBasePath` is known, suggest
+`99-consolidated-report.md` and `100-final-evaluation.md` under `reportsBasePath` unless the user
+explicitly wants different names.
 
 ### Optional values
 
@@ -110,6 +114,8 @@ Notes:
   non-test focus-checklist categories and checklist starters.
 - If `cleanOutputGateFilesOverride` is omitted, derive the clean-output gate from all reviewer
   `expectedReport` paths plus `consolidatedReportOutputPath` and `finalEvaluationOutputPath`.
+- For default synthesized artifact naming, prefer `99-consolidated-report.md` and
+  `100-final-evaluation.md` under `reportsBasePath`.
 
 ## Review-Area Discovery And Approval Flow
 

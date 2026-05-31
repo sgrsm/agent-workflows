@@ -34,8 +34,9 @@ feature-specific review pack.
 - Do not point multiple workflow rows at the same unresolved reviewer source template unless you
   also add explicit row-specific payload assembly to `workflow.md`.
 - When instantiating report filenames in `workflow.md`, prefer zero-padded numeric prefixes for
-  reviewer outputs and reserve higher numbers for synthesized artifacts such as the consolidated and
-  final-evaluation reports.
+  reviewer outputs. By default, use `99-consolidated-report.md` for the consolidated artifact and
+  `100-final-evaluation.md` for the final evaluation unless the user explicitly overrides those
+  names.
 - Keep workflow rows, expected report filenames, and any copied reviewer customizations synchronized
   if you rename, remove, or add reviewer areas.
 

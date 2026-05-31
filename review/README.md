@@ -109,7 +109,9 @@ Manual alternative:
    `workflow.md` row at that concrete prompt file.
 6. Set `<authoritative_spec_entry_point>` / `<specification_base_path>` when a feature spec exists,
    or use literal `none` for both in a diff-only review pack.
-7. Set the real report/output paths used by the instantiated pack.
+7. Set the real report/output paths used by the instantiated pack. Recommended default synthesized
+   artifact names are `99-consolidated-report.md` and `100-final-evaluation.md` under
+   `<reports_base_path>` unless you intentionally want different names.
 8. Confirm the orchestrator, consolidator, verifier, and all copied reviewer prompts still read
    naturally after placeholder replacement.
 
