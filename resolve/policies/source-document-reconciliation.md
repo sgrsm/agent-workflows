@@ -35,9 +35,10 @@ Do not rewrite historical analysis to mirror resolver outcomes. The resolver own
 Before a resolver run, `SOURCE_DOC` must already be seeded:
 
 1. `## Current Resolution State` immediately follows `## Investigation Status`.
-2. Each finding has exactly one resolver-managed status line immediately below the finding title
-   and before `Consolidated finding reference`.
-3. False-positive findings use `Verification status: pending`; all others use
+2. Each finding has exactly one resolver-managed status line immediately below the finding title,
+   with `Verification verdict:` as the next bullet and both appearing before
+   `Consolidated finding reference`.
+3. False-positive findings use `Confirmation status: pending`; all others use
    `Resolution status: pending`.
 4. At least one finding is still pending; otherwise abort as already reconciled or not seeded.
 5. On reruns, non-`pending` resolver statuses are finalized historical outcomes for the current
@@ -52,7 +53,7 @@ Use exactly this bullet shape:
 - Section owner: resolver workflow
 - Historical review sections in this document remain unchanged and should be read as review-time state.
 - Findings still pending resolution: <number>
-- Findings still pending false-positive verification: <number>
+- Findings still pending false-positive confirmation: <number>
 - Findings with finalized resolver outcome: <number>
 - Current resolver summary: <1-2 sentence concise summary of current post-review state>
 ```
@@ -60,17 +61,22 @@ Use exactly this bullet shape:
 Counts come from the full current document, including previously finalized findings:
 
 - pending resolution = `Resolution status: pending`
-- pending false-positive verification = `Verification status: pending`
-- finalized = every non-`pending` `Resolution status:` or `Verification status:` line
+- pending false-positive confirmation = `Confirmation status: pending`
+- finalized = every non-`pending` `Resolution status:` or `Confirmation status:` line
 
 ## Per-Finding Resolver Annotations
 
-Keep original review bullets in place and order. Resolver-managed top lines immediately below the
-finding title use this order:
+Keep original review bullets in place and order. The first two bullets in every finding must
+remain:
 
-1. `Resolution status:` or `Verification status:`
-2. `Resolver note:` only for findings reopened after disputed false-positive verification
-3. `Selected resolution approach:` only for resolved findings
+1. `Resolution status:` or `Confirmation status:`
+2. `Verification verdict:`
+
+Additional resolver-managed top lines, when needed, go immediately after `Verification verdict:` in
+this order:
+
+1. `Resolver note:` only for findings reopened after disputed false-positive verification
+2. `Selected resolution approach:` only for resolved findings
 
 For reopened disputed false positives, normalize severity bullets in place in the finding body:
 
@@ -90,12 +96,12 @@ this order when present:
 
 ## Status Mapping
 
-False-positive path final statuses:
+False-positive path final confirmation statuses:
 
-- `false_positive_confirmed` -> `Verification status: confirmed`
-- `verification_blocked` -> `Verification status: verification_blocked`
-- `skipped_by_user` -> `Verification status: skipped_by_user`
-- `non_actionable` -> `Verification status: non_actionable`
+- `false_positive_confirmed` -> `Confirmation status: confirmed`
+- `verification_blocked` -> `Confirmation status: verification_blocked`
+- `skipped_by_user` -> `Confirmation status: skipped_by_user`
+- `non_actionable` -> `Confirmation status: non_actionable`
 
 All other finalized findings, including reopened disputed false positives:
 
@@ -109,13 +115,13 @@ All other finalized findings, including reopened disputed false positives:
 
 ## Per-Finding Content Rules
 
-- Reopened false positives: replace `Verification status: pending` with the final
-  `Resolution status:` line, add
-  `Resolver note: reopened after disputed false-positive verification` immediately below it, and
-  expose severities as `Severity (original)` plus `Severity (re-evaluated)` without overwriting
-  the original severity value.
+- Reopened false positives: replace `Confirmation status: pending` with the final
+  `Resolution status:` line, keep `Verification verdict:` as the second bullet, add
+  `Resolver note: reopened after disputed false-positive verification` immediately below
+  `Verification verdict:`, and expose severities as `Severity (original)` plus
+  `Severity (re-evaluated)` without overwriting the original severity value.
 - Resolved findings: add `Selected resolution approach:` below `Resolver note:` when present,
-  otherwise below `Resolution status:`.
+  otherwise below `Verification verdict:`.
 - Approach labels: `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`,
   or `Custom`. Use the actual finding option number; do not hardcode option 1/2.
 - If `Custom`, the `#### Resolution` subsection must summarize the chosen approach in about 2-3
@@ -196,7 +202,8 @@ Confirmed false positive:
 
 ```md
 ### 1. Example validation edge case is already safely rejected
-- Verification status: confirmed
+- Confirmation status: confirmed
+- Verification verdict: false_positive
 ...
 #### Verification note
 Confirmed as a false positive by `<run_docs_base_path>/20260528-1430/reviews/finding-01-example-validation-false-positive-confirmation.md` after code/spec verification.
@@ -207,10 +214,10 @@ Reopened disputed false positive later resolved:
 ```md
 ### 2. Example retry classification masks a local failure condition
 - Resolution status: resolved
+- Verification verdict: false_positive
 - Resolver note: reopened after disputed false-positive verification
 - Selected resolution approach: Option 2
 ...
-- Verification verdict: false_positive
 - Severity (original): major
 - Severity (re-evaluated): minor
 ...

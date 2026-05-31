@@ -125,7 +125,7 @@ Use this mode for normal end-to-end resolver execution.
 - Repository-root execution for the orchestrator and all top-level stages.
 - Clean worktree before the run starts.
 - Seeded `<source_doc_path>` with at least one `Resolution status: pending` or
-  `Verification status: pending` line.
+  `Confirmation status: pending` line.
 - Run-artifact output under `<run_docs_base_path>/<RUN_ID>/`.
 
 ### Minimal prompt

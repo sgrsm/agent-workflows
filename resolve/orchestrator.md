@@ -84,7 +84,7 @@ Use `workflow.md` Outcome Taxonomy. Final ledger statuses are only those listed 
    already contains Markdown artifacts, choose another run id. Abort only if a safe unique run
    cannot be chosen.
 3. Read `SOURCE_DOC`, then `SOURCE_DOC_POLICY`. Continue only if at least one finding has
-   `Resolution status: pending` or `Verification status: pending`; otherwise abort as already
+   `Resolution status: pending` or `Confirmation status: pending`; otherwise abort as already
    reconciled or not seeded.
 4. Enumerate findings from `## Final Evaluation By Finding`. Capture only issue-specific fields
    needed to build the canonical issue packet from `workflow.md`; keep source-report locators

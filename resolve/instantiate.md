@@ -93,7 +93,7 @@ Checks:
   `naming-and-placeholders.md`
 - `finalReportOutputPathPattern` still contains literal `<RUN_ID>`
 - `sourceDocPath` exists and has `## Current Resolution State` plus at least one
-  `Resolution status: pending` or `Verification status: pending`
+  `Resolution status: pending` or `Confirmation status: pending`
 - `reviewReportsDir` exists and matches source-report refs expected by `SOURCE_DOC`
 - policy/prompt refs point to `targetResolvePackPath`, not source template pack
 - no stale feature names, slugs, branch examples, paths, or source-doc refs remain in active files;

@@ -24,7 +24,7 @@ Use this structure:
 - Historical review sections in this document remain unchanged and should be read as review-time
   state.
 - Findings still pending resolution: <pending finding count>
-- Findings still pending false-positive verification: <pending false-positive verification count>
+- Findings still pending false-positive confirmation: <pending false-positive confirmation count>
 - Findings with finalized resolver outcome: 0
 - Current resolver summary: Pending initial resolver run.
 
@@ -32,10 +32,10 @@ Use this structure:
 
 ### 1. <finding title>
 - Resolution status: pending
+- Verification verdict: <verification verdict>
 - Consolidated finding reference: `<consolidated_report_output_path>` finding 1
 - Source reports:
   - `<report filename>.md`
-- Verification verdict: <verification verdict>
 - Consolidated severity: <consolidated severity>
 - Re-evaluated severity: <re-evaluated severity>
 - Evidence summary:
@@ -53,9 +53,11 @@ Use this structure:
 
 Rules:
 - Add exactly one resolver-seed status line immediately under each finding title.
-- Use `Verification status: pending` instead of `Resolution status: pending` for findings whose
+- Ensure the first two bullets in every finding are the resolver-seed status line and
+  `Verification verdict:`.
+- Use `Confirmation status: pending` instead of `Resolution status: pending` for findings whose
   verification verdict is `false_positive`. This does not close the issue as non-actionable; it
-  seeds the resolver false-positive verification track, where the resolver can later record either
+  seeds the resolver false-positive confirmation track, where the resolver can later record either
   a confirmed false positive or a disputed false positive reopened for normal resolution.
 - Use `Resolution status: pending` for all other findings.
 - If there are no consolidated findings, still write the report and state that there were no

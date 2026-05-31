@@ -151,7 +151,7 @@ reviewer, consolidator, verifier, or orchestrator when a report or verification 
 - `<overall assessment>`: runtime closing synthesis for one reviewer report.
 - `<overall recommendation>`: runtime closing recommendation for the final evaluation report.
 - `<overall synthesis>`: runtime final synthesis for the consolidated report.
-- `<pending false-positive verification count>`: runtime count of findings whose current pending state is false-positive verification handling.
+- `<pending false-positive confirmation count>`: runtime count of findings whose current pending state is false-positive confirmation handling.
 - `<pending finding count>`: runtime count of findings still pending resolver handling.
 - `<preferred option number or none>`: runtime preferred remediation choice from the listed options, or `none`.
 - `<preferred-option justification or n/a>`: runtime explanation for the preferred option, or `n/a` when no preference applies.
