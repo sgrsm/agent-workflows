@@ -100,6 +100,11 @@ All run artifacts live under `RUN_DOCS_DIR`.
 - Implementation reviewers and their scouts must remain plan-blind.
 - Until final reconciliation, record outcomes only in the in-memory/per-run outcome ledger; do not
   edit `SOURCE_DOC` early.
+- Only findings whose `Resolution status:` or `Confirmation status:` is exactly `pending` are
+  actionable in the primary pass. Any other status value—including legacy/manual markers such as
+  `ignore`, `ignored`, `skip`, `skipped`, `resolved`, `non-actionable`,
+  `non_actionable`, or `invalid`—counts as already closed history and must not be picked up
+  again.
 
 ## Outcome Taxonomy
 
@@ -179,8 +184,10 @@ the primary issue definition under `FP_POLICY`.
 ## Stage Runtime Assembly
 
 Before first stage, coordinator verifies clean worktree, seeded `SOURCE_DOC` with at least one
-pending finding, unique `RUN_ID`/branch/`RUN_DOCS_DIR`, and artifact dirs. See `orchestrator.md` or
-`manual.md` for execution details.
+pending finding, unique `RUN_ID`/branch/`RUN_DOCS_DIR`, and artifact dirs. Only exact
+`Resolution status: pending` or `Confirmation status: pending` findings are eligible; any other
+status value is treated as already closed history. See `orchestrator.md` or `manual.md` for
+execution details.
 
 Fill stage prompts only with Stage I/O inputs plus these constraints:
 

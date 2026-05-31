@@ -85,7 +85,9 @@ Use `workflow.md` Outcome Taxonomy. Final ledger statuses are only those listed 
    cannot be chosen.
 3. Read `SOURCE_DOC`, then `SOURCE_DOC_POLICY`. Continue only if at least one finding has
    `Resolution status: pending` or `Confirmation status: pending`; otherwise abort as already
-   reconciled or not seeded.
+   reconciled or not seeded. Do not treat legacy/manual non-pending markers such as `ignore`,
+   `ignored`, `skip`, `skipped`, `resolved`, `non-actionable`, `non_actionable`, or `invalid`
+   as actionable.
 4. Enumerate findings from `## Final Evaluation By Finding`. Capture only issue-specific fields
    needed to build the canonical issue packet from `workflow.md`; keep source-report locators
    minimal.
@@ -104,7 +106,10 @@ For each finding in exact `SOURCE_DOC` order:
 1. Verify no active top-level subagent and a clean worktree.
 2. Record `<finding-start-sha>` with `git rev-parse HEAD`.
 3. If resolver status is non-`pending`, treat it as finalized history for this source-document
-   version; skip without changes. If missing, abort as not seeded correctly.
+   version; skip without changes. This includes legacy/manual markers such as `ignore`,
+   `ignored`, `skip`, `skipped`, `resolved`, `non-actionable`, `non_actionable`, or `invalid`
+   under either `Resolution status:` or `Confirmation status:`. If missing, abort as not seeded
+   correctly.
 4. Build a compact issue packet only for the current pending finding, using the canonical schema in
    `workflow.md`.
 5. Triage:

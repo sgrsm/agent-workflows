@@ -44,6 +44,10 @@ Before a resolver run, `SOURCE_DOC` must already be seeded:
 5. On reruns, non-`pending` resolver statuses are finalized historical outcomes for the current
    document version and must not be reprocessed or changed unless explicitly required by a new run
    policy.
+6. Legacy/manual non-`pending` markers such as `ignore`, `ignored`, `skip`, `skipped`,
+   `resolved`, `non-actionable`, `non_actionable`, or `invalid` under either status label also
+   count as finalized history for routing. Do not pick them up again, even though canonical
+   write-back uses only the mapped statuses below.
 
 ## `## Current Resolution State`
 
@@ -62,7 +66,9 @@ Counts come from the full current document, including previously finalized findi
 
 - pending resolution = `Resolution status: pending`
 - pending false-positive confirmation = `Confirmation status: pending`
-- finalized = every non-`pending` `Resolution status:` or `Confirmation status:` line
+- finalized = every non-`pending` `Resolution status:` or `Confirmation status:` line, including
+  legacy/manual markers such as `ignore`, `ignored`, `skip`, `skipped`, `resolved`,
+  `non-actionable`, `non_actionable`, or `invalid`
 
 ## Per-Finding Resolver Annotations
 

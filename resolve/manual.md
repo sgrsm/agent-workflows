@@ -14,10 +14,15 @@ runbook.
 3. Perform the same preflight as the automated orchestrator:
    - verify a clean worktree, including untracked files
    - verify `SOURCE_DOC` exists and follows the seeded resolver-ready final-evaluation shape
-   - confirm at least one finding is still pending
+   - confirm at least one finding is still pending via exact `Resolution status: pending` or
+     `Confirmation status: pending`; do not count legacy/manual non-pending markers such as
+     `ignore`, `ignored`, `skip`, `skipped`, `resolved`, `non-actionable`,
+     `non_actionable`, or `invalid`
    - choose a unique `RUN_ID`, branch name, and `RUN_DOCS_DIR`
    - create `RUN_DOCS_DIR/{plans,reviews,false-positive-disputes,handoff,final}/`
-4. Enumerate pending findings from `SOURCE_DOC` in source-document order.
+4. Enumerate pending findings from `SOURCE_DOC` in source-document order. Do not pick findings
+   already marked with any non-`pending` `Resolution status:` or `Confirmation status:` value,
+   including the legacy/manual markers above.
 5. Build one canonical issue packet for the current finding only, using the schema in
    `workflow.md`.
 6. For a false-positive candidate matching `FP_POLICY`, run the false-positive reviewer prompt.
