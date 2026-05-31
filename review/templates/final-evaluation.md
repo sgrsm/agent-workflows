@@ -1,0 +1,69 @@
+# Final Evaluation Template
+
+Write the final evaluation report to:
+`<final_evaluation_output_path>`
+
+Use this structure:
+
+```md
+# Final Evaluation Report
+
+- Consolidated report path: `<consolidated_report_output_path>`
+- Final evaluation report path: `<final_evaluation_output_path>`
+- Review scope: `<review_scope>`
+- Verification basis: Independent per-finding investigation of consolidated findings against
+  `<diff_baseline>`
+
+## Investigation Status
+- Consolidated findings detected: <finding count>
+- Investigation subagents completed: <finding count>
+- Investigation subagents failed or missing: <finding count>
+
+## Current Resolution State
+- Section owner: resolver workflow
+- Historical review sections in this document remain unchanged and should be read as review-time
+  state.
+- Findings still pending resolution: <pending finding count>
+- Findings still pending false-positive verification: <pending false-positive verification count>
+- Findings with finalized resolver outcome: 0
+- Current resolver summary: Pending initial resolver run.
+
+## Final Evaluation By Finding
+
+### 1. <finding title>
+- Resolution status: pending
+- Consolidated finding reference: `<consolidated_report_output_path>` finding 1
+- Source reports:
+  - `<report filename>.md`
+- Verification verdict: <verification verdict>
+- Consolidated severity: <consolidated severity>
+- Re-evaluated severity: <re-evaluated severity>
+- Evidence summary:
+  - <decisive evidence>
+- Confirmed aspects: <confirmed aspects>
+- Not confirmed aspects: <not confirmed aspects>
+- Resolution options: <resolution options>
+- Preferred resolution: <preferred option number or none>
+- Why preferred: <preferred-option justification or n/a>
+- Notes: <optional notes>
+
+## Overall Recommendation
+- <overall recommendation>
+```
+
+Rules:
+- Add exactly one resolver-seed status line immediately under each finding title.
+- Use `Verification status: pending` instead of `Resolution status: pending` for findings whose
+  verification verdict is `false_positive`. This does not close the issue as non-actionable; it
+  seeds the resolver false-positive verification track, where the resolver can later record either
+  a confirmed false positive or a disputed false positive reopened for normal resolution.
+- Use `Resolution status: pending` for all other findings.
+- If there are no consolidated findings, still write the report and state that there were no
+  findings to investigate.
+- If finding-verification agents fail, still write the report with completed evaluations and
+  list missing investigations in `Investigation Status` or per-finding `Notes`.
+- If a resolver workflow or human-resolution process begins later, update only
+  `## Current Resolution State` and resolver-managed per-finding status/annotation lines; keep
+  `## Investigation Status` and `## Overall Recommendation` as historical review-time sections.
+- Do not introduce fresh findings that were not already present in the consolidated report; this
+  phase is verification, severity recalibration, and resolution analysis only.
