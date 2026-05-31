@@ -35,18 +35,22 @@ Rules:
 
 Task:
 1. Inspect needed local code/tests/supporting material.
-2. Evaluate suggested options, including preferred option. Treat `User preference:` from the issue
-   packet as binding when it names `Option <N>` or `option <N>`.
-3. If `User preference:` binds an option number, plan that option and do not override it with a
+2. Evaluate suggested options, including the issue packet's `advisedResolution` when present.
+   Treat binding user preference as active when `userPreferenceOptionNumber` is non-null.
+3. If `userPreferenceOptionNumber` is non-null, plan that option and do not override it with a
    different option or `Custom`. `Option <N>`, `Option <N> (recommended)`, or
    `Option <N> with slight refinement` are allowed only when they still materially implement the
-   same option number and intent. If the bound option is impossible, unsafe, stale, or inconsistent
-   with the listed options, stop for user clarification instead of choosing something else.
-4. If there is no binding `User preference:`, choose the best-balanced solution across minimal
-   change surface, reviewability, maintainability, robustness, expressiveness, testability, and
-   business impact; for proof gaps prefer focused tests over broad rewrites, and for partially
-   confirmed findings with proven production paths consider documentation/integration-test
-   reinforcement before broad production-code changes.
+   same option number and intent. Any `userPreferenceAdjustment` is also binding and must be
+   incorporated verbatim into the plan. Do not spend effort researching or ranking alternative
+   options in this case; inspect only what is needed to implement the chosen option safely and to
+   confirm whether the bound option or adjustment is feasible. If the bound option or adjustment is
+   impossible, unsafe, stale, or inconsistent with the listed options, stop for user clarification
+   instead of choosing something else.
+4. If there is no binding user preference, choose the best-balanced solution across minimal change
+   surface, reviewability, maintainability, robustness, expressiveness, testability, and business
+   impact; for proof gaps prefer focused tests over broad rewrites, and for partially confirmed
+   findings with proven production paths consider documentation/integration-test reinforcement
+   before broad production-code changes.
 5. Create a concrete implementation plan another agent or operator can execute verbatim under
    `PLANS_DIR`, named like `finding-<NN>-<short-slug>-plan.md`.
 
@@ -55,7 +59,7 @@ Plan document must include these exact parseable labels near the top:
 - `Selected approach label:` `Option <N>`, `Option <N> (recommended)`,
   `Option <N> with slight refinement`, or `Custom`
 - `Selected approach summary:` concise rationale for the selected approach, including confirmation
-  that a binding `User preference:` was followed when present
+  that any binding user preference and user-preference adjustment were followed when present
 - `Files expected to change:` concise comma-separated list or `none`
 - `Verification commands:` concise command list or `none`
 

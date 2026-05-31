@@ -28,17 +28,17 @@ Each task must include:
     documentation and it is not also a production-code, test, config, data, or runtime issue
   - use `<documentation_reviewer_report_filename>` as an optional source-report hint for the
     documentation-only special case, not as the sole trigger when a finding is mixed-scope
-  - nominate exactly one preferred option
+  - nominate exactly one advised option
   - set `User preference: none`; this field is reserved for later user/operator override in the
     final evaluation report and must not be invented by verification
-  - justify the preferred option across minimal change surface, reviewability, maintainability,
+  - justify the advised option across minimal change surface, reviewability, maintainability,
     robustness, expressiveness, testability, and business impact
 - If `<documentation_reviewer_report_filename>` is `none`, ignore the source-report hint and use
   the documentation-only special case only when the finding category/scope itself clearly qualifies.
 - For `partially_confirmed`, separate confirmed aspects from disproven, unsupported, or
   overstated aspects; severity applies only to the confirmed part.
 - For `false_positive`, explain decisive evidence/reasoning; set re-evaluated severity, options,
-  preferred resolution, and `User preference` to `none`.
+  advised resolution, and `User preference` to `none`.
 - For `inconclusive`, explain the blocker, state the safest interim assessment, and describe what
   evidence would resolve uncertainty; use `Resolution options: none` unless a concrete
   evidence-gathering or containment next step is justified, and set `User preference: none` unless
@@ -57,7 +57,7 @@ Each task must include:
 - Confirmed aspects: <confirmed aspects>
 - Not confirmed aspects: <not confirmed aspects>
 - Resolution options: <resolution options>
-- Preferred resolution: <preferred option number or none>
+- Advised resolution: <advised option number or none>
 - User preference: none
 - Why preferred: <preferred-option justification or n/a>
 ```

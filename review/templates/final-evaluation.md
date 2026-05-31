@@ -43,7 +43,7 @@ Use this structure:
 - Confirmed aspects: <confirmed aspects>
 - Not confirmed aspects: <not confirmed aspects>
 - Resolution options: <resolution options>
-- Preferred resolution: <preferred option number or none>
+- Advised resolution: <advised option number or none>
 - User preference: <user preference or none>
 - Why preferred: <preferred-option justification or n/a>
 - Notes: <optional notes>
@@ -60,11 +60,20 @@ Rules:
   verification verdict is `false_positive`. This does not close the issue as non-actionable; it
   seeds the resolver false-positive confirmation track, where the resolver can later record either
   a confirmed false positive or a disputed false positive reopened for normal resolution.
+- Omit `User preference:` for findings whose verification verdict is `false_positive`; there is no
+  actionable resolution option to force on that path.
 - Use `Resolution status: pending` for all other findings.
-- When first writing the report, set `User preference: none` unless the user/operator explicitly
-  provides a binding option choice such as `Option <N>` or `option <N>`.
-- If `User preference:` names `Option <N>` or `option <N>`, the resolver planner must follow that
-  option and must not override it with another option or `Custom`.
+- For non-`false_positive` findings, set `User preference: none` unless the user/operator
+  explicitly provides a binding option choice such as `Option <N>`, `option <N>`, `<N>`, an
+  English number word such as `one`, or one of those forms followed by extra instructions such as
+  `with the following adjustment: ...`.
+- If `User preference:` selects an option in any equivalent form (`Option <N>`, `option <N>`,
+  `<N>`, or an English number word such as `one`), the resolver planner must follow that option,
+  must obey any accompanying adjustment text, and must not override it with another option or
+  `Custom`.
+- When `User preference:` is binding, the resolver planner should not spend effort researching or
+  ranking alternative options beyond the minimum needed to validate feasibility/safety and execute
+  the selected path.
 - If there are no consolidated findings, still write the report and state that there were no
   findings to investigate.
 - If finding-verification agents fail, still write the report with completed evaluations and

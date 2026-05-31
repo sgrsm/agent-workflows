@@ -153,9 +153,9 @@ reviewer, consolidator, verifier, or orchestrator when a report or verification 
 - `<overall synthesis>`: runtime final synthesis for the consolidated report.
 - `<pending false-positive confirmation count>`: runtime count of findings whose current pending state is false-positive confirmation handling.
 - `<pending finding count>`: runtime count of findings still pending resolver handling.
-- `<preferred option number or none>`: runtime preferred remediation choice from the listed options, or `none`.
+- `<advised option number or none>`: runtime advised remediation choice from the listed options, or `none`.
 - `<preferred-option justification or n/a>`: runtime explanation for the preferred option, or `n/a` when no preference applies.
-- `<user preference or none>`: runtime user-selected resolution option to force during resolver planning, usually `Option <N>`, `option <N>`, or `none`.
+- `<user preference or none>`: runtime user-selected resolution directive for resolver planning, such as `Option <N>`, `option <N>`, `<N>`, `one`, or one of those forms followed by extra instructions; use `none` when there is no binding override, and omit the line entirely in final-evaluation false-positive findings.
 - `<problem statement>`: runtime explanation of why the finding matters.
 - `<re-evaluated severity>`: runtime severity after verification.
 - `<recommended follow-up>`: runtime fix direction or missing-proof follow-up.

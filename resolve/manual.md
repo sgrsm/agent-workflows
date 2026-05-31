@@ -24,9 +24,14 @@ runbook.
    already marked with any non-`pending` `Resolution status:` or `Confirmation status:` value,
    including the legacy/manual markers above.
 5. Build one canonical issue packet for the current finding only, using the schema in
-   `workflow.md`, and carry forward any `User preference:` from `SOURCE_DOC`.
-6. If `User preference:` binds `Option <N>` or `option <N>`, treat that choice as mandatory during
-   planning and review; do not override it with another option or `Custom`.
+   `workflow.md`, and carry forward raw `User preference:` from `SOURCE_DOC` when present plus the
+   normalized `userPreferenceOptionNumber` and any `userPreferenceAdjustment`. If the line is
+   omitted, treat it as no user override.
+6. If user preference binds an option in any equivalent form (`Option <N>`, `option <N>`, `<N>`,
+   or an English number word such as `one`), treat that choice as mandatory during planning and
+   review; do not override it with another option or `Custom`, do not ignore any binding trailing
+   adjustment text, and do not spend effort researching alternative options beyond minimal
+   feasibility/safety checks for the chosen path.
 7. For a false-positive candidate matching `FP_POLICY`, run the false-positive reviewer prompt.
    Otherwise run planner -> implementer -> independent implementation reviewer.
 8. If any stage returns a user-clarification blocker, follow `CONTINUATION_POLICY`: ask the user,

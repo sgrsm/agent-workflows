@@ -30,7 +30,7 @@ stage prompts sequentially. The semantics, artifacts, and final status mapping s
 ## Entry Condition
 
 If a finding is explicitly `false_positive` with `Resolution options: none`,
-`Preferred resolution: none`, and no conflicting `User preference:` override, run this
+`Advised resolution: none`, and no conflicting binding user-preference override, run this
 verification workflow first. Do not auto-close as non-actionable.
 
 ## Primary Verification Outcomes
@@ -131,8 +131,10 @@ For reopened disputed false positives:
 - use the dispute report's independently re-evaluated severity for follow-up/commit-label context;
   do not fall back to source-document severity unless the user explicitly instructs
 - ignore earlier final-evaluation `Resolution options: none`
-- assume `User preference:` remains `none` on this path; if a conflicting user-preference override
-  appears later, stop for clarification instead of silently normalizing it away
+- assume `User preference:` is absent, `none`, or otherwise non-binding on this path; if a
+  conflicting binding user-preference override appears later—whether written as `Option <N>`,
+  `<N>`, `one`, or with extra adjustment text—stop for clarification instead of silently
+  normalizing it away
 - do not widen to consolidated report, final evaluation report, or full source report unless truly
   necessary and explicitly justified
 

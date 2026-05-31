@@ -167,8 +167,10 @@ evidenceSummary:
 confirmedAspects: <string | null>
 notConfirmedAspects: <string | null>
 resolutionOptions: <string | list | none>
-preferredResolution: <string | none | null>
-userPreference: Option <N> | option <N> | none | null
+advisedResolution: <string | none | null>
+userPreference: <string | none | null>
+userPreferenceOptionNumber: <integer | null>
+userPreferenceAdjustment: <string | null>
 whyPreferred: <string | n/a | null>
 notes: <string | null>
 reopenedAfterDisputedFalsePositiveVerification: true | false
@@ -184,15 +186,33 @@ the primary issue definition under `FP_POLICY`.
 
 `userPreference` rules:
 
-- `none` or `null` means no binding user override; the planner may choose normally.
-- `Option <N>` or `option <N>` is binding. The planner must follow that option number and must not
-  switch to another option or `Custom`.
+- `advisedResolution` carries the verifier/reviewer-advised option from `SOURCE_DOC`, usually an
+  option number like `1` or `none`.
+- `userPreference` carries the raw `User preference:` text from `SOURCE_DOC`.
+- `none`, `null`, or an omitted `User preference:` line means no binding user override; the planner
+  may choose normally. Omitted lines are expected for false-positive findings in the final
+  evaluation report.
+- When `userPreference` binds an option, the coordinator must normalize it into
+  `userPreferenceOptionNumber` plus optional `userPreferenceAdjustment`.
+- Binding option selectors are case-insensitive and equivalent across these leading forms:
+  `Option <N>`, `option <N>`, bare `<N>`, or an English number word such as `one`, `two`, or
+  `three`.
+- Any trailing text after the normalized option selector, such as
+  `with the following adjustment: ...`, is binding and must be preserved in
+  `userPreferenceAdjustment`.
+- If `userPreferenceOptionNumber` is non-null, the planner must follow that option number and must
+  not switch to another option or `Custom`.
+- When a binding user preference exists, the planner should not spend effort researching,
+  comparing, or ranking alternative options beyond the minimum needed to safely implement the bound
+  option and validate whether the bound option/adjustment is feasible.
 - `Option <N>`, `Option <N> (recommended)`, and `Option <N> with slight refinement` are all
   acceptable downstream labels only when they still materially implement the same chosen option
   number and intent.
-- If the bound option is impossible, unsafe, stale, or inconsistent with the listed options, stop
-  for user clarification instead of overriding it.
-- When `resolutionOptions` is `none`, `userPreference` must be `none` or `null`.
+- If the bound option or binding adjustment is impossible, unsafe, stale, or inconsistent with the
+  listed options, stop for user clarification instead of overriding it.
+- When `resolutionOptions` is `none`, `userPreferenceOptionNumber` and
+  `userPreferenceAdjustment` must be `null`, and `userPreference` must be `none`, `null`, or
+  omitted in `SOURCE_DOC`.
 
 ## Stage Runtime Assembly
 
@@ -205,7 +225,8 @@ execution details.
 Fill stage prompts only with Stage I/O inputs plus these constraints:
 
 - False-positive reviewer/planner issue packets use the canonical schema plus only issue-scoped
-  support, including any binding `userPreference` carried from `SOURCE_DOC`.
+  support, including raw `userPreference` plus normalized `userPreferenceOptionNumber` and
+  `userPreferenceAdjustment` when present in `SOURCE_DOC`.
 - Source-report paths are locators, not permission to load whole reports. Use cited line ranges or
   smallest matching section; justify wider reads in the stage artifact.
 - Implementer receives only planner-returned absolute plan path, `HANDOFF_DIR`, and optional

@@ -111,7 +111,11 @@ For each finding in exact `SOURCE_DOC` order:
    under either `Resolution status:` or `Confirmation status:`. If missing, abort as not seeded
    correctly.
 4. Build a compact issue packet only for the current pending finding, using the canonical schema in
-   `workflow.md`, and carry forward any `User preference:` value from `SOURCE_DOC`.
+   `workflow.md`. Carry forward raw `User preference:` from `SOURCE_DOC` when present; if the line
+   is omitted, treat it as no user override. Normalize equivalent binding forms (`Option <N>`,
+   `option <N>`, `<N>`, or English number words such as `one`) into
+   `userPreferenceOptionNumber`, and preserve any trailing adjustment text in
+   `userPreferenceAdjustment`.
 5. Triage:
    - user skip -> ledger `skipped_by_user`, continue
    - explicit `ignore`/`skip`/`resolved`/`non-actionable` input -> ledger `non_actionable`,
@@ -119,14 +123,16 @@ For each finding in exact `SOURCE_DOC` order:
    - authoritative `Verification verdict: inconclusive` -> ledger `verification_blocked`, note gap
      for final report, continue
    - `Verification verdict: false_positive` with `Resolution options: none`,
-     `Preferred resolution: none`, and no conflicting `User preference:` -> false-positive workflow
+     `Advised resolution: none`, and no conflicting binding user preference -> false-positive
+     workflow
    - otherwise -> actionable workflow
 
 A lack of obvious resolution details is not enough to skip; delegate to the planner. If no binding
-`User preference:` is present and multiple viable resolution policies remain, let the planner
-choose unless the choice changes product behavior or scope beyond the reviewed feature. If binding
-`User preference:` selects an option, the planner must follow it and must not override that
-selection.
+user preference is present and multiple viable resolution policies remain, let the planner choose
+unless the choice changes product behavior or scope beyond the reviewed feature. If binding user
+preference selects an option, the planner must follow that option and any binding adjustment text,
+without overriding them, and should not spend effort researching alternative options beyond minimal
+feasibility/safety checks for the selected path.
 
 ## False-Positive Workflow
 
@@ -167,12 +173,13 @@ Read `COMMON_STAGE_POLICY`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`, and
 6. Reviewer `pass: <absolute review doc>` -> read reviewer report and extract the exact labels
    `Implemented resolution approach:`, `Selected resolution approach label:`, and
    `Effective follow-up severity for commit labeling:` when applicable. If the issue packet carries
-   binding `User preference:` for `Option <N>` or `option <N>`, accept the pass only when the
-   selected approach label is `Option <N>`, `Option <N> (recommended)`, or
-   `Option <N> with slight refinement`; otherwise treat it as `review_failed` because the
-   mandatory user-selected option was not followed. On success, ledger `resolved`; commit
-   current-finding implementation/tests/config/docs using the resolved-finding commit template from
-   `workflow.md`; verify clean.
+   binding `userPreferenceOptionNumber`, accept the pass only when the selected approach label is
+   `Option <N>`, `Option <N> (recommended)`, or `Option <N> with slight refinement` for that same
+   option number; rely on the implementation-review stage to enforce any binding
+   `userPreferenceAdjustment`. Otherwise treat it as `review_failed` because the mandatory
+   user-selected option was not followed. On success, ledger `resolved`; commit current-finding
+   implementation/tests/config/docs using the resolved-finding commit template from `workflow.md`;
+   verify clean.
 7. Reviewer clarification -> follow `CONTINUATION_POLICY`. Reviewer `needs_fix` -> ledger
    `review_failed`, no retry, cleanup. Reviewer `blocked` -> ledger `verification_blocked`, no
    retry, cleanup.
