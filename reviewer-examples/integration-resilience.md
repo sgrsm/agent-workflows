@@ -28,13 +28,13 @@ Write full markdown report to:
   - `8.5 Failure States That Do Not Acknowledge`
 - `docs/features/example-event-sync/specification/02-logging-and-operational-behavior.md`
   - `9.1 Repair-Grade Logging` — especially failure-category / `upstreamStatus` mapping paragraphs
-  - `9.3 Startup Validation` — external-lookup property validation only
+  - `9.3 Startup Validation` — external lookup property validation only
 - `docs/features/example-event-sync/specification/03-implementation-and-configuration.md`
   - `10.2 External Lookup Properties`
   - `10.4 Resilience Configuration`
   - `13.2 External Lookup Client And Resilience Implementation Details`
 - `docs/features/example-event-sync/specification/05-verification-and-acceptance.md`
-  - `14.5 Failure Coverage` — external-lookup failure cases, resilience coverage, and retryable post-listener proof
+  - `14.5 Failure Coverage` — external lookup failure cases, resilience coverage, and retryable post-listener proof
   - `17. Acceptance Criteria` — especially items `10` through `13` and `15`
 
 ## Primary files
@@ -65,15 +65,15 @@ Write full markdown report to:
 - 200-body parsing and `externalKey` validation
 - Retry predicates and circuit-breaker record/ignore predicates
 - Retry-vs-circuit-breaker interaction, including `CallNotPermittedException`
-- Repair-grade logging mappings where external-lookup classification affects `failureCategory` or `upstreamStatus`
+- Repair-grade logging mappings where external lookup classification affects `failureCategory` or `upstreamStatus`
 - Maintainability: centralized classification, clear exception taxonomy, clean HTTP/parsing/exception/resilience boundaries
 - Hidden bugs: over-broad catches, unsafe URI construction, redirect assumptions, cause-chain fragility, bad defaults, protocol/client-failure fallback mistakes
 - Test concerns only when they directly affect confidence in integration classification/resilience behavior
 
 ## Out of scope
 
-- Detailed Kafka ack/container behavior except where needed for external-lookup exception propagation semantics
-- Detailed repository write classification except where persistence changes external-lookup-facing outcome expectations
+- Detailed Kafka ack/container behavior except where needed for external lookup exception propagation semantics
+- Detailed repository write classification except where persistence changes external lookup outcome expectations
 - Broad logging, startup-validation, config, or Helm review except where needed for an integration/resilience finding
 - Broad test-suite sufficiency review; note only test issues tied to an integration/resilience finding
 - Generic coding style commentary not tied to maintainability or correctness

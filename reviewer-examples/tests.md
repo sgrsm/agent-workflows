@@ -11,15 +11,15 @@ Write full markdown report to:
 
 ## Additional required context
 
-For retry-container proof, read:
-`docs/features/example-event-sync/adr/0002-retry-container-contract-test-strategy.md`
+For runtime error-handling proof, read:
+`docs/features/example-event-sync/adr/0002-runtime-error-handling-test-strategy.md`
 
 ## Area contract
 
 - Repository area: `.`
 - Review area: test coverage, proof strength, test design, and test-related dependency/build hygiene
 - Report title: `# Test Review Report`
-- Scope summary: `Test coverage, suite design, and test code quality for the example event-sync feature`
+- Scope summary: `Test coverage, suite design, and test code quality for the example feature.`
 - Finding categories: `tests | spec_compliance | bug_risk | code_quality | architecture`
 - Additional context references default: `none`, or the ADR above with referenced sections when relevant
 - Additional context checked default: the ADR above with checked section references
@@ -82,7 +82,7 @@ Inspect all changed test files under `src/test/java/**`, especially:
 
 - Required happy path, idempotent path, conflict path, skipped path, retryable path, and fatal path coverage
 - Record-level ack, redelivery, listener-container stop, and invalid Kafka value handling proof
-- Retry-container contract proof judged against ADR-0002: public-behavior config/error-handler proof plus Kafka/container runtime proof is sufficient when convincing; framework-private inspection is optional
+- Runtime error-handling proof judged against ADR-0002: public-behavior config/error-handler proof plus Kafka/container runtime proof is sufficient when convincing; framework-private inspection is optional
 - MySQL-specific repository semantics proof
 - Correct split between unit, integration, WireMock, and Testcontainers tests
 - Assertion strength, specificity, meaningful names, focused setup, low duplication, maintainability, and flake resistance

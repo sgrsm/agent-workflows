@@ -3,6 +3,9 @@
 Human/operator guide for the reusable resolver template pack. `workflow.md` is the canonical
 execution map.
 
+All paths in this README are repo-root-relative unless noted otherwise. If you're unsure where to
+start, start with `resolve/instantiate.md`.
+
 ## Summary
 
 This directory is a copy-and-adapt template pack for building a feature-specific resolver pack for
@@ -10,14 +13,14 @@ This directory is a copy-and-adapt template pack for building a feature-specific
 
 Recommended order:
 
-1. preferred: run the template-only `instantiate.md` prompt from this directory and let the agent
-   collect values, copy runtime files, replace placeholders, and audit the result
-2. manual alternative: copy the runtime pack files to the real resolve-pack location
-3. fill `workflow.md` first
-4. resolve the remaining instantiation placeholders in the policy and prompt files
-5. confirm `<source_doc_path>` already follows the seeded resolver shape from
-   `review/templates/final-evaluation.md`
-6. choose an execution mode:
+1. Preferred: from the repository root, run `resolve/instantiate.md`. Let the agent collect
+   values, copy runtime files, replace placeholders, and audit the result.
+2. Manual alternative: copy the runtime pack files to the real resolve-pack location.
+3. Fill `workflow.md` first.
+4. Resolve the remaining instantiation placeholders in the policy and prompt files.
+5. Confirm `<source_doc_path>` already follows the seeded resolver shape from
+   `review/templates/final-evaluation.md`.
+6. Choose an execution mode:
    - automated: run from `<resolve_pack_base_path>/orchestrator.md`
    - human-driven/manual: use `manual.md`, `workflow.md`, and the stage prompts under
      `<resolve_pack_base_path>/prompts/`
@@ -53,8 +56,8 @@ should write run artifacts under `<run_docs_base_path>/<RUN_ID>/`.
 
 ## Instantiation Checklist
 
-Preferred: run `resolve/instantiate.md` from the
-repository root and provide the requested feature/path values.
+Preferred: from the repository root, run `resolve/instantiate.md` and provide the requested
+feature/path values.
 
 Minimal prompt:
 

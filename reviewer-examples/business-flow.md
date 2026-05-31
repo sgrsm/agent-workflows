@@ -25,7 +25,7 @@ Write full markdown report to:
   - `4.3 CDC Value Shape`
   - `4.4 Operation Handling` — especially ignored-operation log-context rules and null-operation path
   - `5. Event Field Validation`
-  - `6.1 Endpoint` — only the create-event external-lookup contract
+  - `6.1 Endpoint` — only the create-event external lookup contract
   - `6.3 External Lookup Response Handling And Resilience Classification` — only where it affects handler branching
   - `7.3 Idempotent Create Semantics`
   - `8.1 Record-Level Processing` — only where it affects handler expectations
@@ -64,7 +64,7 @@ Write full markdown report to:
 
 ## Out of scope
 
-- Detailed external-lookup HTTP classification/resilience rules except where needed for handler branching
+- Detailed external lookup HTTP classification/resilience rules except where needed for handler branching
 - Detailed Kafka container configuration except where it changes handler expectations
 - Detailed repository duplicate-key race classification except where it changes handler-level outcome semantics
 - Broad test-suite sufficiency review; note only test issues tied to a business-flow finding

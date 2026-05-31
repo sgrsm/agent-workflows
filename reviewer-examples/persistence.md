@@ -57,14 +57,14 @@ Write full markdown report to:
 - Transaction boundaries and stale-read/snapshot risks
 - Retryable vs fatal DB classification
 - Schema/import compatibility and no runtime compensation for schema drift or import-SQL drift
-- Downstream `findTargetId(externalKey, identifier)` compatibility and downstream read-model handoff safety
+- Downstream `findTargetId(externalKey, identifier)` compatibility and downstream read model handoff safety
 - Repository design quality: clear responsibilities, centralized data-integrity handling, readable duplicate-key classification
 - Hidden bugs: false idempotency/conflict classification, regex matching mistakes, duplicate-key handling, exception classification, SQL/spec drift
 - Test concerns only when they directly affect confidence in MySQL-dependent persistence semantics
 
 ## Out of scope
 
-- Detailed external-lookup HTTP classification except where external-lookup behavior changes a persistence outcome
+- Detailed external lookup HTTP classification except where external lookup behavior changes a persistence outcome
 - Detailed Kafka container behavior except where it directly affects persistence retry/ack expectations
 - Broad logging/output review except where required to explain a persistence finding
 - Broad test-suite sufficiency review; note only test issues tied to persistence/data integrity

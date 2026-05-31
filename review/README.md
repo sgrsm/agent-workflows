@@ -3,6 +3,9 @@
 Human/operator guide for the reusable review template pack. `workflow.md` is the canonical
 execution map.
 
+All paths in this README are repo-root-relative unless noted otherwise. If you're unsure where to
+start, start with `review/instantiate.md`.
+
 ## Summary
 
 This directory is a copy-and-adapt template pack for building a feature-specific review pack for
@@ -10,16 +13,16 @@ This directory is a copy-and-adapt template pack for building a feature-specific
 
 Recommended order:
 
-1. preferred: run `review/instantiate.md` from
-   the repository root and let the agent collect core pack values, inspect the feature spec or
-   branch diff, suggest reviewer areas and focus-checklist categories, accept your
-   edits/additions, create concrete reviewer prompts, replace placeholders, and audit the result
-2. manual alternative: copy the runtime files to the real review-pack location
-3. fill `workflow.md` first
-4. copy/rename reviewer prompt templates for each feature-specific review area
-5. wire workflow reviewer rows to those concrete reviewer prompt files
-6. resolve the remaining placeholders
-7. run from `orchestrator.md` or the direct/manual prompt you need
+1. Preferred: from the repository root, run `review/instantiate.md`. Let the agent collect core
+   pack values, inspect the feature spec or branch diff, suggest reviewer areas and
+   focus-checklist categories, accept your edits/additions, create concrete reviewer prompts,
+   replace placeholders, and audit the result.
+2. Manual alternative: copy the runtime files to the real review-pack location.
+3. Fill `workflow.md` first.
+4. Copy/rename reviewer prompt templates for each feature-specific review area.
+5. Wire workflow reviewer rows to those concrete reviewer prompt files.
+6. Resolve the remaining placeholders.
+7. Run from `orchestrator.md` or whichever direct/manual prompt you need.
 
 Do not generate review artifacts inside this template directory. The instantiated review pack should
 write its outputs under `<reports_base_path>`.
@@ -38,11 +41,10 @@ write its outputs under `<reports_base_path>`.
 - Do not point multiple reviewer rows at the unresolved source template files unless you first add
   an explicit row-specific payload mechanism to the workflow task assembly.
 
-The interactive source-template prompt
-`review/instantiate.md` can inspect the
-feature spec when available, or fall back to the branch diff when it is not, then propose a
-reviewer plan plus focus-checklist category suggestions for you to accept/edit/remove/extend before
-it creates the concrete reviewer prompts.
+The template-only instantiation prompt `review/instantiate.md` can inspect the feature spec when
+available, or fall back to the branch diff when it is not, then propose a reviewer plan plus
+focus-checklist category suggestions for you to accept, edit, remove, or extend before it creates
+the concrete reviewer prompts.
 
 Typical area-reviewer copies or row specializations include:
 
@@ -57,12 +59,11 @@ Typical area-reviewer copies or row specializations include:
 
 ## Instantiation checklist
 
-Preferred: run `review/instantiate.md` from the
-repository root and provide the requested core pack/path values. The instantiator then inspects the
-feature spec when available, or the branch diff otherwise, proposes reviewer areas, suggests
-focus-checklist categories from the template catalog, lets you accept or adjust them, and
-materializes the concrete reviewer prompts. The tests/proof-strength reviewer is included by
-default unless you explicitly reject it.
+Preferred: from the repository root, run `review/instantiate.md` and provide the requested core
+pack/path values. The instantiator inspects the feature spec when available, or the branch diff
+otherwise, proposes reviewer areas, suggests focus-checklist categories from the template catalog,
+lets you accept or adjust them, and materializes the concrete reviewer prompts. The
+tests/proof-strength reviewer is included by default unless you explicitly reject it.
 
 ### Minimal prompt examples
 

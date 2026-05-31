@@ -37,7 +37,7 @@ Write full markdown report to:
 ## Focus checklist
 
 - Whether upstream CDC connector documentation now states that business handling is implemented by this feature
-- Whether downstream read-model documentation now states that `app.entity_mapping` is maintained by this CDC business handler for new source mappings
+- Whether downstream read model documentation now states that `app.entity_mapping` is maintained by this CDC business handler for new source mappings
 - Whether overview docs are updated when they describe affected responsibilities
 - Stale, contradictory, ambiguous, or misleading ownership/behavior statements across touched documentation
 - Documentation quality: precise scope, consistent terminology, maintainable cross-feature references, and wording that will not mislead future feature work, rollout planning, or troubleshooting

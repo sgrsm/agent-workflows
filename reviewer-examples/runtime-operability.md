@@ -11,8 +11,8 @@ Write full markdown report to:
 
 ## Additional required context
 
-Read the accepted retry-container/error-handler proof ADR:
-`docs/features/example-event-sync/adr/0002-retry-container-contract-test-strategy.md`
+Read the accepted runtime error-handling proof ADR:
+`docs/features/example-event-sync/adr/0002-runtime-error-handling-test-strategy.md`
 
 ## Area contract
 
@@ -68,8 +68,8 @@ Read the accepted retry-container/error-handler proof ADR:
 - Post-listener retryable vs fatal behavior, error-handler delegation, non-zero redelivery backoff, and listener-container stop behavior
 - Retry-container contract proof judged against ADR-0002: public-behavior config/error-handler proof plus Kafka/container runtime proof is sufficient when convincing; framework-private inspection is optional
 - Explicit earliest-offset behavior on first start and independent enablement
-- Startup-validation correctness, feature-flag gating, external-lookup property validation, and packaged-default caveat
-- Fixed log fields, categories, external-lookup status mapping, single-line safety, and raw-value handling
+- Startup-validation correctness, feature-flag gating, external lookup property validation, and packaged-default caveat
+- Fixed log fields, categories, external lookup status mapping, single-line safety, and raw-value handling
 - No added DLQ / metrics / feature-owned alerts / repair workflow code
 - Configuration and Helm mapping correctness
 - Runtime-wiring architecture: clear listener/handler/invalid-record/logging/config boundaries and operational clarity
@@ -79,7 +79,7 @@ Read the accepted retry-container/error-handler proof ADR:
 ## Out of scope
 
 - Detailed business-field validation except where it changes listener ack/runtime behavior
-- Detailed external-lookup response classification except where it changes retry, stop, or log behavior here
+- Detailed external lookup response classification except where it changes retry, stop, or log behavior here
 - Detailed repository duplicate-key semantics except where they change retry/ack behavior
 - Broad test-suite sufficiency review; note only test issues tied to runtime/operability
 - Broad style commentary not tied to operability, maintainability, or correctness
