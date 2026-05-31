@@ -113,9 +113,11 @@ Manual alternative:
    `workflow.md` row at that concrete prompt file.
 6. Set `<authoritative_spec_entry_point>` / `<specification_base_path>` when a feature spec exists,
    or use literal `none` for both in a diff-only review pack.
-7. Set the real report/output paths used by the instantiated pack. Recommended default synthesized
-   artifact names are `99-consolidated-report.md` and `100-final-evaluation.md` under
-   `<reports_base_path>` unless you intentionally want different names.
+7. Set the real report/output paths used by the instantiated pack. Area-specific reviewer reports
+   should normally use consecutive zero-padded two-digit prefixes that match the workflow row IDs,
+   such as `01-...`, `02-...`, and `03-...`. Recommended default synthesized artifact names remain
+   `99-consolidated-report.md` and `100-final-evaluation.md` under `<reports_base_path>` unless you
+   intentionally want different names.
 8. Confirm the orchestrator, consolidator, verifier, and all copied reviewer prompts still read
    naturally after placeholder replacement.
 
@@ -129,7 +131,9 @@ Before running the copied pack, verify:
 - a tests/proof-strength reviewer prompt exists unless it was explicitly rejected during
   instantiation; if it was auto-generated without an explicit filename override, it should be
   `prompts/reviewers/tests-reviewer.md`
-- reviewer expected report paths are unique
+- reviewer IDs are consecutive zero-padded two-digit values, reviewer expected report paths are
+  unique, and each reviewer expected report starts with the matching prefix (`01-...`, `02-...`,
+  not `10-...`, `20-...`) unless you intentionally chose a different scheme
 - if there is no dedicated documentation reviewer, `<documentation_reviewer_report_filename>` is
   `none`; otherwise it matches that reviewer's report filename
 - feature-spec fields are either valid repo-root-relative paths or both literal `none` for a

@@ -127,6 +127,9 @@ Notes:
   non-test focus-checklist categories and checklist starters.
 - If `cleanOutputGateFilesOverride` is omitted, derive the clean-output gate from all reviewer
   `expectedReport` paths plus `consolidatedReportOutputPath` and `finalEvaluationOutputPath`.
+- For area-specific reviewer outputs, use consecutive zero-padded two-digit prefixes matching the
+  reviewer order and reviewer `id`: `01-...`, `02-...`, `03-...`, and so on. Do not skip by tens
+  (`10-`, `20-`, ...) unless the user explicitly overrides the scheme.
 - For default synthesized artifact naming, prefer `99-consolidated-report.md` and
   `100-final-evaluation.md` under `reportsBasePath`.
 
@@ -198,6 +201,10 @@ For each draft area, prepare a compact proposal with at least:
     - <catalog category id and label>
   notes:
 ```
+
+Use consecutive two-digit draft IDs in the current proposed order (`01`, `02`, `03`, ...). When
+you suggest `expectedReport`, start the filename with the same two-digit prefix as that area's
+`id`; do not use tens-based gaps such as `10-...`, `20-...`.
 
 Use `reviewAreaHints` if provided. Treat a dedicated documentation reviewer as optional and
 default-off. If `documentationReviewScope` is non-empty or the spec/diff surfaces documentation
@@ -354,6 +361,12 @@ testGapRoiGateBlock: "tests only; extra feature-specific addendum or stricter ga
 
 Derivation rules:
 
+- `id` must be a consecutive zero-padded two-digit value in the final reviewer order, starting at
+  `01`.
+- `expectedReport` must begin with that same prefix; for example, reviewer `02` writes
+  `02-persistence.md`. After any user-driven reorder, merge, split, add, or removal, renumber the
+  reviewer IDs and area-specific report prefixes so they remain consecutive. Do not leave
+  tens-based gaps such as `10-...`, `20-...` unless the user explicitly requested them.
 - `relevantSpecSectionsBlock` comes from inspected spec sections when a spec exists; otherwise use
   `none`.
 - `primaryFilesBlock` comes from the main files/directories that justified the area.
@@ -378,24 +391,25 @@ Derivation rules:
 - A dedicated documentation reviewer, if approved, uses `template: area`.
 - For a dedicated documentation reviewer, use prompt file
   `prompts/reviewers/documentation-reviewer.md`. If
-  `documentationReviewerReportFilenamePreference` is `auto` or omitted, use an expected report like
-  `NN-documentation-review.md`; if the reviewer is skipped, resolve the documentation reviewer
-  report filename to `none`.
+  `documentationReviewerReportFilenamePreference` is `auto` or omitted, set `expectedReport` to
+  that reviewer's two-digit sequential ID plus `-documentation-review.md` (for example, reviewer
+  `05` writes `05-documentation-review.md`); if the reviewer is skipped, resolve the documentation
+  reviewer report filename to `none`.
 - Keep a dedicated documentation reviewer scoped to documentation follow-up, cross-doc consistency,
   and implementation-alignment checks rather than a full code review.
 - Dedicated Clean Code / SOLID reviewers, if approved, use `template: area`.
 - Recommended default shape is one combined reviewer using prompt file
-  `prompts/reviewers/clean-code-solid-reviewer.md` and an expected report like
-  `NN-clean-code-solid-review.md`.
+  `prompts/reviewers/clean-code-solid-reviewer.md`; when auto-naming its report, use that
+  reviewer's two-digit sequential ID plus `-clean-code-solid-review.md`.
 - If the user chose `split`, use two area reviewers:
   - `prompts/reviewers/clean-code-reviewer.md` for `CC-*` local maintainability concerns
   - `prompts/reviewers/solid-reviewer.md` for `CA-*` SOLID / class-design concerns
 - If the user chose `clean_code_only`, use one area reviewer with prompt file
-  `prompts/reviewers/clean-code-reviewer.md` and an expected report like
-  `NN-clean-code-review.md`.
+  `prompts/reviewers/clean-code-reviewer.md`; when auto-naming its report, use that reviewer's
+  two-digit sequential ID plus `-clean-code-review.md`.
 - If the user chose `solid_only`, use one area reviewer with prompt file
-  `prompts/reviewers/solid-reviewer.md` and an expected report like
-  `NN-solid-review.md`.
+  `prompts/reviewers/solid-reviewer.md`; when auto-naming its report, use that reviewer's
+  two-digit sequential ID plus `-solid-review.md`.
 - If the user chose `none`, keep Clean Code / SOLID concerns as area-reviewer checklist overlays
   only.
 - Keep dedicated Clean Code / SOLID reviewers scoped to changed non-test Java code and
@@ -454,7 +468,9 @@ Derivation rules:
    - `<consolidated_report_output_path>` -> `consolidatedReportOutputPath`
    - `<final_evaluation_output_path>` -> `finalEvaluationOutputPath`
    - `<documentation_reviewer_report_filename>` -> resolved documentation reviewer report filename
-9. Build and replace workflow block placeholders:
+9. Build and replace workflow block placeholders. Before rendering `<reviewer_rows_block>`,
+   renumber the approved reviewer list in final table order as `01`, `02`, `03`, ... and ensure
+   each area-specific `expectedReport` begins with the matching prefix:
    - `<accepted_context_docs_block>` from `acceptedContextDocs` or `- none`
    - `<reviewer_rows_block>` from the approved reviewer list using role/profile `reviewer`, the
      target pack's shared area-report template path, and each reviewer's concrete prompt/report
@@ -513,7 +529,10 @@ Checks:
   does not reference absent local source reviewer templates when those helpers were not copied
 - `workflow.md` reviewer rows point only to concrete copied reviewer prompts, not
   `prompts/reviewers/area-reviewer.md` or `prompts/reviewers/tests-reviewer.md`
-- reviewer expected report paths are unique and clean-output-gate files match workflow outputs
+- reviewer IDs are consecutive zero-padded two-digit values in workflow order, reviewer expected
+  report paths are unique, area-specific `expectedReport` paths start with the matching prefixes
+  (`01-...`, `02-...`, not `10-...`, `20-...`) unless the user explicitly chose a different
+  scheme, and clean-output-gate files match workflow outputs
 - if the documentation reviewer was skipped, resolved documentation reviewer report filename is
   `none` and no active documentation-reviewer row/prompt is left behind unintentionally
 - if the documentation reviewer was approved, its prompt/report paths exist, its resolved report
