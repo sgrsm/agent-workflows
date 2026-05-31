@@ -44,8 +44,9 @@ Task:
    impact; for proof gaps prefer focused tests over broad rewrites, and for partially confirmed
    findings with proven production paths consider documentation/integration-test reinforcement
    before broad production-code changes.
-5. Create a concrete implementation plan another agent or operator can execute verbatim under
-   `PLANS_DIR`, named like `finding-<NN>-<short-slug>-plan.md`.
+5. Create under `PLANS_DIR` a concrete implementation plan, named like
+   `finding-<NN>-<short-slug>-plan.md`, that another agent/operator can generally follow without
+   duplicating research.
 
 Plan document must include these exact parseable labels near the top:
 - `Finding:` finding number and title

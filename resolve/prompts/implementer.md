@@ -24,10 +24,15 @@ User answer, if any:
 
 Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
-- Read the plan file and follow it exactly. Do not materially deviate.
-- If the plan is impossible, unsafe, stale, or conflicts with repo state, stop and report `blocked` or `failed` with suggested next step.
+- Read the plan as guidance/advice, not a hard script; follow it by default to avoid duplicate
+  research, but make justified, finding-scoped adjustments when repo evidence shows a safer/simpler
+  fit.
+- Stop as `blocked`/`failed` if required changes would violate binding preferences/policy, expand
+  scope, or invalidate acceptance/verification; approach-changing deviations need clear repo-based
+  justification.
 - If a handoff path is provided, read it first.
-- Run required formatting/verification from the plan, following `COMMON_STAGE_POLICY` repository build/toolchain rules.
+- Run required formatting/verification for the plan or justified adjustment, following
+  `COMMON_STAGE_POLICY` repository build/toolchain rules.
 - Implementer handoffs may reference the opaque plan path and verification state but must not restate large plan contents.
 
 Success output contract:

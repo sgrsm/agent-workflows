@@ -65,7 +65,7 @@ For stages that run verification commands or edit Java/configuration files:
 
 - false-positive reviewer and planner stages stay read-only with respect to production code, tests,
   and configuration
-- implementer stages may edit only what is needed for the approved plan and finding scope
+- implementer stages may edit only what is needed for the plan-guided resolution and finding scope
 - implementation reviewers must stay independent and plan-blind
 - the source-document updater has its own restricted prompt and normally does not need this file
 
