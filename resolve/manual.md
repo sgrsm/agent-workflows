@@ -32,7 +32,9 @@ runbook.
    rules: follow that option plus any safe adjustment, do not override it with another option or
    `Custom`, and stop for clarification if it conflicts with workflow/stage policy or safety.
 7. For a false-positive candidate matching `FP_POLICY`, run the false-positive reviewer prompt.
-   Otherwise run planner -> implementer -> independent implementation reviewer.
+   Otherwise run planner -> implementer; after the implementer returns `done`, clear the contents
+   of `RUN_DOCS_DIR/plans/` without reading plan contents, then run the independent implementation
+   reviewer. Verify the deletion target is the current run's `plans/` directory before clearing.
 8. If any stage returns a user-clarification blocker, follow `CONTINUATION_POLICY`: ask the user,
    preserve safe artifacts, then rerun only the same role/stage with the original inputs, user
    answer, and handoff path.
@@ -46,7 +48,9 @@ runbook.
 ## Direct Single-Stage Run
 
 Use a stage prompt directly only when rerunning or debugging that stage in isolation. Before
-running it, fill the runtime placeholders listed by `workflow.md` for that stage.
+running it, fill the runtime placeholders listed by `workflow.md` for that stage. Before any
+standalone implementation-reviewer run, clear the contents of the current run's `PLANS_DIR` without
+reading plan contents.
 
 Typical inputs:
 
@@ -55,8 +59,8 @@ Typical inputs:
 - planner: current-finding issue packet, issue-scoped support, `PLANS_DIR`, `HANDOFF_DIR`, optional
   continuation handoff and user answer
 - implementer: absolute plan path, `HANDOFF_DIR`, optional continuation handoff and user answer
-- implementation reviewer: original issue packet, `finding-start-sha`, `PLANS_DIR`, `REVIEWS_DIR`,
-  `HANDOFF_DIR`, optional continuation handoff and user answer
+- implementation reviewer: original issue packet, `finding-start-sha`, cleared `PLANS_DIR`,
+  `REVIEWS_DIR`, `HANDOFF_DIR`, optional continuation handoff and user answer
 - source-document updater: final outcome ledger matching `SOURCE_DOC_POLICY`
 
 ## How To Invoke A Stage Prompt

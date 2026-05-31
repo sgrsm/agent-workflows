@@ -14,7 +14,9 @@ Companion files: `<resolve_pack_base_path>/workflow.md`,
 ## Core Rules
 
 1. Local repository evidence is primary for repository behavior. Prefer code, tests, specs,
-   review documents, the seeded source document, and resolver artifacts before external sources.
+   review documents, the seeded source document, and stage-permitted resolver artifacts before
+   external sources. Implementation reviewers must not treat implementation plans or
+   planner/implementer handoffs as permitted evidence.
 2. `web_search` or other web sources are allowed only for external APIs, tooling behavior, or
    general background context that is not available locally.
 3. When a web source is materially relevant, cite the URL/provenance and explicitly call out any

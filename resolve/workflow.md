@@ -73,7 +73,9 @@ for the instantiated resolve prompt pack. Use repository-root-relative paths eve
 
 All run artifacts live under `RUN_DOCS_DIR`.
 
-- `RUN_DOCS_DIR/plans/` — planner outputs such as `finding-<NN>-<short-slug>-plan.md`
+- `RUN_DOCS_DIR/plans/` — ephemeral planner-to-implementer transfer files, such as
+  `finding-<NN>-<short-slug>-plan.md`; the coordinator clears this directory's contents after the
+  implementer returns `done` and before implementation review
 - `RUN_DOCS_DIR/reviews/` — false-positive confirmations and implementation review reports
 - `RUN_DOCS_DIR/false-positive-disputes/` — disputed false-positive reports
 - `RUN_DOCS_DIR/handoff/` — continuation handoffs for user-clarification blockers
@@ -94,9 +96,10 @@ All run artifacts live under `RUN_DOCS_DIR`.
   handles only its own scoped task.
 - Builds, tests, formatting, and code verification run only inside the appropriate stage or the
   equivalent manual operator step.
-- The automated orchestrator must not read planner output content; human-driven/manual runs should
-  preserve the same separation when practical and must not leak plan content to the independent
-  implementation-review stage.
+- Planner output content is an ephemeral planner-to-implementer transfer artifact. The automated
+  orchestrator must not read it; after the implementer returns `done`, the coordinator clears the
+  contents of `RUN_DOCS_DIR/plans/` before spawning the independent implementation reviewer.
+  Human-driven/manual runs should preserve the same separation and clear plans before review.
 - Implementation plans are guidance, not hard scripts; implementers follow them by default but may
   make justified, finding-scoped adjustments when repo evidence warrants, while preserving binding
   preferences, policies, and acceptance needs.
@@ -142,7 +145,7 @@ Stage files are the aliases above.
 | Stage | Prompt / entry point | Role/profile | Required runtime inputs | Success output | Artifacts written |
 |---|---|---|---|---|---|
 | False-positive verification | `FALSE_POSITIVE_REVIEWER_PROMPT` | `reviewer` | current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `reviews/`, `false-positive-disputes/`, and `handoff/` directories; optional handoff path and user answer | `confirmed: <absolute path>` or `disputed: <absolute path>` plus severity and summary | confirmation or dispute report; optional clarification handoff |
-| Planning | `PLANNER_PROMPT` | `planner` | current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `plans/` and `handoff/` directories; optional handoff path and user answer | absolute plan path under `RUN_DOCS_DIR/plans/` | plan file; optional clarification handoff |
+| Planning | `PLANNER_PROMPT` | `planner` | current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `plans/` and `handoff/` directories; optional handoff path and user answer | absolute plan path under `RUN_DOCS_DIR/plans/` | ephemeral plan file, cleared after implementer success; optional clarification handoff |
 | Implementation | `IMPLEMENTER_PROMPT` | `worker` | planner-returned absolute plan path; run-specific `handoff/` directory; optional handoff path and user answer | `done` | code/test/config/docs changes as needed; optional clarification handoff |
 | Independent implementation review | `IMPLEMENTATION_REVIEWER_PROMPT` | `reviewer` | original current-finding issue packet; `finding-start-sha`; run-specific `plans/`, `reviews/`, and `handoff/` directories; optional handoff path and user answer | `pass: <absolute path>`, `needs_fix: <absolute path>`, or `blocked: <absolute path>` | review report; optional clarification handoff |
 | Source-document update | `SOURCE_DOCUMENT_UPDATER_PROMPT` | `worker` | final per-finding outcome ledger matching `SOURCE_DOC_POLICY` | `done` | edits to `SOURCE_DOC` only |
@@ -237,6 +240,9 @@ Fill stage prompts only with Stage I/O inputs plus these constraints:
   smallest matching section; justify wider reads in the stage artifact.
 - Implementer receives only planner-returned absolute plan path, `HANDOFF_DIR`, and optional
   continuation material.
+- After the implementer returns `done`, the coordinator clears the contents of the run-specific
+  plans directory (`RUN_DOCS_DIR/plans/`, passed to stage prompts as `PLANS_DIR`) without reading
+  plan contents. Plan files are not final trace artifacts and must not be committed.
 - Implementation reviewer receives original issue packet, `finding-start-sha`, run dirs, and
   optional continuation material; never pass plan, implementer notes, command output, or
   plan-derived summaries.

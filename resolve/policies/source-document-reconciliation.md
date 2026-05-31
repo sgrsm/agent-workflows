@@ -186,6 +186,8 @@ Field rules:
   `Effective follow-up severity for commit labeling:` field or `severity-unknown`.
 - `resolverArtifactRefs` and `sourceReportRefs.path` are repo-relative only. Use
   `sourceReportRefs.lines` when a stable line range is known; otherwise use `null`.
+- `resolverArtifactRefs` must not include files under `RUN_DOCS_DIR/plans/`; plans are ephemeral
+  transfer artifacts, not source-document trace artifacts.
 - `outcomeSummary` stays concise and diff-friendly.
 
 ## Updater Rules

@@ -21,7 +21,8 @@ pack. Not required in instantiated runtime packs unless copied for operator/refe
   - `prompts/implementation-reviewer.md`
   - `prompts/source-document-updater.md`
 - Finding-scoped run artifacts stay stable and zero-padded, for example:
-  - `finding-<NN>-<short-slug>-plan.md`
+  - `finding-<NN>-<short-slug>-plan.md` for ephemeral planner-to-implementer transfer files
+    that are cleared after implementation succeeds
   - `finding-<NN>-<short-slug>-review.md`
   - `finding-<NN>-<short-slug>-false-positive-confirmation.md`
   - `finding-<NN>-<short-slug>-false-positive-dispute.md`
@@ -97,8 +98,8 @@ agent/operator, or generated artifacts.
 For direct/manual stage runs, `workflow.md` is canonical for exact runtime inputs. Common inputs:
 current-finding issue packet; issue-scoped excerpts/locators; run-specific `plans/`, `reviews/`,
 `false-positive-disputes/`, and `handoff/` dirs; optional handoff path/user answer;
-planner-returned absolute plan path; `finding-start-sha`; final outcome ledger for source-doc
-update.
+planner-returned absolute plan path; cleared `plans/` before implementation review;
+`finding-start-sha`; final outcome ledger for source-doc update.
 
 ### Example/Schema Placeholders
 

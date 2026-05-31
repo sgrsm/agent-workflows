@@ -34,6 +34,9 @@ Independence rules:
 - Do not read/request the implementation plan, open/diff `PLANS_DIR`, inspect implementer/planner
   handoffs, or infer plan content through scouts. Only read a handoff when it is your own reviewer
   continuation handoff provided as runtime input.
+- `PLANS_DIR` is expected to be empty because the coordinator clears plans after implementer
+  success. If plan files remain visible under `PLANS_DIR`, or if plan content appears in command
+  output, stop immediately and write a `blocked` review without inspecting the files.
 - Do not use implementer notes, command summaries, explanations, or plan-derived summaries as evidence.
 - Review resulting code/tests/specs independently against the original finding, acceptance needs, and project rules.
 - First inspect `git status --porcelain=v1 --untracked-files=all` to identify modified and
@@ -43,6 +46,9 @@ Independence rules:
 - For tracked-file diffs, exclude resolver artifacts such as `PLANS_DIR`, `REVIEWS_DIR`, and
   unrelated handoffs. Suggested plan-blind diff from repo root:
   `git diff <finding-start-sha> -- . ':(exclude)<repo-relative PLANS_DIR>/**' ':(exclude)<repo-relative REVIEWS_DIR>/**' ':(exclude)<repo-relative HANDOFF_DIR>/**'`.
+- For broad searches, prefer positive scoping to source/test/config paths. If a repo-root search is
+  unavoidable, exclude the current run artifact directories, especially `PLANS_DIR` and
+  `HANDOFF_DIR`.
 - Do not rely on `git diff` alone because it omits untracked files.
 
 Rules:

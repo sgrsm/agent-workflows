@@ -62,8 +62,9 @@ Before each stage, read the exact prompt and relevant policy aliases from `workf
 8. Evidence-gathering, planning, implementation, and implementation-review stages follow
    `COMMON_STAGE_POLICY`; source-doc updater follows only `SOURCE_DOC_POLICY` and its prompt unless
    stated otherwise.
-9. Plan boundary: orchestrator must not read planner output content; only verify/stage the plan
-   path and pass it to the implementer.
+9. Plan boundary: orchestrator must not read planner output content; only verify/manage the plan
+   path, pass it to the implementer, and clear `RUN_DOCS_DIR/plans/` after implementer success
+   before independent review.
 10. Reviewer/scout independence: plan-blind; no implementer notes, command output, explanations,
     or plan-derived summaries.
 11. On `blocked: user clarification required - ...`, follow `CONTINUATION_POLICY`: pause finding,
@@ -167,10 +168,15 @@ Read `COMMON_STAGE_POLICY`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`, and
 4. Implementer clarification -> follow `CONTINUATION_POLICY`. Implementer `blocked` -> ledger
    `blocked`, no reviewer, cleanup. Implementer `failed` -> ledger `implementation_failed`, no
    reviewer, cleanup.
-5. If implementer replies exactly `done`, spawn one independent `reviewer` with the original issue
-   packet and `<finding-start-sha>` only. Do not provide plan path, implementer notes,
-   implementer command output, or plan-derived summaries.
-6. Reviewer `pass: <absolute review doc>` -> read reviewer report and extract the exact labels
+5. If implementer replies exactly `done`, clear all contents of the run-specific `PLANS_DIR`
+   before spawning the reviewer. Do not read plan contents. First verify the deletion target is the
+   current run's `RUN_DOCS_DIR/plans/`; never delete outside that directory. If plan cleanup fails
+   or plan files remain visible, ledger `verification_blocked`, no reviewer, cleanup/report the
+   coordinator error.
+6. Spawn one independent `reviewer` with the original issue packet and `<finding-start-sha>` only.
+   Do not provide plan path, implementer notes, implementer command output, or plan-derived
+   summaries.
+7. Reviewer `pass: <absolute review doc>` -> read reviewer report and extract the exact labels
    `Implemented resolution approach:`, `Selected resolution approach label:`, and
    `Effective follow-up severity for commit labeling:` when applicable. If the issue packet carries
    binding `userPreferenceOptionNumber`, accept the pass only when the selected approach label is
@@ -180,7 +186,7 @@ Read `COMMON_STAGE_POLICY`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`, and
    user-selected option was not followed. On success, ledger `resolved`; commit current-finding
    implementation/tests/config/docs using the resolved-finding commit template from `workflow.md`;
    verify clean.
-7. Reviewer clarification -> follow `CONTINUATION_POLICY`. Reviewer `needs_fix` -> ledger
+8. Reviewer clarification -> follow `CONTINUATION_POLICY`. Reviewer `needs_fix` -> ledger
    `review_failed`, no retry, cleanup. Reviewer `blocked` -> ledger `verification_blocked`, no
    retry, cleanup.
 
@@ -208,8 +214,10 @@ queued finding:
   rules, then apply the `workflow.md` commit subject hygiene rule.
 - Inspect `git status --porcelain=v1 --untracked-files=all`, stage only the intended
   current-finding paths, verify with `git diff --cached --name-only`, then commit.
-- Successful resolution commits may include source/test/config plus current-finding plan/review
-  docs. Use the resolved-finding commit template from `workflow.md`.
+- Successful resolution commits may include source/test/config plus current-finding review docs.
+  Do not stage or commit files under `RUN_DOCS_DIR/plans/`; plans are ephemeral transfer artifacts
+  and should already be deleted before implementation review. Use the resolved-finding commit
+  template from `workflow.md`.
 - Failed/blocked/review-failed attempts must not commit source/test/config changes. Preserve only
   useful Markdown artifacts under `RUN_DOCS_DIR`, if safe, with a documentation-only commit using
   the unresolved-finding artifact template from `workflow.md`.

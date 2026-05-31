@@ -14,7 +14,8 @@ use up to 3 read-only child scouts. If scout support is unavailable, continue wi
 3. Scouts are read-only: inspect/search code, tests, specs, docs, and summarize evidence. They must
    not edit/create files, format, commit, clean, or run destructive commands.
 4. Context must be issue-scoped and minimal for the current finding.
-5. Implementation-reviewer scouts stay plan-blind; do not disclose, request, or infer plan content.
+5. Implementation-reviewer scouts stay plan-blind; do not disclose, request, or infer plan content;
+   do not search `PLANS_DIR` or planner/implementer handoffs.
 6. Implementer scouts may do only read-only plan/code/test discovery; implementer owns edits,
    commands, and final reporting.
 7. Local repo evidence is primary. Web/web_search is allowed for external APIs/tooling/background;
@@ -47,6 +48,8 @@ For implementation reviewers add:
 
 ```text
 - Scouts must remain plan-blind; do not disclose, request, or infer implementation plan content.
+- Scouts must not search `PLANS_DIR` or planner/implementer handoffs; if plan content appears in
+  command output, stop and report contamination to the parent.
 ```
 
 For implementers add:
