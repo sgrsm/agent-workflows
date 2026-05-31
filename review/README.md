@@ -37,7 +37,7 @@ write its outputs under `<reports_base_path>`.
   rename it for each test/proof-strength reviewer row because test review needs the extra
   ROI/practicality gate and optional pre-findings sections. In the interactive instantiation flow,
   a concrete tests review prompt should be created by default as
-  `prompts/reviewers/tests-review.md` and removed only if the user explicitly rejects it.
+  `prompts/reviewers/tests-reviewer.md` and removed only if the user explicitly rejects it.
 - Do not point multiple reviewer rows at the unresolved source template files unless you first add
   an explicit row-specific payload mechanism to the workflow task assembly.
 
@@ -115,7 +115,7 @@ Before running the copied pack, verify:
 - every reviewer row points to a concrete copied reviewer prompt with area-specific values filled in
 - a tests/proof-strength reviewer prompt exists unless it was explicitly rejected during
   instantiation; if it was auto-generated without an explicit filename override, it should be
-  `prompts/reviewers/tests-review.md`
+  `prompts/reviewers/tests-reviewer.md`
 - reviewer expected report paths are unique
 - `<documentation_reviewer_report_filename>` is `none` or matches one reviewer report filename
 - feature-spec fields are either valid repo-root-relative paths or both literal `none` for a

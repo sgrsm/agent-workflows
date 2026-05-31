@@ -170,8 +170,8 @@ For each draft area, prepare a compact proposal with at least:
 Use `reviewAreaHints` if provided. If a dedicated documentation reviewer seems warranted and the
 user left `documentationReviewerReportFilenamePreference` as `auto`, suggest the corresponding
 report filename. For the default tests reviewer, use concrete prompt filename
-`prompts/reviewers/tests-review.md` unless the user explicitly overrides the filename or rejects the
-reviewer.
+`prompts/reviewers/tests-reviewer.md` unless the user explicitly overrides the filename or rejects
+the reviewer.
 
 If `reviewThemes` is `auto`, also draft a short theme list from the proposed areas; the user may
 edit it during approval.
@@ -261,7 +261,7 @@ Derivation rules:
   stricter customization. Use `testGapRoiGateBlock` and `specialReportSectionsBlock` only for
   feature-specific addenda/replacements, and use `none` when the template defaults are sufficient.
 - For the default auto-generated tests reviewer, use prompt file
-  `prompts/reviewers/tests-review.md` unless the user explicitly overrides the filename or rejects
+  `prompts/reviewers/tests-reviewer.md` unless the user explicitly overrides the filename or rejects
   the reviewer.
 - If the user supplied `manualReviewerDefinitions`, prefer them over auto-derived material.
 
@@ -282,10 +282,13 @@ Derivation rules:
 6. Create one concrete reviewer prompt per approved reviewer entry by copying:
    - `prompts/reviewers/area-reviewer.md` when `template` is `area`
    - `prompts/reviewers/tests-reviewer.md` when `template` is `tests`
-7. Copy source reviewer templates only when `keepSourceReviewerTemplates` is true or explicit.
-   Copy template helpers only when requested: `instantiate.md` if `copyInstantiatePrompt` is true
-   or explicit; `naming-and-placeholders.md` if `copyNamingAndPlaceholdersGuide` is true or
-   explicit; `focus-checklist-catalog.md` if `copyFocusChecklistCatalog` is true or explicit.
+7. Copy source reviewer templates only when `keepSourceReviewerTemplates` is true or explicit. If
+   the concrete default tests reviewer already uses `prompts/reviewers/tests-reviewer.md`, do not
+   keep a second helper copy at that same target path unless you intentionally rename it and update
+   local references accordingly. Copy template helpers only when requested: `instantiate.md` if
+   `copyInstantiatePrompt` is true or explicit; `naming-and-placeholders.md` if
+   `copyNamingAndPlaceholdersGuide` is true or explicit; `focus-checklist-catalog.md` if
+   `copyFocusChecklistCatalog` is true or explicit.
 8. Replace these shared placeholders in copied shared files, policies, prompts, and templates:
    - `<feature_name>` -> `featureName`
    - `<feature_slug>` -> `featureSlug`

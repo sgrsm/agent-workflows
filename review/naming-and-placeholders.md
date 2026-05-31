@@ -23,8 +23,9 @@ feature-specific review pack.
 - Treat `prompts/reviewers/tests-reviewer.md` the same way for rows that need the extra test-gap
   ROI/practicality gate and optional pre-findings sections.
 - For the default auto-generated tests/proof-strength reviewer created by the instantiator, use
-  concrete filename `prompts/reviewers/tests-review.md` unless the user explicitly overrides the
-  filename or rejects the reviewer.
+  concrete filename `prompts/reviewers/tests-reviewer.md` unless the user explicitly overrides the
+  filename or rejects the reviewer. If helper reviewer templates are also retained, do not keep a
+  second source-template copy at that same path unless you intentionally rename it.
 - Do not point multiple workflow rows at the same unresolved reviewer source template unless you
   also add explicit row-specific payload assembly to `workflow.md`.
 - When instantiating report filenames in `workflow.md`, prefer zero-padded numeric prefixes for
@@ -210,7 +211,7 @@ Before running a manually instantiated pack, confirm:
   are unique
 - a tests/proof-strength reviewer prompt exists unless it was explicitly rejected during
   instantiation; if it was auto-generated without an explicit filename override, it should be
-  `prompts/reviewers/tests-review.md`
+  `prompts/reviewers/tests-reviewer.md`
 - non-test reviewer focus-checklist blocks are concrete prompt text and do not leak raw catalog ids
   or helper prose unless the user explicitly wanted that wording
 - `<documentation_reviewer_report_filename>` is `none` or matches one reviewer report filename
