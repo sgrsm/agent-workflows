@@ -4,7 +4,7 @@ Governs findings whose final evaluation verdict is `false_positive`.
 
 This policy assumes `SOURCE_DOC` follows the current seeded final-evaluation schema from:
 
-`storage-engine-facade/service/docs/agent-templates/review/templates/final-evaluation.md`
+`review/templates/final-evaluation.md`
 
 Companion files: main orchestrator `<resolve_pack_base_path>/orchestrator.md`, false-positive
 reviewer prompt `<resolve_pack_base_path>/prompts/false-positive-reviewer.md`.

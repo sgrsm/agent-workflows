@@ -1,17 +1,17 @@
 # Reviewer Prompt — CAF Client / Response Classification / Resilience
 
 Direct/manual runs: apply reviewer task assembly from
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/workflow.md`, including
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
+`docs/feature-sync-meter-mapping-data/review/workflow.md`, including
+`docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
 
 ## Mandatory output file
 
 Write full markdown report to:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/reports/02-caf-resilience.md`
+`docs/feature-sync-meter-mapping-data/review/reports/02-caf-resilience.md`
 
 ## Area contract
 
-- Repository area: `storage-engine-facade/service`
+- Repository area: `.`
 - Review area: CAF lookup, response classification, retry, and circuit-breaker resilience behavior
 - Report title: `# CAF And Resilience Review Report`
 - Scope summary: `CAF client behavior, HTTP/result classification, exception taxonomy, retry, and circuit-breaker behavior.`
@@ -20,39 +20,39 @@ Write full markdown report to:
 
 ## Relevant spec sections
 
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
+- `docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
   - `6.1 Endpoint`
   - `6.2 CAF Client`
   - `6.3 CAF Response Handling And Resilience Classification`
   - `8.3 Post-Listener Exception Handling` — only for propagation semantics
   - `8.5 Failure States That Do Not Acknowledge`
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/02-logging-and-operational-behavior.md`
+- `docs/feature-sync-meter-mapping-data/specification/02-logging-and-operational-behavior.md`
   - `9.1 Repair-Grade Logging` — especially failure-category / `cafStatus` mapping paragraphs
   - `9.3 Startup Validation` — CAF-property validation only
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
+- `docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
   - `10.2 New CAF Properties`
   - `10.4 Resilience Configuration`
   - `13.2 CAF Client And Resilience Implementation Details`
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
+- `docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
   - `14.5 Failure Coverage` — CAF-related failure cases, resilience coverage, and retryable post-listener proof
   - `17. Acceptance Criteria` — especially items `10` through `13` and `15`
 
 ## Primary files
 
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/CafClient.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/CafLookupService.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/config/CafClientConfig.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/config/ResilienceConfig.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/CafBadRequestException.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/CafEmptyLabelException.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/CafFailureCategory.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/CafInvalidLabelException.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/CafInvalidResponseException.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/CafLookupException.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/CafNotFoundException.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/CafUnavailableException.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/RetryableMasterDataChangeException.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/exception/FatalMasterDataChangeException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/CafClient.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/CafLookupService.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/config/CafClientConfig.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/config/ResilienceConfig.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/CafBadRequestException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/CafEmptyLabelException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/CafFailureCategory.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/CafInvalidLabelException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/CafInvalidResponseException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/CafLookupException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/CafNotFoundException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/CafUnavailableException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/RetryableMasterDataChangeException.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/exception/FatalMasterDataChangeException.java`
 
 ## Focus checklist
 
@@ -80,5 +80,5 @@ Write full markdown report to:
 
 ## Report specialization
 
-Use `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/reports/02-caf-resilience.md`.
+Use `docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
+`docs/feature-sync-meter-mapping-data/review/reports/02-caf-resilience.md`.

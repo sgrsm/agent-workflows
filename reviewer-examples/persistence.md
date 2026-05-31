@@ -1,17 +1,17 @@
 # Reviewer Prompt — Persistence Semantics / Data Integrity / Schema Compatibility
 
 Direct/manual runs: apply reviewer task assembly from
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/workflow.md`, including
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
+`docs/feature-sync-meter-mapping-data/review/workflow.md`, including
+`docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
 
 ## Mandatory output file
 
 Write full markdown report to:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/reports/03-persistence.md`
+`docs/feature-sync-meter-mapping-data/review/reports/03-persistence.md`
 
 ## Area contract
 
-- Repository area: `storage-engine-facade/service`
+- Repository area: `.`
 - Review area: repository semantics, schema/import compatibility, data integrity, and DB failure classification
 - Report title: `# Persistence And Data Integrity Review Report`
 - Scope summary: `Repository semantics, schema/import compatibility, and DB failure classification.`
@@ -20,18 +20,18 @@ Write full markdown report to:
 
 ## Relevant spec sections
 
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
+- `docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
   - `7.1 Target Table`
   - `7.2 Target Data Model`
   - `7.3 Idempotent Create Semantics`
   - `8.6 Persistence Failure Classification`
   - `12. Relationship To MABIS Balancing Results`
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
+- `docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
   - `13.3 Persistence Classification Implementation Details`
   - `13.5 Target Schema Reference Details`
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/04-backfill-and-rollout.md`
+- `docs/feature-sync-meter-mapping-data/specification/04-backfill-and-rollout.md`
   - `11.1 Backfill Requirement` — especially duplicate-mapping preflight and import-SQL paragraphs
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
+- `docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
   - `14.3 Repository Write Tests`
   - `14.4 Downstream Handoff Coverage`
   - `14.5 Failure Coverage` — persistence-related cases
@@ -39,15 +39,15 @@ Write full markdown report to:
 
 ## Primary files
 
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/MeterMappingRepository.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/MeterMappingWriteResult.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/BalancingResultPersistenceService.java` if needed for downstream lookup compatibility
-- `storage-engine-facade/service/src/main/resources/db/import/import_mabis_meter_id.sql`
-- `storage-engine-facade/service/src/main/resources/db/migrations/V1__create_meter_types.sql`
-- `storage-engine-facade/service/src/main/resources/db/migrations/V2__add_identifier_column.sql`
-- `storage-engine-facade/service/src/main/resources/db/migrations/V3__expand_identifier_column.sql`
-- `storage-engine-facade/service/src/main/resources/db/migrations/V4__drop_meter_mapping_category.sql`
-- `storage-engine-facade/service/src/main/resources/db/migrations/V5__add_unique_meter_mapping_label_identifier.sql`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/MeterMappingRepository.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/MeterMappingWriteResult.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/BalancingResultPersistenceService.java` if needed for downstream lookup compatibility
+- `src/main/resources/db/import/import_mabis_meter_id.sql`
+- `src/main/resources/db/migrations/V1__create_meter_types.sql`
+- `src/main/resources/db/migrations/V2__add_identifier_column.sql`
+- `src/main/resources/db/migrations/V3__expand_identifier_column.sql`
+- `src/main/resources/db/migrations/V4__drop_meter_mapping_category.sql`
+- `src/main/resources/db/migrations/V5__add_unique_meter_mapping_label_identifier.sql`
 
 ## Focus checklist
 
@@ -72,5 +72,5 @@ Write full markdown report to:
 
 ## Report specialization
 
-Use `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/reports/03-persistence.md`.
+Use `docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
+`docs/feature-sync-meter-mapping-data/review/reports/03-persistence.md`.

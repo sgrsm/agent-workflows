@@ -18,9 +18,9 @@ Before work, read `<resolve_pack_base_path>/workflow.md`; read stage policy/prom
 when reaching that stage.
 
 Use `workflow.md` as canonical for identity, aliases, run/branch/artifact/final-report paths,
-commit templates/severity rules, stage I/O, outcome taxonomy, and the service-scoped source-doc
+commit templates/severity rules, stage I/O, outcome taxonomy, and the current source-doc
 schema dependency on
-`storage-engine-facade/service/docs/agent-templates/review/templates/final-evaluation.md`.
+`review/templates/final-evaluation.md`.
 
 ## Runtime Read Set
 

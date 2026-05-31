@@ -4,10 +4,10 @@ Governs resolver seeding/updating of:
 
 `<source_doc_path>`
 
-This policy supports only source documents already seeded from the current service-scoped review
+This policy supports only source documents already seeded from the current review
 final-evaluation schema at:
 
-`storage-engine-facade/service/docs/agent-templates/review/templates/final-evaluation.md`
+`review/templates/final-evaluation.md`
 
 Companion files: main orchestrator `<resolve_pack_base_path>/orchestrator.md`, source-document
 updater prompt `<resolve_pack_base_path>/prompts/source-document-updater.md`.

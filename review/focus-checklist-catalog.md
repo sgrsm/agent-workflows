@@ -1,7 +1,7 @@
 # Focus Checklist Category Catalog
 
 Template-only helper for instantiating non-test reviewer prompts in
-`storage-engine-facade/service/docs/agent-templates/review/`.
+`review/`.
 
 Use it to suggest reusable focus-checklist categories, including area-specific reviewer concerns and
 cross-cutting clean-code / clean-architecture overlays, not to force one fixed checklist into every

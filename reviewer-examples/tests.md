@@ -1,22 +1,22 @@
 # Reviewer Prompt — Test Coverage / Proof Strength / Test Design
 
 Direct/manual runs: apply reviewer task assembly from
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/workflow.md`, including
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
+`docs/feature-sync-meter-mapping-data/review/workflow.md`, including
+`docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
 
 ## Mandatory output file
 
 Write full markdown report to:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/reports/05-tests.md`
+`docs/feature-sync-meter-mapping-data/review/reports/05-tests.md`
 
 ## Additional required context
 
 For retry-container proof, read:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/adr/0002-retry-container-contract-test-strategy.md`
+`docs/feature-sync-meter-mapping-data/adr/0002-retry-container-contract-test-strategy.md`
 
 ## Area contract
 
-- Repository area: `storage-engine-facade/service`
+- Repository area: `.`
 - Review area: test coverage, proof strength, test design, and test-related dependency/build hygiene
 - Report title: `# Test Review Report`
 - Scope summary: `Test coverage, suite design, and test code quality for the meter-mapping sync feature`
@@ -26,14 +26,14 @@ For retry-container proof, read:
 
 ## Relevant spec sections
 
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
+- `docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
   - `14.1 Connector Test Boundary`
   - `14.2 New Business-Flow Integration Test`
   - `14.3 Repository Write Tests`
   - `14.4 Downstream Handoff Coverage`
   - `14.5 Failure Coverage`
   - `17. Acceptance Criteria`
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
+- `docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
   - `4.4 Operation Handling`
   - `5. Event Field Validation`
   - `6.3 CAF Response Handling And Resilience Classification`
@@ -44,10 +44,10 @@ For retry-container proof, read:
   - `8.4 Terminal States That Acknowledge`
   - `8.5 Failure States That Do Not Acknowledge`
   - `8.6 Persistence Failure Classification`
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/02-logging-and-operational-behavior.md`
+- `docs/feature-sync-meter-mapping-data/specification/02-logging-and-operational-behavior.md`
   - `9.1 Repair-Grade Logging`
   - `9.3 Startup Validation`
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
+- `docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
   - `10.1 Master-Data Properties`
   - `10.2 New CAF Properties`
   - `10.4 Resilience Configuration`
@@ -58,25 +58,25 @@ For retry-container proof, read:
 
 ## Primary files
 
-Inspect all changed test files under `storage-engine-facade/service/src/test/java/**`, especially:
+Inspect all changed test files under `src/test/java/**`, especially:
 
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/MasterDataMeterMappingConsumerTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/MasterDataChangesConsumerRecordTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/MeterMappingRepositoryMySqlTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/config/MasterDataChangesConsumerConfigUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/config/MasterDataChangesStartupValidationUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/config/ResilienceConfigUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/controller/MasterDataChangesConsumerUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/service/CafClientTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/service/CafClientUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/service/CafLookupServiceUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventHandlerUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventJSONSerdeUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeLogFormatterUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeRowExtractorUnitTest.java`
-- `storage-engine-facade/service/src/test/java/com/arvato/smartenergy/storageengine/service/MeterMappingRepositoryUnitTest.java`
-- `storage-engine-facade/service/src/test/resources/log4j2.xml`
-- `storage-engine-facade/service/pom.xml`
+- `src/test/java/com/arvato/smartenergy/storageengine/MasterDataMeterMappingConsumerTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/MasterDataChangesConsumerRecordTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/MeterMappingRepositoryMySqlTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/config/MasterDataChangesConsumerConfigUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/config/MasterDataChangesStartupValidationUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/config/ResilienceConfigUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/controller/MasterDataChangesConsumerUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/service/CafClientTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/service/CafClientUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/service/CafLookupServiceUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventHandlerUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventJSONSerdeUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeLogFormatterUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeRowExtractorUnitTest.java`
+- `src/test/java/com/arvato/smartenergy/storageengine/service/MeterMappingRepositoryUnitTest.java`
+- `src/test/resources/log4j2.xml`
+- `pom.xml`
 
 ## Focus checklist
 
@@ -108,8 +108,8 @@ Do not raise low-ROI exhaustive proof gaps such as exact timing proof, all SQL/t
 
 ## Report specialization
 
-Use `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/reports/05-tests.md`.
+Use `docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
+`docs/feature-sync-meter-mapping-data/review/reports/05-tests.md`.
 
 Start the report with this area-specific section before `## Findings`:
 

@@ -8,7 +8,7 @@ Runnable once final per-finding outcome ledger is prepared.
 You are the documentation updater for the completed resolver run.
 
 This task assumes `SOURCE_DOC` already follows the current seeded final-evaluation schema from
-`storage-engine-facade/service/docs/agent-templates/review/templates/final-evaluation.md`.
+`review/templates/final-evaluation.md`.
 
 Aliases from `workflow.md`:
 - `SOURCE_DOC` = `<source_doc_path>`

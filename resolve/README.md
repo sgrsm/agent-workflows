@@ -6,7 +6,7 @@ execution map.
 ## Summary
 
 This directory is a copy-and-adapt template pack for building a feature-specific resolver pack for
-`<feature_name>` inside `storage-engine-facade/service`.
+`<feature_name>` within your target repo/module scope.
 
 Recommended order:
 
@@ -16,7 +16,7 @@ Recommended order:
 3. fill `workflow.md` first
 4. resolve the remaining instantiation placeholders in the policy and prompt files
 5. confirm `<source_doc_path>` already follows the seeded resolver shape from
-   `storage-engine-facade/service/docs/agent-templates/review/templates/final-evaluation.md`
+   `review/templates/final-evaluation.md`
 6. choose an execution mode:
    - automated: run from `<resolve_pack_base_path>/orchestrator.md`
    - human-driven/manual: use `manual.md`, `workflow.md`, and the stage prompts under
@@ -27,23 +27,23 @@ should write run artifacts under `<run_docs_base_path>/<RUN_ID>/`.
 
 ## Scope And Schema Boundary
 
-- This pack is service-scoped and intended for reuse across feature folders under
-  `storage-engine-facade/service/docs/`.
+- This pack is intended for reuse across feature folders under your repo's chosen docs/module
+  area.
 - It is not a monorepo-generic resolver framework.
 - It supports only the current seeded final-evaluation/source-document shape defined by
-  `storage-engine-facade/service/docs/agent-templates/review/templates/final-evaluation.md`.
+  `review/templates/final-evaluation.md`.
 - The copied pack may be reused in another module only if that module adopts the same review output
   schema, seeded resolver fields, and report conventions.
 
 ## Entry Points
 
-- `storage-engine-facade/service/docs/agent-templates/resolve/instantiate.md` — template-only
+- `resolve/instantiate.md` — template-only
   interactive prompt for creating a feature-specific resolver pack; not a resolver runtime stage
 - `<resolve_pack_base_path>/orchestrator.md` — automation-oriented full resolver workflow
 - `<resolve_pack_base_path>/workflow.md` — canonical path, naming, artifact, stage-I/O, and
   issue-packet map
 - `<resolve_pack_base_path>/manual.md` — human-operated full-run and single-stage runbook
-- `storage-engine-facade/service/docs/agent-templates/resolve/naming-and-placeholders.md` —
+- `resolve/naming-and-placeholders.md` —
   template-only instantiation/runtime placeholder guide; optional to copy for local operator use
 - `<resolve_pack_base_path>/policies/*.md` — supporting resolver policies, including shared common
   stage rules, scout delegation, continuation, false-positive handling, and source-document
@@ -53,14 +53,14 @@ should write run artifacts under `<run_docs_base_path>/<RUN_ID>/`.
 
 ## Instantiation Checklist
 
-Preferred: run `storage-engine-facade/service/docs/agent-templates/resolve/instantiate.md` from the
+Preferred: run `resolve/instantiate.md` from the
 repository root and provide the requested feature/path values.
 
 Minimal prompt:
 
 ```text
 Create/update a feature-specific resolver pack using:
-storage-engine-facade/service/docs/agent-templates/resolve/instantiate.md
+resolve/instantiate.md
 
 Run from repository root. Follow the prompt exactly: collect any missing feature/path values, copy
 only the requested resolver-pack files, replace instantiation placeholders, audit the result, and

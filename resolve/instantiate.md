@@ -98,7 +98,8 @@ Checks:
 - policy/prompt refs point to `targetResolvePackPath`, not source template pack
 - no stale feature names, slugs, branch examples, paths, or source-doc refs remain in active files;
   if `staleFeatureTermsToCheck` exists, search each term
-- copied files still describe a service-scoped resolver pack and do not broaden source-doc schema
+- copied files still describe the intended resolver-pack scope and do not broaden
+  source-doc schema
 
 If a check fails, fix safely or report blocker. Do not guess values.
 

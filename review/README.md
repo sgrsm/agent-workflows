@@ -10,7 +10,7 @@ This directory is a copy-and-adapt template pack for building a feature-specific
 
 Recommended order:
 
-1. preferred: run `storage-engine-facade/service/docs/agent-templates/review/instantiate.md` from
+1. preferred: run `review/instantiate.md` from
    the repository root and let the agent collect core pack values, inspect the feature spec or
    branch diff, suggest reviewer areas and focus-checklist categories, accept your
    edits/additions, create concrete reviewer prompts, replace placeholders, and audit the result
@@ -39,7 +39,7 @@ write its outputs under `<reports_base_path>`.
   an explicit row-specific payload mechanism to the workflow task assembly.
 
 The interactive source-template prompt
-`storage-engine-facade/service/docs/agent-templates/review/instantiate.md` can inspect the
+`review/instantiate.md` can inspect the
 feature spec when available, or fall back to the branch diff when it is not, then propose a
 reviewer plan plus focus-checklist category suggestions for you to accept/edit/remove/extend before
 it creates the concrete reviewer prompts.
@@ -57,7 +57,7 @@ Typical area-reviewer copies or row specializations include:
 
 ## Instantiation checklist
 
-Preferred: run `storage-engine-facade/service/docs/agent-templates/review/instantiate.md` from the
+Preferred: run `review/instantiate.md` from the
 repository root and provide the requested core pack/path values. The instantiator then inspects the
 feature spec when available, or the branch diff otherwise, proposes reviewer areas, suggests
 focus-checklist categories from the template catalog, lets you accept or adjust them, and
@@ -69,20 +69,20 @@ default unless you explicitly reject it.
 Spec-backed initiation:
 
 ```text
-Run `storage-engine-facade/service/docs/agent-templates/review/instantiate.md`.
+Run `review/instantiate.md`.
 Create the review pack at:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review`
+`docs/feature-sync-meter-mapping-data/review`
 Use this spec:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/00-overview.md`
+`docs/feature-sync-meter-mapping-data/specification/00-overview.md`
 Ask me for any missing values.
 ```
 
 Diff-only initiation when no feature spec is available:
 
 ```text
-Run `storage-engine-facade/service/docs/agent-templates/review/instantiate.md`.
+Run `review/instantiate.md`.
 Create the review pack at:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review`
+`docs/feature-sync-meter-mapping-data/review`
 No authoritative spec is available.
 Ask me for any missing values.
 ```
@@ -231,11 +231,11 @@ Use `<review_pack_base_path>/prompts/verifier.md` only after the consolidated re
 `README.md` is the human-oriented usage guide. `workflow.md` remains the canonical execution map
 for agents and exact path/task-assembly maintenance.
 
-- `storage-engine-facade/service/docs/agent-templates/review/instantiate.md` — template-only
+- `review/instantiate.md` — template-only
   interactive prompt for creating a feature-specific review pack; not a review runtime stage
-- `storage-engine-facade/service/docs/agent-templates/review/naming-and-placeholders.md` —
+- `review/naming-and-placeholders.md` —
   template-only naming, placeholder, and audit guide; optional to copy for local operator use
-- `storage-engine-facade/service/docs/agent-templates/review/focus-checklist-catalog.md` —
+- `review/focus-checklist-catalog.md` —
   template-only catalog of sanitized focus-checklist categories for non-test reviewer prompts
 - `workflow.md` — canonical role, path, output, clean-output-gate, and task-assembly map
 - `orchestrator.md` — multi-agent entry point

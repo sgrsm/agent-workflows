@@ -1,8 +1,7 @@
 # Naming And Placeholders Guide
 
-Use this helper when turning the review template pack under
-`storage-engine-facade/service/docs/agent-templates/review/` into a real feature-specific review
-pack.
+Use this helper when turning the review template pack under `review/` into a real
+feature-specific review pack.
 
 ## File Naming
 
@@ -189,7 +188,7 @@ reviewer, consolidator, verifier, or orchestrator when a report or verification 
 
 Interactive instantiation prompt:
 
-`storage-engine-facade/service/docs/agent-templates/review/instantiate.md`
+`review/instantiate.md`
 
 It collects core pack values, inspects the authoritative feature spec when available or the branch
 diff when it is not, uses `focus-checklist-catalog.md` to propose non-test focus-checklist

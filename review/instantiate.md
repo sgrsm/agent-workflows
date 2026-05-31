@@ -357,8 +357,8 @@ Checks:
   catalog-only helper prose or unresolved category placeholders into active prompts
 - no stale feature names, slugs, old reviewer prompt/report paths, or source-template refs remain in
   active files; if `staleFeatureTermsToCheck` exists, search each term
-- copied files still describe a service-scoped review pack and do not broaden reviewer scope or
-  output behavior beyond the template contract
+- copied files still describe the intended review-pack scope and do not broaden reviewer
+  scope or output behavior beyond the template contract
 
 If a check fails, fix safely or report the blocker. Do not guess values.
 

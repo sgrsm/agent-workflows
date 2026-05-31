@@ -1,7 +1,6 @@
 # Naming And Placeholders Guide
 
-Source-template helper for instantiating
-`storage-engine-facade/service/docs/agent-templates/resolve/` into a feature-specific resolver
+Source-template helper for instantiating `resolve/` into a feature-specific resolver
 pack. Not required in instantiated runtime packs unless copied for operator/reference use.
 
 ## File Naming
@@ -76,7 +75,7 @@ Replace before using the copied pack:
   runtime run id.
 
 `<source_doc_path>` must point to a doc already seeded from
-`storage-engine-facade/service/docs/agent-templates/review/templates/final-evaluation.md`.
+`review/templates/final-evaluation.md`.
 
 ### Runtime Placeholders
 
@@ -136,7 +135,7 @@ instantiation placeholders; classify them by the allowlist table.
 
 Interactive instantiation prompt:
 
-`storage-engine-facade/service/docs/agent-templates/resolve/instantiate.md`
+`resolve/instantiate.md`
 
 It collects feature/path values, copies runtime files, replaces instantiation placeholders, and
 runs a normal file/search audit. It avoids embedded validation scripts and does not copy helper
@@ -164,6 +163,6 @@ Before running a manually instantiated pack, confirm:
 - Replace all instantiation placeholders in copied operator/control files.
 - Keep only explicitly allowed runtime and example/schema placeholders.
 - Remove stale source-feature names, paths, branch examples, and source-doc examples that do not belong.
-- Confirm copied files still describe a service-scoped resolver pack and do not broaden the
-  supported source-doc schema.
+- Confirm copied files still describe the intended resolver-pack scope and do not broaden
+  the supported source-doc schema.
 - Confirm no unresolved instantiation placeholders remain in active workflow files.

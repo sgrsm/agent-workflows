@@ -5,14 +5,15 @@ for the instantiated resolve prompt pack. Use repository-root-relative paths eve
 
 ## Scope And Schema Assumptions
 
-- Service-scoped reuse boundary: `storage-engine-facade/service`
+- Target-scope reuse boundary: repo-relative scope anchored by `<source_doc_path>` and
+  `<review_reports_dir>`
 - Feature name: `<feature_name>`
 - Feature slug: `<feature_slug>`
 - Resolve pack base path: `<resolve_pack_base_path>`
 - Source document path: `<source_doc_path>`
 - Review reports directory: `<review_reports_dir>`
 - Supported seeded source schema:
-  `storage-engine-facade/service/docs/agent-templates/review/templates/final-evaluation.md`
+  `review/templates/final-evaluation.md`
 - Top-level working directory: repository root
 
 ## Core Defaults And Patterns

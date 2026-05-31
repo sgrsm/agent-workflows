@@ -1,17 +1,17 @@
 # Reviewer Prompt — Business Flow / Validation / Handler Orchestration
 
 Direct/manual runs: apply reviewer task assembly from
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/workflow.md`, including
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
+`docs/feature-sync-meter-mapping-data/review/workflow.md`, including
+`docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
 
 ## Mandatory output file
 
 Write full markdown report to:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/reports/01-business-flow.md`
+`docs/feature-sync-meter-mapping-data/review/reports/01-business-flow.md`
 
 ## Area contract
 
-- Repository area: `storage-engine-facade/service`
+- Repository area: `.`
 - Review area: business-event handling, validation, operation branching, and handler orchestration
 - Report title: `# Business Flow Review Report`
 - Scope summary: `Business-event handling, validation, operation branching, and domain-flow structure.`
@@ -20,7 +20,7 @@ Write full markdown report to:
 
 ## Relevant spec sections
 
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
+- `docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
   - `1. Purpose`
   - `4.3 Debezium Value Shape`
   - `4.4 Operation Handling` — especially ignored-operation log-context rules and null-operation path
@@ -33,20 +33,20 @@ Write full markdown report to:
   - `8.3 Post-Listener Exception Handling` — only the return-vs-rethrow boundary
   - `8.4 Terminal States That Acknowledge`
   - `8.5 Failure States That Do Not Acknowledge` — only where it affects handler branching
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
+- `docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
   - `13.1 Kafka Consumer And Invalid-Value Handling Details` — only listener-shape and acknowledgment-configuration paragraphs
   - `13.4 Debezium Event And Validation Implementation Details`
-- `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
+- `docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
   - `17. Acceptance Criteria` — especially items `2` through `9`
 
 ## Primary files
 
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventHandler.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeRowExtractor.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeRow.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventJSONSerde.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/pojo/DebeziumEvent.java`
-- `storage-engine-facade/service/src/main/java/com/arvato/smartenergy/storageengine/pojo/Operation.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventHandler.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeRowExtractor.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeRow.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventJSONSerde.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/pojo/DebeziumEvent.java`
+- `src/main/java/com/arvato/smartenergy/storageengine/pojo/Operation.java`
 - nearby validation-related exception classes if needed
 
 ## Focus checklist
@@ -72,5 +72,5 @@ Write full markdown report to:
 
 ## Report specialization
 
-Use `storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
-`storage-engine-facade/service/docs/feature-sync-meter-mapping-data/review/reports/01-business-flow.md`.
+Use `docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
+`docs/feature-sync-meter-mapping-data/review/reports/01-business-flow.md`.
