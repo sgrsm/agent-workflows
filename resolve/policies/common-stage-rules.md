@@ -61,6 +61,8 @@ For stages that run verification commands or edit Java/configuration files:
   `mvn fmt:format -Dhelm.skip=true` with `-DsourceDirectory=<dir> -DskipTestSourceDirectory=true`
   and/or `-DtestSourceDirectory=<dir> -DskipSourceDirectory=true`
 - do not run the formatter for docs-only changes
+- if the change adds or modifies any Spring/ApplicationContext-loading test, verification requires
+  a full-suite pass; for isolated non-context unit tests, targeted affected unit tests suffice
 - prefer targeted verification/test commands over broad repo-wide builds unless the finding truly
   requires a wider scope
 
