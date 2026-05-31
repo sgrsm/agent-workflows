@@ -103,10 +103,11 @@ Notes:
 - `focusChecklistSelectionPreference` = optional starting preference for non-test reviewer focus
   checklists:
   - `ask` = suggest category bundles and ask the user how to resolve them
-  - `category_approval` = suggest category ids and wait for the user to accept/edit them before
-    expansion
-  - `auto_select_items` = after reviewer-area approval, choose concrete checklist items from the
-    catalog plus the spec/diff
+  - `category_approval` = first show the suggested category bundles per reviewer and let the user
+    accept/edit them; only after that approval expand those approved bundles into final checklist
+    bullets
+  - `auto_select_items` = skip category-bundle approval and directly choose the final concrete
+    checklist bullets from the catalog plus the spec/diff
   - `manual` = user provides explicit checklist text
 - `crossCuttingQualityReviewerPreference` = optional starting preference for a dedicated
   cross-cutting Java maintainability/design reviewer when meaningful non-test Java code is in
@@ -269,6 +270,20 @@ clear from `focusChecklistSelectionPreference`. At minimum, let the user:
 - accept/edit the suggested category ids per reviewer
 - tell the instantiator to auto-select concrete checklist items from the spec/diff
 - provide manual checklist text for one or more reviewers
+
+When presenting that checklist-resolution decision in a short named-option choice block, make the
+first two options clearly non-equivalent. Use labels/descriptions equivalent to:
+
+- Review and approve suggested category bundles first — the user confirms or edits the suggested
+  `BF-*` / `IR-*` / `PD-*` / `RT-*` / `CC-*` / `CA-*` sets first, then the instantiator expands
+  only those approved bundles into final checklist bullets
+- Let the instantiator pick final checklist bullets directly — skip category-bundle approval and
+  derive the final checklist bullets straight from the spec, diff, and catalog
+- Edit suggested category bundles first — the user wants to change the suggested bundles before
+  approving them
+- Provide manual checklist text — the user will supply checklist wording directly
+
+Do not label the first two options in a way that makes them sound like the same behavior.
 
 Use at least three separate short named-option choice blocks in this minimum order, though
 additional clarifications are allowed whenever needed:

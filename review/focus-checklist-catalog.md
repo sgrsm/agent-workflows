@@ -13,9 +13,10 @@ review pack.
 - First choose the reviewer areas.
 - Then, for each non-test reviewer area, suggest a small set of relevant category ids from this
   catalog.
-- If the user wants category-based control, let them accept/edit/remove category ids per reviewer.
-- If the user wants auto-selection, use the chosen categories plus the concrete spec and/or diff to
-  generate a concise feature-specific `focusChecklistBlock`.
+- If the user wants category-based control, let them accept/edit/remove category ids per reviewer,
+  then expand only those approved category bundles into the final checklist bullets.
+- If the user wants auto-selection, skip the category-bundle approval step and derive the final
+  checklist bullets directly from the concrete spec and/or diff plus this catalog.
 - A dedicated documentation reviewer is optional and default-off; create it only if the user
   explicitly chooses it.
 - For Java-heavy non-test reviewers, combine area-specific categories with cross-cutting `CC-*`
