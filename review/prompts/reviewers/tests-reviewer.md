@@ -1,13 +1,13 @@
 # Reviewer Prompt — Tests Review
 
-After copying/renaming this template and resolving its per-area placeholders, direct/manual runs
-must apply reviewer task assembly from `<review_pack_base_path>/workflow.md`, including
-`<review_pack_base_path>/policies/scout-delegation.md`.
+After copying this template into the target pack and resolving its per-area placeholders,
+direct/manual runs must apply reviewer task assembly from `<review_pack_base_path>/workflow.md`,
+including `<review_pack_base_path>/policies/scout-delegation.md`.
 
-Use this as a source template only for one test-review row. Copy and rename this file for the
-concrete feature-specific test/proof-strength review area before use, then replace every per-area
-placeholder in the copy. It stays separate because test review needs the ROI/practicality gate and
-optional pre-findings report sections that are not shared by the generic area-reviewer template.
+Use this as a source template for one test-review row. The default target keeps
+`prompts/reviewers/tests-reviewer.md`; rename only for multiple tests reviewers or an explicit
+filename override. It stays separate because test review needs the ROI/practicality gate and
+optional pre-findings sections not shared by the generic area-reviewer template.
 
 ## Mandatory output file
 

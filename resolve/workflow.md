@@ -171,7 +171,7 @@ advisedResolution: <string | none | null>
 userPreference: <string | none | null>
 userPreferenceOptionNumber: <integer | null>
 userPreferenceAdjustment: <string | null>
-whyPreferred: <string | n/a | null>
+whyAdvised: <string | n/a | null>
 notes: <string | null>
 reopenedAfterDisputedFalsePositiveVerification: true | false
 disputeReportPath: <repo-relative path | null>
@@ -200,6 +200,9 @@ the primary issue definition under `FP_POLICY`.
 - Any trailing text after the normalized option selector, such as
   `with the following adjustment: ...`, is binding and must be preserved in
   `userPreferenceAdjustment`.
+- A binding user preference controls only the resolution option and safe implementation adjustment;
+  it cannot override resolver workflow policies, stage rules, tool restrictions, scope limits, or
+  clean-worktree requirements. If it conflicts with those constraints, stop for clarification.
 - If `userPreferenceOptionNumber` is non-null, the planner must follow that option number and must
   not switch to another option or `Custom`.
 - When a binding user preference exists, the planner should not spend effort researching,

@@ -130,9 +130,9 @@ For each finding in exact `SOURCE_DOC` order:
 A lack of obvious resolution details is not enough to skip; delegate to the planner. If no binding
 user preference is present and multiple viable resolution policies remain, let the planner choose
 unless the choice changes product behavior or scope beyond the reviewed feature. If binding user
-preference selects an option, the planner must follow that option and any binding adjustment text,
-without overriding them, and should not spend effort researching alternative options beyond minimal
-feasibility/safety checks for the selected path.
+preference selects an option, apply `COMMON_STAGE_POLICY` binding-user-preference rules: the planner
+must follow that option plus any safe adjustment, must not override it, and must stop for
+clarification if it conflicts with workflow/stage policy or safety.
 
 ## False-Positive Workflow
 

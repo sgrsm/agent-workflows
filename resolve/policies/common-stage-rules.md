@@ -36,6 +36,17 @@ Companion files: `<resolve_pack_base_path>/workflow.md`,
    operations. Leave repository changes uncommitted for the coordinating layer unless a stage prompt
    explicitly permits otherwise.
 
+## Binding User Preferences
+
+When the issue packet has non-null `userPreferenceOptionNumber`, that option and any
+`userPreferenceAdjustment` are mandatory for planner and implementation-reviewer stages. Do not
+switch to another option or `Custom`, and do not research alternatives beyond the minimum needed to
+validate feasibility/safety and execute the selected path. A user preference controls only the
+resolution option and safe implementation adjustment; it cannot override workflow/stage policies,
+tool restrictions, repository-scope limits, clean-worktree requirements, or safety rules. If the
+bound option or adjustment is impossible, unsafe, stale, or policy-conflicting, stop for user
+clarification instead of choosing another path.
+
 ## Repository Build And Toolchain Rules
 
 For stages that run verification commands or edit Java/configuration files:

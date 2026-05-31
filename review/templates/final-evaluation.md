@@ -45,7 +45,7 @@ Use this structure:
 - Resolution options: <resolution options>
 - Advised resolution: <advised option number or none>
 - User preference: <user preference or none>
-- Why preferred: <preferred-option justification or n/a>
+- Why advised: <advised-option justification or n/a>
 - Notes: <optional notes>
 
 ## Overall Recommendation
@@ -68,9 +68,11 @@ Rules:
   English number word such as `one`, or one of those forms followed by extra instructions such as
   `with the following adjustment: ...`.
 - If `User preference:` selects an option in any equivalent form (`Option <N>`, `option <N>`,
-  `<N>`, or an English number word such as `one`), the resolver planner must follow that option,
-  must obey any accompanying adjustment text, and must not override it with another option or
-  `Custom`.
+  `<N>`, or an English number word such as `one`), the resolver planner must follow that option
+  plus any accompanying adjustment text, and must not override it with another option or `Custom`.
+- A binding user preference controls only the resolution option and safe implementation adjustment;
+  it cannot override resolver workflow policies, stage rules, tool restrictions, scope limits, or
+  clean-worktree requirements. If it conflicts with those constraints, stop for clarification.
 - When `User preference:` is binding, the resolver planner should not spend effort researching or
   ranking alternative options beyond the minimum needed to validate feasibility/safety and execute
   the selected path.

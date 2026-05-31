@@ -49,17 +49,14 @@ Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
 - If a handoff path is provided, read it first.
 - Run targeted verification independently when practical, following `COMMON_STAGE_POLICY` repository build/toolchain rules.
-- If `userPreferenceOptionNumber` in the issue packet is non-null, treat that option number as
-  mandatory. Do not accept implementation that materially follows a different option or `Custom`;
-  `Option <N>`, `Option <N> (recommended)`, and `Option <N> with slight refinement` are allowed
-  only when they still implement the same option number and intent.
-- If `userPreferenceAdjustment` is present, treat it as binding too; do not pass an implementation
-  that ignores or contradicts that adjustment.
+- If `userPreferenceOptionNumber` in the issue packet is non-null, follow `COMMON_STAGE_POLICY`
+  binding-user-preference rules: pass only an implementation that materially follows that option
+  and any safe `userPreferenceAdjustment`.
 
 Task:
 1. Verify whether the current code resolves the finding and is minimal, maintainable, robust, expressive, and testable.
 2. Record only reviewer-run commands, or commands not run and why.
-3. Classify implemented approach as `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`, or `Custom`, while enforcing any binding user preference and user-preference adjustment from the issue packet.
+3. Classify implemented approach as `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`, or `Custom`, while enforcing any binding user preference from the issue packet.
 4. If reopened after disputed false-positive verification, set `Effective follow-up severity for commit labeling:` from the dispute report's independently re-evaluated severity when available: `blocker`, `major`, `minor`, or `severity-unknown`; do not copy source-document severity.
 5. If a verdict is possible without user clarification, create a Markdown review document under `REVIEWS_DIR`, named like `finding-<NN>-<short-slug>-review.md`.
 

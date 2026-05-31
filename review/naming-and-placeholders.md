@@ -25,18 +25,22 @@ feature-specific review pack.
   chooses a dedicated documentation reviewer; otherwise omit it and resolve
   `<documentation_reviewer_report_filename>` to `none`.
 - For dedicated cross-cutting Java maintainability/design review, prefer one combined reviewer for
-  most feature reviews using `prompts/reviewers/clean-code-solid-reviewer.md`. If the user wants a
+  Java-heavy non-test scope and `none` for little/no changed non-test Java. If the user wants a
   different shape, `prompts/reviewers/clean-code-reviewer.md` and/or
   `prompts/reviewers/solid-reviewer.md` are acceptable for split, Clean Code only, or SOLID only
   variants.
-- Treat `prompts/reviewers/tests-reviewer.md` the same way for rows that need the extra test-gap
-  ROI/practicality gate and optional pre-findings sections.
-- For the default auto-generated tests/proof-strength reviewer created by the instantiator, use
-  concrete filename `prompts/reviewers/tests-reviewer.md` unless the user explicitly overrides the
-  filename or rejects the reviewer. If helper reviewer templates are also retained, do not keep a
-  second source-template copy at that same path unless you intentionally rename it.
+- `prompts/reviewers/tests-reviewer.md` is also a source template, but the default instantiated
+  tests/proof-strength prompt deliberately keeps that same relative filename. The instantiator must
+  copy the source file to the target pack, enrich/expand all tests-reviewer placeholders and
+  template-only wording there, and then treat the target file as a concrete runtime prompt.
+- Rename the concrete tests prompt only when the user explicitly overrides the filename or when
+  multiple tests/proof-strength reviewers require distinct files. If helper reviewer templates are
+  retained, do not keep a second source-template copy at `prompts/reviewers/tests-reviewer.md`;
+  rename the helper or skip it.
 - Do not point multiple workflow rows at the same unresolved reviewer source template unless you
-  also add explicit row-specific payload assembly to `workflow.md`.
+  also add explicit row-specific payload assembly to `workflow.md`. A workflow row may point at
+  `prompts/reviewers/tests-reviewer.md` only after that file is resolved for exactly one tests
+  reviewer.
 - When instantiating reviewer report filenames in `workflow.md`, use consecutive zero-padded
   two-digit prefixes in workflow order: `01-...`, `02-...`, `03-...`, and so on.
 - Keep each reviewer row `ID` synchronized with its report filename prefix; for example, reviewer
@@ -154,7 +158,7 @@ reviewer, consolidator, verifier, or orchestrator when a report or verification 
 - `<pending false-positive confirmation count>`: runtime count of findings whose current pending state is false-positive confirmation handling.
 - `<pending finding count>`: runtime count of findings still pending resolver handling.
 - `<advised option number or none>`: runtime advised remediation choice from the listed options, or `none`.
-- `<preferred-option justification or n/a>`: runtime explanation for the preferred option, or `n/a` when no preference applies.
+- `<advised-option justification or n/a>`: runtime explanation for the advised option, or `n/a` when no advice applies.
 - `<user preference or none>`: runtime user-selected resolution directive for resolver planning, such as `Option <N>`, `option <N>`, `<N>`, `one`, or one of those forms followed by extra instructions; use `none` when there is no binding override, and omit the line entirely in final-evaluation false-positive findings.
 - `<problem statement>`: runtime explanation of why the finding matters.
 - `<re-evaluated severity>`: runtime severity after verification.
@@ -209,12 +213,11 @@ Interactive instantiation prompt:
 It collects core pack values, inspects the authoritative feature spec when available or the branch
 diff when it is not, uses `focus-checklist-catalog.md` to propose non-test focus-checklist
 categories, gets reviewer-area approval together with review-theme approval in that same first
-choice block, then asks separate Clean Code / SOLID and documentation-reviewer choices. So the
-minimum flow is three separate choice blocks: reviewer areas + themes, Clean Code / SOLID, and
-documentation reviewer. It should not collapse the later two into the first block. It creates
-concrete reviewer prompts, keeps a tests/proof-strength reviewer by default unless the user
-explicitly rejects it, replaces instantiation placeholders, and runs a normal file/search audit. It
-does not run the review workflow.
+choice block, then resolves any unanswered Clean Code / SOLID and documentation-reviewer decisions
+separately. Recognized final preferences count as resolved. It creates concrete reviewer prompts,
+keeps a tests/proof-strength reviewer by default unless the user explicitly rejects it, replaces
+instantiation placeholders, and runs a normal file/search audit. It does not run the review
+workflow.
 
 ## Manual Post-Instantiation Audit
 

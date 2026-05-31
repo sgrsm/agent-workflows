@@ -40,10 +40,12 @@ instantiated review prompt pack. Use repository-root-relative paths everywhere.
 
 Each `Prompt file` should point to a concrete copied reviewer prompt whose per-area placeholders are
 resolved for that row. The source files `prompts/reviewers/area-reviewer.md` and
-`prompts/reviewers/tests-reviewer.md` are templates to copy/rename, not shared unresolved runtime
-prompts. Use consecutive zero-padded two-digit reviewer IDs and matching report filename prefixes
-in table order: `01` with `01-...`, `02` with `02-...`, and so on. Do not number area reports as
-`10-`, `20-`, etc. unless the user explicitly asks for that scheme.
+`prompts/reviewers/tests-reviewer.md` must not be shared as unresolved runtime prompts. In an
+instantiated pack, the default tests row may point at `prompts/reviewers/tests-reviewer.md` only
+after that target file has been copied/enriched and resolved for that one tests reviewer. Use
+consecutive zero-padded two-digit reviewer IDs and matching report filename prefixes in table order:
+`01` with `01-...`, `02` with `02-...`, and so on. Do not number area reports as `10-`, `20-`,
+etc. unless the user explicitly asks for that scheme.
 
 | ID | Reviewer | Role/profile | Prompt file | Report template | Expected report |
 |---|---|---|---|---|---|

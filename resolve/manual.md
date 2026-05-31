@@ -28,10 +28,9 @@ runbook.
    normalized `userPreferenceOptionNumber` and any `userPreferenceAdjustment`. If the line is
    omitted, treat it as no user override.
 6. If user preference binds an option in any equivalent form (`Option <N>`, `option <N>`, `<N>`,
-   or an English number word such as `one`), treat that choice as mandatory during planning and
-   review; do not override it with another option or `Custom`, do not ignore any binding trailing
-   adjustment text, and do not spend effort researching alternative options beyond minimal
-   feasibility/safety checks for the chosen path.
+   or an English number word such as `one`), apply `COMMON_STAGE_POLICY` binding-user-preference
+   rules: follow that option plus any safe adjustment, do not override it with another option or
+   `Custom`, and stop for clarification if it conflicts with workflow/stage policy or safety.
 7. For a false-positive candidate matching `FP_POLICY`, run the false-positive reviewer prompt.
    Otherwise run planner -> implementer -> independent implementation reviewer.
 8. If any stage returns a user-clarification blocker, follow `CONTINUATION_POLICY`: ask the user,

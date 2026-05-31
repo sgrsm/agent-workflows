@@ -36,16 +36,9 @@ Rules:
 Task:
 1. Inspect needed local code/tests/supporting material.
 2. Evaluate suggested options, including the issue packet's `advisedResolution` when present.
-   Treat binding user preference as active when `userPreferenceOptionNumber` is non-null.
-3. If `userPreferenceOptionNumber` is non-null, plan that option and do not override it with a
-   different option or `Custom`. `Option <N>`, `Option <N> (recommended)`, or
-   `Option <N> with slight refinement` are allowed only when they still materially implement the
-   same option number and intent. Any `userPreferenceAdjustment` is also binding and must be
-   incorporated verbatim into the plan. Do not spend effort researching or ranking alternative
-   options in this case; inspect only what is needed to implement the chosen option safely and to
-   confirm whether the bound option or adjustment is feasible. If the bound option or adjustment is
-   impossible, unsafe, stale, or inconsistent with the listed options, stop for user clarification
-   instead of choosing something else.
+3. If `userPreferenceOptionNumber` is non-null, follow `COMMON_STAGE_POLICY` binding-user-preference
+   rules: plan that option plus any safe `userPreferenceAdjustment`, and do not switch to another
+   option or `Custom`.
 4. If there is no binding user preference, choose the best-balanced solution across minimal change
    surface, reviewability, maintainability, robustness, expressiveness, testability, and business
    impact; for proof gaps prefer focused tests over broad rewrites, and for partially confirmed

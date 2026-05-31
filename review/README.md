@@ -33,13 +33,14 @@ write its outputs under `<reports_base_path>`.
   Copy and rename it into one feature-specific reviewer prompt per review area, then replace that
   copy's area contract, spec sections, primary files, focus checklist, out-of-scope block, and
   output path.
-- `prompts/reviewers/tests-reviewer.md` is the source template for test-review rows. Copy and
-  rename it for each test/proof-strength reviewer row because test review needs the extra
-  ROI/practicality gate and optional pre-findings sections. In the interactive instantiation flow,
-  a concrete tests review prompt should be created by default as
-  `prompts/reviewers/tests-reviewer.md` and removed only if the user explicitly rejects it.
-- Do not point multiple reviewer rows at the unresolved source template files unless you first add
-  an explicit row-specific payload mechanism to the workflow task assembly.
+- `prompts/reviewers/tests-reviewer.md` is the source template for test-review rows. In the
+  interactive instantiation flow, copy it into the target pack at the same relative path,
+  enrich/expand it with the approved tests reviewer values, and treat the target file as the
+  concrete tests prompt. Rename only when the user requests another filename or when multiple
+  test/proof-strength reviewers are created.
+- Do not point workflow rows at unresolved source template files. A row may point at
+  `prompts/reviewers/tests-reviewer.md` only after that target file has been resolved for exactly
+  one concrete tests reviewer.
 
 The template-only instantiation prompt `review/instantiate.md` can inspect the feature spec when
 available, or fall back to the branch diff when it is not, then propose a reviewer plan plus
@@ -63,14 +64,12 @@ Typical area-reviewer copies or row specializations include:
 Preferred: from the repository root, run `review/instantiate.md` and provide the requested core
 pack/path values. The instantiator inspects the feature spec when available, or the branch diff
 otherwise, proposes reviewer areas, suggests focus-checklist categories from the template catalog,
-and keeps review themes inside that first reviewer-area approval step. Then it asks two more
-separate short follow-up choices: Clean Code / SOLID handling, and whether to create a dedicated
-documentation reviewer (default: no). So the minimum decision flow is three separate choice blocks:
-1) reviewer areas + themes, 2) Clean Code / SOLID, 3) documentation reviewer. It should not
-collapse the last two into the first block. The tests/proof-strength reviewer is included by
-default unless you explicitly reject it. For Clean Code / SOLID, the default proposed option is one
-combined reviewer; the other choices are split Clean Code + SOLID reviewers, Clean Code only,
-SOLID only, or none.
+and keeps review themes inside that first reviewer-area approval step. It then resolves any
+unanswered Clean Code / SOLID and documentation-reviewer decisions separately; recognized final
+preferences count as resolved. The tests/proof-strength reviewer is included by default unless you
+explicitly reject it. For Clean Code / SOLID, propose one combined reviewer for Java-heavy non-test
+scope and `none` for little/no changed non-test Java; other choices are split Clean Code + SOLID
+reviewers, Clean Code only, SOLID only, or none.
 
 ### Minimal prompt examples
 
@@ -101,21 +100,21 @@ Manual alternative:
 2. Fill `workflow.md` before editing other files; it is the canonical source for scope, paths,
    accepted context docs, reviewer rows, outputs, clean-output gates, and task assembly.
 3. Copy and rename `prompts/reviewers/area-reviewer.md` into one concrete prompt file per
-   non-test reviewer row. Copy and rename `prompts/reviewers/tests-reviewer.md` for each test
-   coverage/proof-strength row.
+   non-test reviewer row. For the default tests reviewer, keep
+   `prompts/reviewers/tests-reviewer.md` as the concrete prompt path and enrich/expand it in place;
+   rename only for multiple test reviewers or an explicit filename override.
 4. Use `focus-checklist-catalog.md` to seed non-test reviewer focus-checklist categories or
    concrete checklist bullets. Create a dedicated documentation reviewer only if you explicitly want
-   one; the default is to skip it. For dedicated Java maintainability/design review, the default is
-   one combined reviewer using `CC-*` and `CA-*` categories. Other valid choices are split Clean
-   Code + SOLID reviewers, Clean Code only, SOLID only, or no dedicated Clean Code / SOLID
-   reviewer.
+   one; the default is to skip it. For dedicated Java maintainability/design review, propose one
+   combined reviewer for Java-heavy non-test scope and `none` for little/no changed non-test Java.
+   Other valid choices are split Clean Code + SOLID reviewers, Clean Code only, SOLID only, or no
+   dedicated Clean Code / SOLID reviewer.
 5. Replace each copied reviewer prompt's per-area placeholders and point the corresponding
    `workflow.md` row at that concrete prompt file.
 6. Set `<authoritative_spec_entry_point>` / `<specification_base_path>` when a feature spec exists,
    or use literal `none` for both in a diff-only review pack.
-7. Set the real report/output paths used by the instantiated pack. Area-specific reviewer reports
-   should normally use consecutive zero-padded two-digit prefixes that match the workflow row IDs,
-   such as `01-...`, `02-...`, and `03-...`. Recommended default synthesized artifact names remain
+7. Set report/output paths using `naming-and-placeholders.md`: consecutive two-digit reviewer
+   prefixes matching workflow row IDs, plus default synthesized artifacts
    `99-consolidated-report.md` and `100-final-evaluation.md` under `<reports_base_path>` unless you
    intentionally want different names.
 8. Confirm the orchestrator, consolidator, verifier, and all copied reviewer prompts still read
@@ -131,9 +130,8 @@ Before running the copied pack, verify:
 - a tests/proof-strength reviewer prompt exists unless it was explicitly rejected during
   instantiation; if it was auto-generated without an explicit filename override, it should be
   `prompts/reviewers/tests-reviewer.md`
-- reviewer IDs are consecutive zero-padded two-digit values, reviewer expected report paths are
-  unique, and each reviewer expected report starts with the matching prefix (`01-...`, `02-...`,
-  not `10-...`, `20-...`) unless you intentionally chose a different scheme
+- reviewer IDs/report prefixes follow `naming-and-placeholders.md`, and reviewer expected report
+  paths are unique
 - if there is no dedicated documentation reviewer, `<documentation_reviewer_report_filename>` is
   `none`; otherwise it matches that reviewer's report filename
 - feature-spec fields are either valid repo-root-relative paths or both literal `none` for a
@@ -222,9 +220,11 @@ manually with a repo-aware agent.
 
 ### Standalone area review
 
-Run the concrete copied reviewer prompt for the area you want to review. The source templates
-`area-reviewer.md` and `tests-reviewer.md` are not intended to be run directly after copying unless
-all per-area placeholders in that file have been resolved for exactly one reviewer row.
+Run the concrete reviewer prompt for the area you want to review. The source `area-reviewer.md`
+template is not intended to be run directly after copying unless all per-area placeholders in that
+file have been resolved for exactly one reviewer row. In default instantiated packs,
+`tests-reviewer.md` is runnable only after it has been enriched/expanded into the concrete tests
+reviewer prompt.
 
 Typical area names include business flow, persistence, integration/resilience, runtime/
 operability, documentation follow-up, rollout safety, or configuration/deployment review. The
@@ -264,7 +264,8 @@ for agents and exact path/task-assembly maintenance.
 - `orchestrator.md` — multi-agent entry point
 - `prompts/reviewers/area-reviewer.md` — source template to copy into concrete non-test reviewer
   prompts
-- `prompts/reviewers/tests-reviewer.md` — source template to copy into concrete test-review prompts
+- `prompts/reviewers/tests-reviewer.md` — source template in this pack; default concrete
+  test-review prompt in instantiated packs after enrichment
 - `prompts/consolidator.md` — direct consolidation entry point after reviewer reports exist
 - `prompts/verifier.md` — direct per-finding verification entry point after a consolidated finding
   exists

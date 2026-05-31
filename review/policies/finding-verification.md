@@ -59,5 +59,5 @@ Each task must include:
 - Resolution options: <resolution options>
 - Advised resolution: <advised option number or none>
 - User preference: none
-- Why preferred: <preferred-option justification or n/a>
+- Why advised: <advised-option justification or n/a>
 ```

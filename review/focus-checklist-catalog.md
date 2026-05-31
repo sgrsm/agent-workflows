@@ -22,8 +22,9 @@ review pack.
 - For Java-heavy non-test reviewers, combine area-specific categories with cross-cutting `CC-*`
   and `CA-*` categories only when they materially fit the area.
 - If the user asks how to handle a dedicated cross-cutting Java maintainability/design reviewer,
-  the valid choices are: one combined Clean Code + SOLID reviewer (default), two separate Clean
-  Code and SOLID reviewers, Clean Code only, SOLID only, or none.
+  the valid choices are: one combined Clean Code + SOLID reviewer (default for Java-heavy non-test
+  scope), two separate Clean Code and SOLID reviewers, Clean Code only, SOLID only, or none
+  (default for little/no changed non-test Java).
 - A dedicated cross-cutting reviewer is additive. Keep it scoped to changed non-test Java code and
   maintainability/design quality; do not let it replace area-specific correctness review.
 - Do not dump every checklist starter into one prompt. Keep only the items that materially fit the
