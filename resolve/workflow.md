@@ -168,6 +168,7 @@ confirmedAspects: <string | null>
 notConfirmedAspects: <string | null>
 resolutionOptions: <string | list | none>
 preferredResolution: <string | none | null>
+userPreference: Option <N> | option <N> | none | null
 whyPreferred: <string | n/a | null>
 notes: <string | null>
 reopenedAfterDisputedFalsePositiveVerification: true | false
@@ -181,6 +182,18 @@ For normal primary-pass findings, reopened/dispute fields are `false` or `null`.
 disputed false positives, the dispute report plus isolated original source-report section become
 the primary issue definition under `FP_POLICY`.
 
+`userPreference` rules:
+
+- `none` or `null` means no binding user override; the planner may choose normally.
+- `Option <N>` or `option <N>` is binding. The planner must follow that option number and must not
+  switch to another option or `Custom`.
+- `Option <N>`, `Option <N> (recommended)`, and `Option <N> with slight refinement` are all
+  acceptable downstream labels only when they still materially implement the same chosen option
+  number and intent.
+- If the bound option is impossible, unsafe, stale, or inconsistent with the listed options, stop
+  for user clarification instead of overriding it.
+- When `resolutionOptions` is `none`, `userPreference` must be `none` or `null`.
+
 ## Stage Runtime Assembly
 
 Before first stage, coordinator verifies clean worktree, seeded `SOURCE_DOC` with at least one
@@ -192,7 +205,7 @@ execution details.
 Fill stage prompts only with Stage I/O inputs plus these constraints:
 
 - False-positive reviewer/planner issue packets use the canonical schema plus only issue-scoped
-  support.
+  support, including any binding `userPreference` carried from `SOURCE_DOC`.
 - Source-report paths are locators, not permission to load whole reports. Use cited line ranges or
   smallest matching section; justify wider reads in the stage artifact.
 - Implementer receives only planner-returned absolute plan path, `HANDOFF_DIR`, and optional

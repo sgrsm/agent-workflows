@@ -44,6 +44,7 @@ Use this structure:
 - Not confirmed aspects: <not confirmed aspects>
 - Resolution options: <resolution options>
 - Preferred resolution: <preferred option number or none>
+- User preference: <user preference or none>
 - Why preferred: <preferred-option justification or n/a>
 - Notes: <optional notes>
 
@@ -60,6 +61,10 @@ Rules:
   seeds the resolver false-positive confirmation track, where the resolver can later record either
   a confirmed false positive or a disputed false positive reopened for normal resolution.
 - Use `Resolution status: pending` for all other findings.
+- When first writing the report, set `User preference: none` unless the user/operator explicitly
+  provides a binding option choice such as `Option <N>` or `option <N>`.
+- If `User preference:` names `Option <N>` or `option <N>`, the resolver planner must follow that
+  option and must not override it with another option or `Custom`.
 - If there are no consolidated findings, still write the report and state that there were no
   findings to investigate.
 - If finding-verification agents fail, still write the report with completed evaluations and

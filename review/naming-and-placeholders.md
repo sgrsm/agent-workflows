@@ -155,6 +155,7 @@ reviewer, consolidator, verifier, or orchestrator when a report or verification 
 - `<pending finding count>`: runtime count of findings still pending resolver handling.
 - `<preferred option number or none>`: runtime preferred remediation choice from the listed options, or `none`.
 - `<preferred-option justification or n/a>`: runtime explanation for the preferred option, or `n/a` when no preference applies.
+- `<user preference or none>`: runtime user-selected resolution option to force during resolver planning, usually `Option <N>`, `option <N>`, or `none`.
 - `<problem statement>`: runtime explanation of why the finding matters.
 - `<re-evaluated severity>`: runtime severity after verification.
 - `<recommended follow-up>`: runtime fix direction or missing-proof follow-up.

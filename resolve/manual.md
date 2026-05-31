@@ -24,17 +24,19 @@ runbook.
    already marked with any non-`pending` `Resolution status:` or `Confirmation status:` value,
    including the legacy/manual markers above.
 5. Build one canonical issue packet for the current finding only, using the schema in
-   `workflow.md`.
-6. For a false-positive candidate matching `FP_POLICY`, run the false-positive reviewer prompt.
+   `workflow.md`, and carry forward any `User preference:` from `SOURCE_DOC`.
+6. If `User preference:` binds `Option <N>` or `option <N>`, treat that choice as mandatory during
+   planning and review; do not override it with another option or `Custom`.
+7. For a false-positive candidate matching `FP_POLICY`, run the false-positive reviewer prompt.
    Otherwise run planner -> implementer -> independent implementation reviewer.
-7. If any stage returns a user-clarification blocker, follow `CONTINUATION_POLICY`: ask the user,
+8. If any stage returns a user-clarification blocker, follow `CONTINUATION_POLICY`: ask the user,
    preserve safe artifacts, then rerun only the same role/stage with the original inputs, user
    answer, and handoff path.
-8. Maintain the per-finding outcome ledger throughout the run. Do not update `SOURCE_DOC` until the
+9. Maintain the per-finding outcome ledger throughout the run. Do not update `SOURCE_DOC` until the
    primary pass and disputed-false-positive follow-up pass are complete.
-9. After the primary pass, process queued disputed false positives in original order through the
+10. After the primary pass, process queued disputed false positives in original order through the
    normal actionable planner -> implementer -> reviewer path.
-10. Run the source-document updater with the final ledger, write `FINAL_REPORT`, and commit the
+11. Run the source-document updater with the final ledger, write `FINAL_REPORT`, and commit the
     final documentation changes if you are mirroring the automated workflow.
 
 ## Direct Single-Stage Run
