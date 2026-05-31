@@ -102,30 +102,38 @@ this order when present:
 
 ## Status Mapping
 
-False-positive path final confirmation statuses:
+Terminal successful or explicitly closed false-positive path statuses:
 
 - `false_positive_confirmed` -> `Confirmation status: confirmed`
-- `verification_blocked` -> `Confirmation status: verification_blocked`
 - `skipped_by_user` -> `Confirmation status: skipped_by_user`
 - `non_actionable` -> `Confirmation status: non_actionable`
 
-All other finalized findings, including reopened disputed false positives:
+Terminal successful or explicitly closed resolution statuses, including reopened disputed false
+positives that close without an unresolved blocker:
 
 - `resolved` -> `Resolution status: resolved`
-- `review_failed` -> `Resolution status: review_failed`
-- `blocked` -> `Resolution status: blocked`
-- `implementation_failed` -> `Resolution status: implementation_failed`
-- `verification_blocked` -> `Resolution status: verification_blocked`
 - `skipped_by_user` -> `Resolution status: skipped_by_user`
 - `non_actionable` -> `Resolution status: non_actionable`
 
+Unresolved blocker statuses keep the existing resolver-managed status line unchanged, normally
+`Confirmation status: pending` or `Resolution status: pending`, so the finding remains eligible for
+future resolver runs:
+
+- `blocked`
+- `implementation_failed`
+- `review_failed`
+- `verification_blocked`
+
 ## Per-Finding Content Rules
 
-- Reopened false positives: replace `Confirmation status: pending` with the final
-  `Resolution status:` line, keep `Verification verdict:` as the second bullet, add
-  `Resolver note: reopened after disputed false-positive verification` immediately below
-  `Verification verdict:`, and expose severities as `Severity (original)` plus
+- Reopened false positives that reach `resolved`, `skipped_by_user`, or `non_actionable`: replace
+  `Confirmation status: pending` with the final mapped status line, keep `Verification verdict:` as
+  the second bullet, add `Resolver note: reopened after disputed false-positive verification`
+  immediately below `Verification verdict:`, and expose severities as `Severity (original)` plus
   `Severity (re-evaluated)` without overwriting the original severity value.
+- Reopened false positives that end with an unresolved blocker status keep their existing
+  `Confirmation status: pending` line unchanged, but still get the reopened resolver note, severity
+  relabeling, and `#### Reason` subsection.
 - Resolved findings: add `Selected resolution approach:` below `Resolver note:` when present,
   otherwise below `Verification verdict:`.
 - Approach labels: `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`,
@@ -136,9 +144,10 @@ All other finalized findings, including reopened disputed false positives:
   reviewer report and, if reopened, the dispute report.
 - `review_failed`, `blocked`, `implementation_failed`, `verification_blocked`, `skipped_by_user`,
   and `non_actionable` get a `#### Reason` subsection of about 2-3 sentences, citing resolver
-  artifacts when available.
+  artifacts when available. For unresolved blocker statuses, this subsection explains why the
+  status line remains `pending`.
 - False-positive-path `verification_blocked`, `skipped_by_user`, and `non_actionable` also get
-  `#### Reason`.
+  `#### Reason`; `verification_blocked` keeps `Confirmation status: pending`.
 - `false_positive_confirmed` gets a concise `#### Verification note` of about 1-2 sentences citing
   the confirmation artifact.
 
@@ -171,7 +180,9 @@ Field rules:
 
 - `sourceDocHeading` and `preUpdateResolverStatusLine` are required pre-update anchors. The updater
   must find exactly one matching finding heading with that exact current resolver status line before
-  editing; otherwise it must block instead of guessing or reseeding.
+  editing; otherwise it must block instead of guessing or reseeding. For unresolved blocker
+  statuses (`blocked`, `implementation_failed`, `review_failed`, or `verification_blocked`), this
+  line must remain unchanged in the edited document.
 - `selectedResolutionApproachLabel` is required and non-null for every `resolved` finding, using
   the implementation reviewer report's exact `Selected resolution approach label:` field. The
   updater must block if this value is missing or malformed for a resolved finding; use `null` only
@@ -231,4 +242,15 @@ Reopened disputed false positive later resolved:
 ...
 #### Resolution
 Resolved by tightening classification and adding focused verification, citing `<run_docs_base_path>/20260528-1430/reviews/finding-02-example-retry-classification-review.md`. The finding was reopened from `<run_docs_base_path>/20260528-1430/false-positive-disputes/finding-02-example-retry-classification-false-positive-dispute.md`.
+```
+
+Unresolved blocker remains pending:
+
+```md
+### 3. Example cleanup contract remains unverified
+- Resolution status: pending
+- Verification verdict: confirmed
+...
+#### Reason
+Implementation review was blocked because independent verification could not be completed, citing `<run_docs_base_path>/20260528-1430/reviews/finding-03-example-cleanup-contract-review.md`. The finding remains pending for a future resolver run.
 ```
