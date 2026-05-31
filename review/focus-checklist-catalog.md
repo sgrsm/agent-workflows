@@ -16,12 +16,13 @@ review pack.
 - If the user wants category-based control, let them accept/edit/remove category ids per reviewer.
 - If the user wants auto-selection, use the chosen categories plus the concrete spec and/or diff to
   generate a concise feature-specific `focusChecklistBlock`.
+- A dedicated documentation reviewer is optional and default-off; create it only if the user
+  explicitly chooses it.
 - For Java-heavy non-test reviewers, combine area-specific categories with cross-cutting `CC-*`
   and `CA-*` categories only when they materially fit the area.
-- If the user asks whether to add a dedicated cross-cutting Java maintainability/design reviewer,
-  recommend one combined reviewer for most feature reviews; split into separate clean-code and
-  SOLID/class-design reviewers only for large or design-heavy diffs where one report would become
-  too broad.
+- If the user asks how to handle a dedicated cross-cutting Java maintainability/design reviewer,
+  the valid choices are: one combined Clean Code + SOLID reviewer (default), two separate Clean
+  Code and SOLID reviewers, Clean Code only, SOLID only, or none.
 - A dedicated cross-cutting reviewer is additive. Keep it scoped to changed non-test Java code and
   maintainability/design quality; do not let it replace area-specific correctness review.
 - Do not dump every checklist starter into one prompt. Keep only the items that materially fit the

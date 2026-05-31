@@ -48,7 +48,6 @@ reportsBasePath:
 consolidatedReportOutputPath: "default suggestion: <reportsBasePath>/99-consolidated-report.md"
 finalEvaluationOutputPath: "default suggestion: <reportsBasePath>/100-final-evaluation.md"
 acceptedContextDocs: []
-documentationReviewerReportFilenamePreference: "auto | none | <filename>.md"
 reviewThemes: "auto | explicit list"
 ```
 
@@ -79,8 +78,10 @@ staleFeatureTermsToCheck: []
 cleanOutputGateFilesOverride: []
 reviewAreaHints: []
 manualReviewerDefinitions: []
+documentationReviewerPreference: "ask | create | skip"
+documentationReviewerReportFilenamePreference: "auto | none | <filename>.md"
 focusChecklistSelectionPreference: "ask | category_approval | auto_select_items | manual"
-crossCuttingQualityReviewerPreference: "ask | none | combined | split"
+crossCuttingQualityReviewerPreference: "ask | combined | split | clean_code_only | solid_only | none"
 ```
 
 Notes:
@@ -88,6 +89,17 @@ Notes:
 - `reviewAreaHints` = optional user-supplied area ideas to seed or bias suggestions.
 - `manualReviewerDefinitions` = optional fully specified reviewer configs. If supplied and clearly
   complete, you may skip the suggestion phase or use it only as a comparison aid.
+- `documentationReviewerPreference` = optional starting preference for whether to create a
+  dedicated documentation reviewer:
+  - `ask` = ask in a short named-option choice block whether to create one
+  - `create` = include one dedicated documentation reviewer
+  - `skip` = do not create one; this is the default recommendation when the user has not decided
+- `documentationReviewerReportFilenamePreference` = only relevant if a dedicated documentation
+  reviewer is approved:
+  - `auto` = derive or suggest a concrete documentation-review report filename
+  - `none` = no dedicated documentation reviewer report filename
+  - `<filename>.md` = use the supplied filename
+  If the documentation reviewer is skipped, resolve this to `none`.
 - `focusChecklistSelectionPreference` = optional starting preference for non-test reviewer focus
   checklists:
   - `ask` = suggest category bundles and ask the user how to resolve them
@@ -99,12 +111,12 @@ Notes:
 - `crossCuttingQualityReviewerPreference` = optional starting preference for a dedicated
   cross-cutting Java maintainability/design reviewer when meaningful non-test Java code is in
   scope:
-  - `ask` = explicitly ask during reviewer-plan approval whether to add one
-  - `none` = keep clean-code / SOLID concerns as per-area checklist overlays only
-  - `combined` = propose one dedicated reviewer covering both clean-code/local maintainability and
-    SOLID/class-design concerns
-  - `split` = propose two dedicated reviewers: one for clean-code/local maintainability and one for
-    SOLID/class-design
+  - `ask` = ask in a separate short named-option choice block
+  - `combined` = one dedicated reviewer covering both Clean Code and SOLID
+  - `split` = two dedicated reviewers: one Clean Code and one SOLID
+  - `clean_code_only` = one dedicated Clean Code reviewer only
+  - `solid_only` = one dedicated SOLID reviewer only
+  - `none` = no dedicated Clean Code or SOLID reviewer
 - Recommend `combined` for most Java feature reviews when a dedicated cross-cutting reviewer is
   desired; use `split` mainly for large, refactor-heavy, or architecture-heavy diffs where one
   report would otherwise become too broad.
@@ -186,28 +198,43 @@ For each draft area, prepare a compact proposal with at least:
   notes:
 ```
 
-Use `reviewAreaHints` if provided. If a dedicated documentation reviewer seems warranted and the
-user left `documentationReviewerReportFilenamePreference` as `auto`, suggest the corresponding
-report filename. For the default tests reviewer, use concrete prompt filename
+Use `reviewAreaHints` if provided. Treat a dedicated documentation reviewer as optional and
+default-off. If `documentationReviewScope` is non-empty or the spec/diff surfaces documentation
+obligations, prepare a separate documentation-reviewer decision for approval:
+
+- `skip` = do not create a dedicated documentation reviewer; this is the proposed default
+- `create` = create one dedicated documentation reviewer
+
+If the user later approves a dedicated documentation reviewer and
+`documentationReviewerReportFilenamePreference` is `auto` or omitted, suggest a concrete report
+filename. If the documentation reviewer is skipped, resolve the documentation reviewer report
+filename to `none`. For the default tests reviewer, use concrete prompt filename
 `prompts/reviewers/tests-reviewer.md` unless the user explicitly overrides the filename or rejects
 the reviewer.
 
-If meaningful non-test Java code is in scope, also prepare an explicit optional cross-cutting
-reviewer decision for approval:
+Also prepare a separate cross-cutting reviewer decision for approval with these possible
+outcomes:
 
-- `none` = no dedicated cross-cutting reviewer; keep clean-code / SOLID concerns as overlays on
-  the area reviewers
-- `combined` = one dedicated clean-code / SOLID reviewer; recommend this for most reviews
-- `split` = two dedicated reviewers, one for clean-code / local maintainability and one for SOLID /
-  class design
+- `combined` = one combined Clean Code + SOLID reviewer; this is the proposed default for typical
+  Java-heavy review scope
+- `split` = two separate reviewers: one Clean Code and one SOLID
+- `clean_code_only` = one Clean Code reviewer only
+- `solid_only` = one SOLID reviewer only
+- `none` = no dedicated Clean Code or SOLID reviewer
 
-When you recommend `combined` or `split`, also propose concrete reviewer labels, prompt filenames,
-expected report filenames, likely primary files, and suggested `CC-*` / `CA-*` categories from
+If there is little or no meaningful changed non-test Java code, propose `none` by default unless
+the user explicitly wants a broader cross-cutting design pass. When you recommend anything other
+than `none`, also propose concrete reviewer labels, prompt filenames, expected report filenames,
+likely primary files, and suggested `CC-*` / `CA-*` categories from
 `focus-checklist-catalog.md`. Do not silently add these reviewers; they require explicit user
 approval.
 
-If `reviewThemes` is `auto`, also draft a short theme list from the proposed areas; the user may
-edit it during approval.
+If `reviewThemes` is `auto`, also draft a short theme list from the proposed areas. Keep theme
+selection inside the first reviewer-plan approval choice block together with the reviewer-area
+selection. The user should be able to accept the proposed themes, edit/reorder them, or replace
+them with a custom list as part of that first decision. If `reviewThemes` was already supplied as
+an explicit list, present that list as the proposed one and still allow confirm/edit unless the
+user already explicitly finalized it.
 
 For non-test reviewers, suggest specific focus-checklist category ids from
 `focus-checklist-catalog.md`. Do not silently expand them into the final prompt text until the user
@@ -222,17 +249,19 @@ For tests reviewers, remember that the source template already contains default 
 
 ### 3. Ask the user to approve or adjust the plan
 
-Before creating files, show the draft reviewer plan in a compact block and ask the user to choose
-one of these paths:
+Before creating files, show the draft reviewer plan **together with the proposed review themes** in
+a compact block and ask the user to choose one of these paths for that first reviewer-area/themes
+decision:
 
-- accept all suggested areas
-- accept with edits/removals/reordering/renames
+- accept all suggested areas and themes
+- accept with edits/removals/reordering/renames/theme edits
 - add one or more custom areas
 - replace the draft with a fully manual reviewer definition list
 
-The user must be able to discard suggested areas and add a custom one even if the spec/diff did not
-surface it. If the user adds a custom area with only a short description, derive the missing prompt
-fields when safe and ask follow-up only for truly missing high-impact details.
+The user must be able to discard suggested areas and add a custom area even if the spec/diff did
+not surface it. The user must also be able to edit, reorder, or replace the proposed review themes
+in that same first decision. If the user adds a custom area with only a short description, derive
+the missing prompt fields when safe and ask follow-up only for truly missing high-impact details.
 
 Also ask how focus checklists should be resolved for non-test reviewers when that is not already
 clear from `focusChecklistSelectionPreference`. At minimum, let the user:
@@ -241,22 +270,45 @@ clear from `focusChecklistSelectionPreference`. At minimum, let the user:
 - tell the instantiator to auto-select concrete checklist items from the spec/diff
 - provide manual checklist text for one or more reviewers
 
-When meaningful non-test Java code is in scope, explicitly ask whether to add a dedicated
-cross-cutting clean-code / SOLID reviewer. Offer at least:
+Use at least three separate short named-option choice blocks in this minimum order, though
+additional clarifications are allowed whenever needed:
 
-- no dedicated cross-cutting reviewer
-- one combined clean-code / SOLID reviewer (recommended default for most feature reviews)
-- two reviewers: clean-code / local maintainability and SOLID / class design
+1. Reviewer areas + review themes approval — this existing first decision block.
+2. Clean Code / SOLID decision — second separate choice block. Offer exactly:
+   - One combined Clean Code + SOLID reviewer (default)
+   - Two separate Clean Code and SOLID reviewers
+   - Clean Code only reviewer
+   - SOLID only reviewer
+   - No Clean Code, no SOLID
+   If `crossCuttingQualityReviewerPreference` was already supplied as `combined`, `split`,
+   `clean_code_only`, `solid_only`, or `none`, show that as the proposed choice but still allow the
+   user to edit it. If the user chooses more than one cross-cutting reviewer, keep their scopes
+   distinct enough to reduce duplicate findings.
+3. Documentation reviewer decision — third separate choice block. Offer:
+   - Skip dedicated documentation reviewer (default)
+   - Create dedicated documentation reviewer
+   If `documentationReviewerPreference` was already supplied as `create` or `skip`, show that as
+   the proposed choice but still allow the user to edit it. If the user chooses to create the
+   reviewer and `documentationReviewerReportFilenamePreference` is `auto` or omitted, suggest a
+   concrete filename; if the user skips it, resolve the documentation reviewer report filename to
+   `none`.
 
-If `crossCuttingQualityReviewerPreference` was already supplied as `none`, `combined`, or `split`,
-show it as the proposed choice but still allow the user to edit it. If the user chooses `split`,
-keep the scopes distinct enough to reduce duplicate findings.
+Do not merge the Clean Code / SOLID or documentation decisions into the first reviewer-area/themes
+approval block. Acceptance of reviewer areas and themes does not count as acceptance of those later
+separate decisions.
+
+If focus-checklist resolution or any other high-impact detail is still unresolved after or between
+those required choice blocks, ask additional follow-up questions as needed; the three blocks above
+are a minimum, not a maximum.
 
 Silence is not rejection: do not drop the default tests reviewer unless the user explicitly says to
-remove or skip it. Also do not create a dedicated cross-cutting clean-code / SOLID reviewer unless
-it is explicitly approved.
+remove or skip it. Also do not create a dedicated documentation reviewer unless the user explicitly
+chooses to create it. Do not invent a Clean Code / SOLID reviewer shape silently; ask the separate
+second choice block unless the user already supplied one of the recognized preferences.
 
-Do not create files until the user has approved the final reviewer list.
+Do not create files until the user has approved the reviewer areas/themes block, answered the Clean
+Code / SOLID choice, answered the documentation reviewer choice, and resolved any remaining
+focus-checklist handling or other high-impact follow-ups.
 
 ### 4. Materialize full reviewer definitions
 
@@ -308,21 +360,37 @@ Derivation rules:
 - For the default auto-generated tests reviewer, use prompt file
   `prompts/reviewers/tests-reviewer.md` unless the user explicitly overrides the filename or rejects
   the reviewer.
-- A dedicated cross-cutting clean-code / SOLID reviewer, if approved, uses `template: area`.
+- A dedicated documentation reviewer, if approved, uses `template: area`.
+- For a dedicated documentation reviewer, use prompt file
+  `prompts/reviewers/documentation-reviewer.md`. If
+  `documentationReviewerReportFilenamePreference` is `auto` or omitted, use an expected report like
+  `NN-documentation-review.md`; if the reviewer is skipped, resolve the documentation reviewer
+  report filename to `none`.
+- Keep a dedicated documentation reviewer scoped to documentation follow-up, cross-doc consistency,
+  and implementation-alignment checks rather than a full code review.
+- Dedicated Clean Code / SOLID reviewers, if approved, use `template: area`.
 - Recommended default shape is one combined reviewer using prompt file
   `prompts/reviewers/clean-code-solid-reviewer.md` and an expected report like
   `NN-clean-code-solid-review.md`.
-- If the user explicitly chose `split`, use two area reviewers:
+- If the user chose `split`, use two area reviewers:
   - `prompts/reviewers/clean-code-reviewer.md` for `CC-*` local maintainability concerns
   - `prompts/reviewers/solid-reviewer.md` for `CA-*` SOLID / class-design concerns
-- Keep dedicated cross-cutting reviewers scoped to changed non-test Java code and
+- If the user chose `clean_code_only`, use one area reviewer with prompt file
+  `prompts/reviewers/clean-code-reviewer.md` and an expected report like
+  `NN-clean-code-review.md`.
+- If the user chose `solid_only`, use one area reviewer with prompt file
+  `prompts/reviewers/solid-reviewer.md` and an expected report like
+  `NN-solid-review.md`.
+- If the user chose `none`, keep Clean Code / SOLID concerns as area-reviewer checklist overlays
+  only.
+- Keep dedicated Clean Code / SOLID reviewers scoped to changed non-test Java code and
   maintainability/design quality. Do not let them absorb business-flow correctness, integration
   semantics, persistence correctness, runtime operability, documentation accuracy, or
   tests/proof-strength obligations already assigned to other reviewers.
-- For the combined reviewer, blend concrete `CC-*` and `CA-*` items into one concise checklist; for
-  split reviewers, keep `CC-*` items in the clean-code reviewer and `CA-*` items in the SOLID
+- For the combined reviewer, blend concrete `CC-*` and `CA-*` items into one concise checklist. For
+  separate reviewers, keep `CC-*` items in the clean-code reviewer and `CA-*` items in the SOLID
   reviewer.
-- For dedicated cross-cutting reviewers, `primaryFilesBlock` should usually point to changed
+- For dedicated Clean Code / SOLID reviewers, `primaryFilesBlock` should usually point to changed
   production Java files or the dominant Java packages in scope, not the entire repo or docs/tests
   trees. Use `relevantSpecSectionsBlock` only when the spec materially defines architectural
   boundaries relevant to the design critique; otherwise use `none`.
@@ -341,9 +409,11 @@ Derivation rules:
 3. Collect missing core values.
 4. Run the review-area discovery and approval flow above unless complete manual reviewer definitions
    were already supplied and accepted. Ensure the final approved reviewer list still contains a
-   tests/proof-strength reviewer unless the user explicitly rejected it. When meaningful non-test
-   Java code is in scope, ensure the user also explicitly approves or rejects the optional
-   cross-cutting clean-code / SOLID reviewer choice before files are created.
+   tests/proof-strength reviewer unless the user explicitly rejected it. Use at least three
+   separate short named-option choice blocks in this minimum order: reviewer areas + review themes,
+   Clean Code / SOLID, documentation reviewer. Do not collapse the second or third decisions into
+   the first approval block, and do not treat acceptance of reviewer areas/themes as acceptance of
+   the later separate decisions. Additional follow-up questions are allowed when needed.
 5. Copy shared runtime files by default: `README.md`, `workflow.md`, `orchestrator.md`,
    `fragments/`, `policies/`, `templates/`, `prompts/consolidator.md`, and `prompts/verifier.md`.
 6. Create one concrete reviewer prompt per approved reviewer entry by copying:
@@ -429,8 +499,11 @@ Checks:
 - `workflow.md` reviewer rows point only to concrete copied reviewer prompts, not
   `prompts/reviewers/area-reviewer.md` or `prompts/reviewers/tests-reviewer.md`
 - reviewer expected report paths are unique and clean-output-gate files match workflow outputs
-- resolved documentation reviewer report filename is `none` or matches one reviewer's expected
-  report filename
+- if the documentation reviewer was skipped, resolved documentation reviewer report filename is
+  `none` and no active documentation-reviewer row/prompt is left behind unintentionally
+- if the documentation reviewer was approved, its prompt/report paths exist, its resolved report
+  filename matches one reviewer's expected report filename, and its focus/out-of-scope blocks keep
+  it documentation-scoped
 - accepted-context paths exist when specified
 - if a spec-backed pack was requested, `authoritativeSpecEntryPoint` and `specificationBasePath`
   exist; if a diff-only pack was requested, both are set to literal `none`
@@ -438,9 +511,9 @@ Checks:
 - consolidated-report theme sections match the final theme list; no `<theme_*>` placeholders remain
 - non-test reviewer `focusChecklistBlock` content is concrete, area-specific, and does not leak raw
   catalog-only helper prose or unresolved category placeholders into active prompts
-- if the user approved a dedicated cross-cutting clean-code / SOLID reviewer, its prompt/report
-  paths exist and its focus/out-of-scope blocks keep it maintainability/design-scoped rather than
-  duplicating another reviewer's full correctness contract
+- if the user approved one or more dedicated Clean Code / SOLID reviewers, their prompt/report
+  paths exist and their focus/out-of-scope blocks keep them maintainability/design-scoped rather
+  than duplicating another reviewer's full correctness contract
 - no stale feature names, slugs, old reviewer prompt/report paths, or source-template refs remain in
   active files; if `staleFeatureTermsToCheck` exists, search each term
 - copied files still describe the intended review-pack scope and do not broaden reviewer
@@ -451,8 +524,8 @@ If a check fails, fix safely or report the blocker. Do not guess values.
 ## Completion Report
 
 Reply briefly with: target path; discovery basis used (spec-backed or diff-only); reviewer areas
-suggested and then created; whether a dedicated cross-cutting clean-code / SOLID reviewer was
-proposed and created; focus-checklist selection approach used; shared files/dirs created or
-updated; path-existence audit result for spec/context/reports locations; unresolved placeholders or
-stale terms; ready for orchestrated use, direct/manual use, or blocked; user decisions still
-needed. Do not paste generated file contents.
+suggested and then created; whether a dedicated documentation reviewer was proposed and created;
+which Clean Code / SOLID reviewer choice was proposed and created; focus-checklist selection
+approach used; shared files/dirs created or updated; path-existence audit result for
+spec/context/reports locations; unresolved placeholders or stale terms; ready for orchestrated use,
+direct/manual use, or blocked; user decisions still needed. Do not paste generated file contents.

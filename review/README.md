@@ -63,12 +63,14 @@ Typical area-reviewer copies or row specializations include:
 Preferred: from the repository root, run `review/instantiate.md` and provide the requested core
 pack/path values. The instantiator inspects the feature spec when available, or the branch diff
 otherwise, proposes reviewer areas, suggests focus-checklist categories from the template catalog,
-explicitly asks whether to add a dedicated cross-cutting clean-code / SOLID reviewer when
-meaningful non-test Java code is in scope, lets you accept or adjust the plan, and materializes the
-concrete reviewer prompts. The tests/proof-strength reviewer is included by default unless you
-explicitly reject it. If you want a dedicated cross-cutting reviewer, one combined reviewer is
-usually better than splitting clean-code and SOLID/class-design into two separate reports; split
-only for large or design-heavy Java changes where one report would become too broad.
+and keeps review themes inside that first reviewer-area approval step. Then it asks two more
+separate short follow-up choices: Clean Code / SOLID handling, and whether to create a dedicated
+documentation reviewer (default: no). So the minimum decision flow is three separate choice blocks:
+1) reviewer areas + themes, 2) Clean Code / SOLID, 3) documentation reviewer. It should not
+collapse the last two into the first block. The tests/proof-strength reviewer is included by
+default unless you explicitly reject it. For Clean Code / SOLID, the default proposed option is one
+combined reviewer; the other choices are split Clean Code + SOLID reviewers, Clean Code only,
+SOLID only, or none.
 
 ### Minimal prompt examples
 
@@ -102,9 +104,11 @@ Manual alternative:
    non-test reviewer row. Copy and rename `prompts/reviewers/tests-reviewer.md` for each test
    coverage/proof-strength row.
 4. Use `focus-checklist-catalog.md` to seed non-test reviewer focus-checklist categories or
-   concrete checklist bullets. If you want a dedicated cross-cutting Java maintainability/design
-   reviewer, prefer one combined reviewer using `CC-*` and `CA-*` categories; split into separate
-   clean-code and SOLID/class-design reviewers only when you deliberately want two reports.
+   concrete checklist bullets. Create a dedicated documentation reviewer only if you explicitly want
+   one; the default is to skip it. For dedicated Java maintainability/design review, the default is
+   one combined reviewer using `CC-*` and `CA-*` categories. Other valid choices are split Clean
+   Code + SOLID reviewers, Clean Code only, SOLID only, or no dedicated Clean Code / SOLID
+   reviewer.
 5. Replace each copied reviewer prompt's per-area placeholders and point the corresponding
    `workflow.md` row at that concrete prompt file.
 6. Set `<authoritative_spec_entry_point>` / `<specification_base_path>` when a feature spec exists,
@@ -126,7 +130,8 @@ Before running the copied pack, verify:
   instantiation; if it was auto-generated without an explicit filename override, it should be
   `prompts/reviewers/tests-reviewer.md`
 - reviewer expected report paths are unique
-- `<documentation_reviewer_report_filename>` is `none` or matches one reviewer report filename
+- if there is no dedicated documentation reviewer, `<documentation_reviewer_report_filename>` is
+  `none`; otherwise it matches that reviewer's report filename
 - feature-spec fields are either valid repo-root-relative paths or both literal `none` for a
   diff-only review pack
 - `<reports_base_path>` exists or can be created

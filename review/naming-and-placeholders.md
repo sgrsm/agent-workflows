@@ -21,10 +21,14 @@ feature-specific review pack.
   - `prompts/reviewers/runtime-operability-reviewer.md`
   - `prompts/reviewers/documentation-reviewer.md`
   - `prompts/reviewers/clean-code-solid-reviewer.md`
-- If the user explicitly wants split cross-cutting Java maintainability/design reviewers, names
-  such as `prompts/reviewers/clean-code-reviewer.md` and
-  `prompts/reviewers/solid-reviewer.md` are acceptable. Prefer one combined reviewer for most
-  feature reviews to reduce overlap and consolidation noise.
+- `prompts/reviewers/documentation-reviewer.md` is optional. Create it only if the user explicitly
+  chooses a dedicated documentation reviewer; otherwise omit it and resolve
+  `<documentation_reviewer_report_filename>` to `none`.
+- For dedicated cross-cutting Java maintainability/design review, prefer one combined reviewer for
+  most feature reviews using `prompts/reviewers/clean-code-solid-reviewer.md`. If the user wants a
+  different shape, `prompts/reviewers/clean-code-reviewer.md` and/or
+  `prompts/reviewers/solid-reviewer.md` are acceptable for split, Clean Code only, or SOLID only
+  variants.
 - Treat `prompts/reviewers/tests-reviewer.md` the same way for rows that need the extra test-gap
   ROI/practicality gate and optional pre-findings sections.
 - For the default auto-generated tests/proof-strength reviewer created by the instantiator, use
@@ -199,10 +203,13 @@ Interactive instantiation prompt:
 
 It collects core pack values, inspects the authoritative feature spec when available or the branch
 diff when it is not, uses `focus-checklist-catalog.md` to propose non-test focus-checklist
-categories, lets the user accept/edit/remove/add areas and checklist selections, creates concrete
-reviewer prompts, keeps a tests/proof-strength reviewer by default unless the user explicitly
-rejects it, replaces instantiation placeholders, and runs a normal file/search audit. It does not
-run the review workflow.
+categories, gets reviewer-area approval together with review-theme approval in that same first
+choice block, then asks separate Clean Code / SOLID and documentation-reviewer choices. So the
+minimum flow is three separate choice blocks: reviewer areas + themes, Clean Code / SOLID, and
+documentation reviewer. It should not collapse the later two into the first block. It creates
+concrete reviewer prompts, keeps a tests/proof-strength reviewer by default unless the user
+explicitly rejects it, replaces instantiation placeholders, and runs a normal file/search audit. It
+does not run the review workflow.
 
 ## Manual Post-Instantiation Audit
 
