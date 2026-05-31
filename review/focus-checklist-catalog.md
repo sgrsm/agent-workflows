@@ -18,6 +18,12 @@ review pack.
   generate a concise feature-specific `focusChecklistBlock`.
 - For Java-heavy non-test reviewers, combine area-specific categories with cross-cutting `CC-*`
   and `CA-*` categories only when they materially fit the area.
+- If the user asks whether to add a dedicated cross-cutting Java maintainability/design reviewer,
+  recommend one combined reviewer for most feature reviews; split into separate clean-code and
+  SOLID/class-design reviewers only for large or design-heavy diffs where one report would become
+  too broad.
+- A dedicated cross-cutting reviewer is additive. Keep it scoped to changed non-test Java code and
+  maintainability/design quality; do not let it replace area-specific correctness review.
 - Do not dump every checklist starter into one prompt. Keep only the items that materially fit the
   reviewer area and current feature.
 - Tests review has its own built-in default checklist in
@@ -41,6 +47,13 @@ These are starting bundles, not mandatory presets.
   optional overlays `CC-1`, `CC-2`, `CC-5`, `CA-1`, `CA-4`, `CA-5`
 - Documentation follow-up / cross-doc consistency reviewer:
   `DOC-1`, `DOC-2`, `DOC-3`, `DOC-4`, `DOC-5`, `DOC-6`
+- Dedicated cross-cutting clean-code / SOLID reviewer (recommended when a dedicated reviewer is
+  wanted):
+  `CC-1`, `CC-2`, `CC-3`, `CC-4`, `CC-5`, `CC-6`, `CA-1`, `CA-2`, `CA-3`, `CA-4`, `CA-5`
+- Dedicated clean-code / local maintainability reviewer (split option):
+  `CC-1`, `CC-2`, `CC-3`, `CC-4`, `CC-5`, `CC-6`
+- Dedicated SOLID / class-design reviewer (split option):
+  `CA-1`, `CA-2`, `CA-3`, `CA-4`, `CA-5`
 - Cross-cutting Java clean-code overlay for non-test code reviewers:
   `CC-1`, `CC-2`, `CC-3`, `CC-4`, `CC-5`, `CC-6`
 - Cross-cutting Java clean-architecture overlay for non-test code reviewers:

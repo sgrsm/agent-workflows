@@ -20,6 +20,11 @@ feature-specific review pack.
   - `prompts/reviewers/persistence-reviewer.md`
   - `prompts/reviewers/runtime-operability-reviewer.md`
   - `prompts/reviewers/documentation-reviewer.md`
+  - `prompts/reviewers/clean-code-solid-reviewer.md`
+- If the user explicitly wants split cross-cutting Java maintainability/design reviewers, names
+  such as `prompts/reviewers/clean-code-reviewer.md` and
+  `prompts/reviewers/solid-reviewer.md` are acceptable. Prefer one combined reviewer for most
+  feature reviews to reduce overlap and consolidation noise.
 - Treat `prompts/reviewers/tests-reviewer.md` the same way for rows that need the extra test-gap
   ROI/practicality gate and optional pre-findings sections.
 - For the default auto-generated tests/proof-strength reviewer created by the instantiator, use

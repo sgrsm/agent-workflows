@@ -56,14 +56,19 @@ Typical area-reviewer copies or row specializations include:
 - API or contract compatibility
 - rollout / migration / backfill safety
 - configuration / packaging / deployment wiring
+- optional cross-cutting clean code / SOLID / maintainability review for Java-heavy changes
 
 ## Instantiation checklist
 
 Preferred: from the repository root, run `review/instantiate.md` and provide the requested core
 pack/path values. The instantiator inspects the feature spec when available, or the branch diff
 otherwise, proposes reviewer areas, suggests focus-checklist categories from the template catalog,
-lets you accept or adjust them, and materializes the concrete reviewer prompts. The
-tests/proof-strength reviewer is included by default unless you explicitly reject it.
+explicitly asks whether to add a dedicated cross-cutting clean-code / SOLID reviewer when
+meaningful non-test Java code is in scope, lets you accept or adjust the plan, and materializes the
+concrete reviewer prompts. The tests/proof-strength reviewer is included by default unless you
+explicitly reject it. If you want a dedicated cross-cutting reviewer, one combined reviewer is
+usually better than splitting clean-code and SOLID/class-design into two separate reports; split
+only for large or design-heavy Java changes where one report would become too broad.
 
 ### Minimal prompt examples
 
@@ -97,7 +102,9 @@ Manual alternative:
    non-test reviewer row. Copy and rename `prompts/reviewers/tests-reviewer.md` for each test
    coverage/proof-strength row.
 4. Use `focus-checklist-catalog.md` to seed non-test reviewer focus-checklist categories or
-   concrete checklist bullets.
+   concrete checklist bullets. If you want a dedicated cross-cutting Java maintainability/design
+   reviewer, prefer one combined reviewer using `CC-*` and `CA-*` categories; split into separate
+   clean-code and SOLID/class-design reviewers only when you deliberately want two reports.
 5. Replace each copied reviewer prompt's per-area placeholders and point the corresponding
    `workflow.md` row at that concrete prompt file.
 6. Set `<authoritative_spec_entry_point>` / `<specification_base_path>` when a feature spec exists,

@@ -76,6 +76,7 @@ cleanOutputGateFilesOverride: []
 reviewAreaHints: []
 manualReviewerDefinitions: []
 focusChecklistSelectionPreference: "ask | category_approval | auto_select_items | manual"
+crossCuttingQualityReviewerPreference: "ask | none | combined | split"
 ```
 
 Notes:
@@ -91,6 +92,18 @@ Notes:
   - `auto_select_items` = after reviewer-area approval, choose concrete checklist items from the
     catalog plus the spec/diff
   - `manual` = user provides explicit checklist text
+- `crossCuttingQualityReviewerPreference` = optional starting preference for a dedicated
+  cross-cutting Java maintainability/design reviewer when meaningful non-test Java code is in
+  scope:
+  - `ask` = explicitly ask during reviewer-plan approval whether to add one
+  - `none` = keep clean-code / SOLID concerns as per-area checklist overlays only
+  - `combined` = propose one dedicated reviewer covering both clean-code/local maintainability and
+    SOLID/class-design concerns
+  - `split` = propose two dedicated reviewers: one for clean-code/local maintainability and one for
+    SOLID/class-design
+- Recommend `combined` for most Java feature reviews when a dedicated cross-cutting reviewer is
+  desired; use `split` mainly for large, refactor-heavy, or architecture-heavy diffs where one
+  report would otherwise become too broad.
 - A tests/proof-strength reviewer is default-on. Propose and create it unless the user explicitly
   rejects/removes it.
 - Use the source template's `focus-checklist-catalog.md` as the template-only source for sanitized
@@ -173,6 +186,20 @@ report filename. For the default tests reviewer, use concrete prompt filename
 `prompts/reviewers/tests-reviewer.md` unless the user explicitly overrides the filename or rejects
 the reviewer.
 
+If meaningful non-test Java code is in scope, also prepare an explicit optional cross-cutting
+reviewer decision for approval:
+
+- `none` = no dedicated cross-cutting reviewer; keep clean-code / SOLID concerns as overlays on
+  the area reviewers
+- `combined` = one dedicated clean-code / SOLID reviewer; recommend this for most reviews
+- `split` = two dedicated reviewers, one for clean-code / local maintainability and one for SOLID /
+  class design
+
+When you recommend `combined` or `split`, also propose concrete reviewer labels, prompt filenames,
+expected report filenames, likely primary files, and suggested `CC-*` / `CA-*` categories from
+`focus-checklist-catalog.md`. Do not silently add these reviewers; they require explicit user
+approval.
+
 If `reviewThemes` is `auto`, also draft a short theme list from the proposed areas; the user may
 edit it during approval.
 
@@ -208,8 +235,20 @@ clear from `focusChecklistSelectionPreference`. At minimum, let the user:
 - tell the instantiator to auto-select concrete checklist items from the spec/diff
 - provide manual checklist text for one or more reviewers
 
+When meaningful non-test Java code is in scope, explicitly ask whether to add a dedicated
+cross-cutting clean-code / SOLID reviewer. Offer at least:
+
+- no dedicated cross-cutting reviewer
+- one combined clean-code / SOLID reviewer (recommended default for most feature reviews)
+- two reviewers: clean-code / local maintainability and SOLID / class design
+
+If `crossCuttingQualityReviewerPreference` was already supplied as `none`, `combined`, or `split`,
+show it as the proposed choice but still allow the user to edit it. If the user chooses `split`,
+keep the scopes distinct enough to reduce duplicate findings.
+
 Silence is not rejection: do not drop the default tests reviewer unless the user explicitly says to
-remove or skip it.
+remove or skip it. Also do not create a dedicated cross-cutting clean-code / SOLID reviewer unless
+it is explicitly approved.
 
 Do not create files until the user has approved the final reviewer list.
 
@@ -263,6 +302,26 @@ Derivation rules:
 - For the default auto-generated tests reviewer, use prompt file
   `prompts/reviewers/tests-reviewer.md` unless the user explicitly overrides the filename or rejects
   the reviewer.
+- A dedicated cross-cutting clean-code / SOLID reviewer, if approved, uses `template: area`.
+- Recommended default shape is one combined reviewer using prompt file
+  `prompts/reviewers/clean-code-solid-reviewer.md` and an expected report like
+  `NN-clean-code-solid-review.md`.
+- If the user explicitly chose `split`, use two area reviewers:
+  - `prompts/reviewers/clean-code-reviewer.md` for `CC-*` local maintainability concerns
+  - `prompts/reviewers/solid-reviewer.md` for `CA-*` SOLID / class-design concerns
+- Keep dedicated cross-cutting reviewers scoped to changed non-test Java code and
+  maintainability/design quality. Do not let them absorb business-flow correctness, integration
+  semantics, persistence correctness, runtime operability, documentation accuracy, or
+  tests/proof-strength obligations already assigned to other reviewers.
+- For the combined reviewer, blend concrete `CC-*` and `CA-*` items into one concise checklist; for
+  split reviewers, keep `CC-*` items in the clean-code reviewer and `CA-*` items in the SOLID
+  reviewer.
+- For dedicated cross-cutting reviewers, `primaryFilesBlock` should usually point to changed
+  production Java files or the dominant Java packages in scope, not the entire repo or docs/tests
+  trees. Use `relevantSpecSectionsBlock` only when the spec materially defines architectural
+  boundaries relevant to the design critique; otherwise use `none`.
+- If there is little or no changed non-test Java code, recommend `none` unless the user explicitly
+  wants a broader cross-cutting design pass.
 - If the user supplied `manualReviewerDefinitions`, prefer them over auto-derived material.
 
 ## Instantiation Procedure
@@ -276,7 +335,9 @@ Derivation rules:
 3. Collect missing core values.
 4. Run the review-area discovery and approval flow above unless complete manual reviewer definitions
    were already supplied and accepted. Ensure the final approved reviewer list still contains a
-   tests/proof-strength reviewer unless the user explicitly rejected it.
+   tests/proof-strength reviewer unless the user explicitly rejected it. When meaningful non-test
+   Java code is in scope, ensure the user also explicitly approves or rejects the optional
+   cross-cutting clean-code / SOLID reviewer choice before files are created.
 5. Copy shared runtime files by default: `README.md`, `workflow.md`, `orchestrator.md`,
    `fragments/`, `policies/`, `templates/`, `prompts/consolidator.md`, and `prompts/verifier.md`.
 6. Create one concrete reviewer prompt per approved reviewer entry by copying:
@@ -371,6 +432,9 @@ Checks:
 - consolidated-report theme sections match the final theme list; no `<theme_*>` placeholders remain
 - non-test reviewer `focusChecklistBlock` content is concrete, area-specific, and does not leak raw
   catalog-only helper prose or unresolved category placeholders into active prompts
+- if the user approved a dedicated cross-cutting clean-code / SOLID reviewer, its prompt/report
+  paths exist and its focus/out-of-scope blocks keep it maintainability/design-scoped rather than
+  duplicating another reviewer's full correctness contract
 - no stale feature names, slugs, old reviewer prompt/report paths, or source-template refs remain in
   active files; if `staleFeatureTermsToCheck` exists, search each term
 - copied files still describe the intended review-pack scope and do not broaden reviewer
@@ -381,7 +445,8 @@ If a check fails, fix safely or report the blocker. Do not guess values.
 ## Completion Report
 
 Reply briefly with: target path; discovery basis used (spec-backed or diff-only); reviewer areas
-suggested and then created; focus-checklist selection approach used; shared files/dirs created or
+suggested and then created; whether a dedicated cross-cutting clean-code / SOLID reviewer was
+proposed and created; focus-checklist selection approach used; shared files/dirs created or
 updated; path-existence audit result for spec/context/reports locations; unresolved placeholders or
 stale terms; ready for orchestrated use, direct/manual use, or blocked; user decisions still
 needed. Do not paste generated file contents.
