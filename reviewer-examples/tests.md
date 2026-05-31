@@ -1,42 +1,42 @@
 # Reviewer Prompt — Test Coverage / Proof Strength / Test Design
 
 Direct/manual runs: apply reviewer task assembly from
-`docs/feature-sync-meter-mapping-data/review/workflow.md`, including
-`docs/feature-sync-meter-mapping-data/review/policies/scout-delegation.md`.
+`docs/features/example-event-sync/review/workflow.md`, including
+`docs/features/example-event-sync/review/policies/scout-delegation.md`.
 
 ## Mandatory output file
 
 Write full markdown report to:
-`docs/feature-sync-meter-mapping-data/review/reports/05-tests.md`
+`docs/features/example-event-sync/review/reports/05-tests.md`
 
 ## Additional required context
 
 For retry-container proof, read:
-`docs/feature-sync-meter-mapping-data/adr/0002-retry-container-contract-test-strategy.md`
+`docs/features/example-event-sync/adr/0002-retry-container-contract-test-strategy.md`
 
 ## Area contract
 
 - Repository area: `.`
 - Review area: test coverage, proof strength, test design, and test-related dependency/build hygiene
 - Report title: `# Test Review Report`
-- Scope summary: `Test coverage, suite design, and test code quality for the meter-mapping sync feature`
+- Scope summary: `Test coverage, suite design, and test code quality for the example event-sync feature`
 - Finding categories: `tests | spec_compliance | bug_risk | code_quality | architecture`
 - Additional context references default: `none`, or the ADR above with referenced sections when relevant
 - Additional context checked default: the ADR above with checked section references
 
 ## Relevant spec sections
 
-- `docs/feature-sync-meter-mapping-data/specification/05-verification-and-acceptance.md`
+- `docs/features/example-event-sync/specification/05-verification-and-acceptance.md`
   - `14.1 Connector Test Boundary`
   - `14.2 New Business-Flow Integration Test`
   - `14.3 Repository Write Tests`
   - `14.4 Downstream Handoff Coverage`
   - `14.5 Failure Coverage`
   - `17. Acceptance Criteria`
-- `docs/feature-sync-meter-mapping-data/specification/01-runtime-behavior.md`
+- `docs/features/example-event-sync/specification/01-runtime-behavior.md`
   - `4.4 Operation Handling`
   - `5. Event Field Validation`
-  - `6.3 CAF Response Handling And Resilience Classification`
+  - `6.3 External Lookup Response Handling And Resilience Classification`
   - `7.3 Idempotent Create Semantics`
   - `8.1 Record-Level Processing`
   - `8.2 Kafka Value Deserialization And Invalid Kafka Value Handling`
@@ -44,37 +44,37 @@ For retry-container proof, read:
   - `8.4 Terminal States That Acknowledge`
   - `8.5 Failure States That Do Not Acknowledge`
   - `8.6 Persistence Failure Classification`
-- `docs/feature-sync-meter-mapping-data/specification/02-logging-and-operational-behavior.md`
+- `docs/features/example-event-sync/specification/02-logging-and-operational-behavior.md`
   - `9.1 Repair-Grade Logging`
   - `9.3 Startup Validation`
-- `docs/feature-sync-meter-mapping-data/specification/03-implementation-and-configuration.md`
-  - `10.1 Master-Data Properties`
-  - `10.2 New CAF Properties`
+- `docs/features/example-event-sync/specification/03-implementation-and-configuration.md`
+  - `10.1 Feature Properties`
+  - `10.2 External Lookup Properties`
   - `10.4 Resilience Configuration`
   - `13.1 Kafka Consumer And Invalid-Value Handling Details`
-  - `13.2 CAF Client And Resilience Implementation Details`
+  - `13.2 External Lookup Client And Resilience Implementation Details`
   - `13.3 Persistence Classification Implementation Details`
-  - `13.4 Debezium Event And Validation Implementation Details`
+  - `13.4 CDC Event And Validation Implementation Details`
 
 ## Primary files
 
 Inspect all changed test files under `src/test/java/**`, especially:
 
-- `src/test/java/com/arvato/smartenergy/storageengine/MasterDataMeterMappingConsumerTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/MasterDataChangesConsumerRecordTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/MeterMappingRepositoryMySqlTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/config/MasterDataChangesConsumerConfigUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/config/MasterDataChangesStartupValidationUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/config/ResilienceConfigUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/controller/MasterDataChangesConsumerUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/service/CafClientTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/service/CafClientUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/service/CafLookupServiceUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventHandlerUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeEventJSONSerdeUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeLogFormatterUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/service/MasterDataChangeRowExtractorUnitTest.java`
-- `src/test/java/com/arvato/smartenergy/storageengine/service/MeterMappingRepositoryUnitTest.java`
+- `src/test/java/com/example/app/EventSyncConsumerTest.java`
+- `src/test/java/com/example/app/DomainChangesConsumerRecordTest.java`
+- `src/test/java/com/example/app/EntityMappingRepositoryMySqlTest.java`
+- `src/test/java/com/example/app/config/DomainChangesConsumerConfigUnitTest.java`
+- `src/test/java/com/example/app/config/DomainChangesStartupValidationUnitTest.java`
+- `src/test/java/com/example/app/config/ResilienceConfigUnitTest.java`
+- `src/test/java/com/example/app/controller/DomainChangesConsumerUnitTest.java`
+- `src/test/java/com/example/app/service/LookupClientTest.java`
+- `src/test/java/com/example/app/service/LookupClientUnitTest.java`
+- `src/test/java/com/example/app/service/LookupServiceUnitTest.java`
+- `src/test/java/com/example/app/service/DomainEventHandlerUnitTest.java`
+- `src/test/java/com/example/app/service/DomainEventJsonSerdeUnitTest.java`
+- `src/test/java/com/example/app/service/DomainChangeLogFormatterUnitTest.java`
+- `src/test/java/com/example/app/service/DomainRowExtractorUnitTest.java`
+- `src/test/java/com/example/app/service/EntityMappingRepositoryUnitTest.java`
 - `src/test/resources/log4j2.xml`
 - `pom.xml`
 
@@ -108,8 +108,8 @@ Do not raise low-ROI exhaustive proof gaps such as exact timing proof, all SQL/t
 
 ## Report specialization
 
-Use `docs/feature-sync-meter-mapping-data/review/templates/area-report.md` with area contract values; report path:
-`docs/feature-sync-meter-mapping-data/review/reports/05-tests.md`.
+Use `docs/features/example-event-sync/review/templates/area-report.md` with area contract values; report path:
+`docs/features/example-event-sync/review/reports/05-tests.md`.
 
 Start the report with this area-specific section before `## Findings`:
 

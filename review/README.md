@@ -71,9 +71,9 @@ Spec-backed initiation:
 ```text
 Run `review/instantiate.md`.
 Create the review pack at:
-`docs/feature-sync-meter-mapping-data/review`
+`docs/features/<feature_slug>/review`
 Use this spec:
-`docs/feature-sync-meter-mapping-data/specification/00-overview.md`
+`docs/features/<feature_slug>/specification/00-overview.md`
 Ask me for any missing values.
 ```
 
@@ -82,7 +82,7 @@ Diff-only initiation when no feature spec is available:
 ```text
 Run `review/instantiate.md`.
 Create the review pack at:
-`docs/feature-sync-meter-mapping-data/review`
+`docs/features/<feature_slug>/review`
 No authoritative spec is available.
 Ask me for any missing values.
 ```
