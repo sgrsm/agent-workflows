@@ -60,6 +60,8 @@ for the instantiated resolve prompt pack. Use repository-root-relative paths eve
 - `CONTINUATION_POLICY` = `<resolve_pack_base_path>/policies/continuation.md`
 - `SOURCE_DOC_POLICY` = `<resolve_pack_base_path>/policies/source-document-reconciliation.md`
 - `FP_POLICY` = `<resolve_pack_base_path>/policies/false-positive-and-disputes.md`
+- `PROJECT_CONTEXT_FILES` = ordered repo-root-relative context file list in
+  [Project Context Files](#project-context-files)
 - `FALSE_POSITIVE_REVIEWER_PROMPT` =
   `<resolve_pack_base_path>/prompts/false-positive-reviewer.md`
 - `PLANNER_PROMPT` = `<resolve_pack_base_path>/prompts/planner.md`
@@ -68,6 +70,23 @@ for the instantiated resolve prompt pack. Use repository-root-relative paths eve
   `<resolve_pack_base_path>/prompts/implementation-reviewer.md`
 - `SOURCE_DOCUMENT_UPDATER_PROMPT` =
   `<resolve_pack_base_path>/prompts/source-document-updater.md`
+
+## Project Context Files
+
+Applicable repository instruction files for this instantiated resolve pack, ordered broadest to most
+specific:
+
+<project_context_files>
+
+These files are explicit runtime inputs because descendant/module-local `AGENTS.md` files may not be
+auto-loaded when the harness cwd is the repository root. If the list is exactly `- none`, there are
+no project context files to read. Otherwise, the coordinator and every false-positive reviewer,
+planner, implementer, implementation reviewer, and scout must preserve this list in stage or
+child-task prompts. Stage agents must read every listed file before issue-specific inspection or
+implementation decisions. More-specific files add to or override parent instructions for files under
+their scope. If a listed file is missing/unreadable, or if context instructions conflict with a
+resolver policy or binding user preference, stop for clarification instead of silently ignoring the
+instruction.
 
 ## Run Artifact Layout
 
@@ -96,6 +115,7 @@ All run artifacts live under `RUN_DOCS_DIR`.
   handles only its own scoped task.
 - Builds, tests, formatting, and code verification run only inside the appropriate stage or the
   equivalent manual operator step.
+- Pass `PROJECT_CONTEXT_FILES` to every eligible stage and child scout.
 - Planner output content is an ephemeral planner-to-implementer transfer artifact. The automated
   orchestrator must not read it; after the implementer returns `done`, the coordinator clears the
   contents of `RUN_DOCS_DIR/plans/` before spawning the independent implementation reviewer.
@@ -146,10 +166,10 @@ Stage files are the aliases above.
 
 | Stage | Prompt / entry point | Role/profile | Required runtime inputs | Success output | Artifacts written |
 |---|---|---|---|---|---|
-| False-positive verification | `FALSE_POSITIVE_REVIEWER_PROMPT` | `reviewer` | current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `reviews/`, `false-positive-disputes/`, and `handoff/` directories; optional handoff path and user answer | `confirmed: <absolute path>` or `disputed: <absolute path>` plus severity and summary | confirmation or dispute report; optional clarification handoff |
-| Planning | `PLANNER_PROMPT` | `planner` | current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `plans/` and `handoff/` directories; optional handoff path and user answer | absolute plan path under `RUN_DOCS_DIR/plans/` | ephemeral plan file, cleared after implementer success; optional clarification handoff |
-| Implementation | `IMPLEMENTER_PROMPT` | `worker` | planner-returned absolute plan path; run-specific `handoff/` directory; optional handoff path and user answer | `done` | code/test/config/docs changes as needed; optional clarification handoff |
-| Independent implementation review | `IMPLEMENTATION_REVIEWER_PROMPT` | `reviewer` | original current-finding issue packet; `finding-start-sha`; run-specific `plans/`, `reviews/`, and `handoff/` directories; optional handoff path and user answer | `pass: <absolute path>`, `needs_fix: <absolute path>`, or `blocked: <absolute path>` | review report; optional clarification handoff |
+| False-positive verification | `FALSE_POSITIVE_REVIEWER_PROMPT` | `reviewer` | `PROJECT_CONTEXT_FILES`; current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `reviews/`, `false-positive-disputes/`, and `handoff/` directories; optional handoff path and user answer | `confirmed: <absolute path>` or `disputed: <absolute path>` plus severity and summary | confirmation or dispute report; optional clarification handoff |
+| Planning | `PLANNER_PROMPT` | `planner` | `PROJECT_CONTEXT_FILES`; current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `plans/` and `handoff/` directories; optional handoff path and user answer | absolute plan path under `RUN_DOCS_DIR/plans/` | ephemeral plan file, cleared after implementer success; optional clarification handoff |
+| Implementation | `IMPLEMENTER_PROMPT` | `worker` | `PROJECT_CONTEXT_FILES`; planner-returned absolute plan path; run-specific `handoff/` directory; optional handoff path and user answer | `done` | code/test/config/docs changes as needed; optional clarification handoff |
+| Independent implementation review | `IMPLEMENTATION_REVIEWER_PROMPT` | `reviewer` | `PROJECT_CONTEXT_FILES`; original current-finding issue packet; `finding-start-sha`; run-specific `plans/`, `reviews/`, and `handoff/` directories; optional handoff path and user answer | `pass: <absolute path>`, `needs_fix: <absolute path>`, or `blocked: <absolute path>` | review report; optional clarification handoff |
 | Source-document update | `SOURCE_DOCUMENT_UPDATER_PROMPT` | `worker` | final per-finding outcome ledger matching `SOURCE_DOC_POLICY` | `done` | edits to `SOURCE_DOC` only |
 
 ## Canonical Issue Packet Schema
@@ -235,6 +255,9 @@ execution details.
 
 Fill stage prompts only with Stage I/O inputs plus these constraints:
 
+- Include the exact `PROJECT_CONTEXT_FILES` list from this workflow in false-positive reviewer,
+  planner, implementer, and implementation-reviewer prompts; do not pass only an implicit harness
+  context assumption.
 - False-positive reviewer/planner issue packets use the canonical schema plus only issue-scoped
   support, including raw `userPreference` plus normalized `userPreferenceOptionNumber` and
   `userPreferenceAdjustment` when present in `SOURCE_DOC`.

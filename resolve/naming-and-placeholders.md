@@ -55,7 +55,7 @@ Files may mix contexts; e.g. a final-report path can combine instantiation
 
 | Context | Allowed placeholders | Where they may remain after instantiation |
 |---|---|---|
-| Instantiation, replace before use | `<feature_name>`, `<feature_slug>`, `<resolve_pack_base_path>`, `<source_doc_path>`, `<review_reports_dir>`, `<run_docs_base_path>`, `<final_report_output_path>`, `<run_id_pattern>`, `<branch_name_pattern>` | Nowhere in the instantiated active pack, except explicit notes documenting the template source. |
+| Instantiation, replace before use | `<feature_name>`, `<feature_slug>`, `<resolve_pack_base_path>`, `<source_doc_path>`, `<review_reports_dir>`, `<run_docs_base_path>`, `<final_report_output_path>`, `<run_id_pattern>`, `<branch_name_pattern>`, `<project_context_files>` | Nowhere in the instantiated active pack, except explicit notes documenting the template source. |
 | Runtime orchestration/task assembly | `<RUN_ID>`, `<run_id>`, `<finding-start-sha>`, `<starting-commit-sha>`, `<severityPart>`, `<handoff>`, `<NN>`, `<N>`, `<short-slug>`, `<title>`, `<severity>`, `<repo-relative PLANS_DIR>`, `<repo-relative REVIEWS_DIR>`, `<repo-relative HANDOFF_DIR>`, any placeholder beginning with `<absolute ...>`, and any `<insert ...>` slot | `workflow.md`, `manual.md`, `orchestrator.md`, stage prompts, output contracts, and generated run artifacts. |
 | Example/schema text only | `<integer>`, `<number>`, `<string>`, schema unions such as `<string \| null>`, `<repo-relative path \| null>`, or `<start-end \| null>`, `<dir>`, `<issue-specific evidence bullet>`, `<repo-relative path>`, `<repo-relative path under review/reports/>`, `<repo-relative path under REVIEW_REPORTS_DIR>`, `<best available heading or locator>`, `<original severity>`, `<re-evaluated severity>`, `<short blocker summary>`, `<short failure summary>`, `<short question>`, `<1-2 sentence ...>`, `<2-3 sentence ...>` | Markdown examples, schema blocks, and output-contract examples only. |
 
@@ -74,6 +74,13 @@ Replace before using the copied pack:
 - `<run_id_pattern>`: documented new-run id format.
 - `<branch_name_pattern>`: documented branch naming pattern, usually using `<feature_slug>` and
   runtime run id.
+- `<project_context_files>`: Markdown bullet list of confirmed repo-root-relative `AGENTS.md`
+  context files ordered broadest to most specific, or exactly `- none` when no applicable files
+  exist. Typical monorepo example:
+  ```md
+  - `AGENTS.md`
+  - `path/to/module/AGENTS.md`
+  ```
 
 `<source_doc_path>` must point to a doc already seeded from
 `review/templates/final-evaluation.md`.
@@ -116,6 +123,9 @@ instantiation placeholders; classify them by the allowlist table.
 - `manual.md` is a non-canonical human runbook and must not contradict `workflow.md`.
 - Verify `<source_doc_path>` and `<review_reports_dir>` agree with each other and copied review
   outputs.
+- Verify the Project context files list contains applicable repo-wide and module-local `AGENTS.md`
+  files for the target scope. Use explicit path checks because these files may be ignored by Git or
+  by search tools.
 
 ## Path And Workflow Validation
 
@@ -123,6 +133,8 @@ instantiation placeholders; classify them by the allowlist table.
 - Verify `<source_doc_path>` exists and has the resolver-seed shape required by
   `<resolve_pack_base_path>/policies/source-document-reconciliation.md`.
 - Verify `<review_reports_dir>` exists and matches source-report refs cited in `SOURCE_DOC`.
+- Verify `<project_context_files>` has been replaced by the confirmed context list; if it is not
+  `- none`, every listed repo-root-relative path exists and is readable.
 - Ensure `<run_docs_base_path>` exists or can be created during resolver runs.
 - Ensure `<final_report_output_path>` resolves to the
   `RUN_DOCS_DIR/final/100-resolution-final-report.md` convention and normally contains runtime
@@ -155,6 +167,8 @@ Before running a manually instantiated pack, confirm:
 - `REVIEW_REPORTS_DIR` exists and matches expected source-report refs
 - `RUN_DOCS_DIR` and `FINAL_REPORT` align with `workflow.md`; final report pattern retains
   `<RUN_ID>`
+- Project context files list is confirmed, ordered broadest to most specific, and includes both
+  repo-wide and module-local `AGENTS.md` files when applicable
 - policy/prompt refs point to the instantiated target pack, not source template pack
 - no old feature names, slugs, branch examples, paths, or source-doc refs remain in active files
 - readiness is classified as ready for orchestrated use, ready for manual use, or blocked

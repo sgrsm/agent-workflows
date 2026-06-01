@@ -15,6 +15,9 @@ Aliases from `workflow.md`:
 - `PLANS_DIR` = `<insert run-specific plans directory>`
 - `HANDOFF_DIR` = `<insert run-specific handoff directory>`
 
+Project context files (repo-root-relative, ordered broadest to most specific):
+<project_context_files>
+
 Issue packet (canonical schema from `workflow.md`; current finding only):
 <insert only the current finding's issue-specific context>
 
@@ -29,6 +32,7 @@ User answer, if any:
 
 Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
+- Read every listed Project context file, unless the list is `- none`, before inspecting code/tests/supporting material or choosing an approach.
 - If reopened after disputed false-positive verification, also read `FP_POLICY` and treat dispute report + isolated original source-report section as the primary issue definition; do not widen to consolidated/final/full source reports unless truly necessary and justified.
 - If a handoff path is provided, read it first.
 - Do not modify production code or tests.

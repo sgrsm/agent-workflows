@@ -13,6 +13,9 @@ Aliases from `workflow.md`:
 - `CONTINUATION_POLICY` = `<resolve_pack_base_path>/policies/continuation.md`
 - `HANDOFF_DIR` = `<insert run-specific handoff directory>`
 
+Project context files (repo-root-relative, ordered broadest to most specific):
+<project_context_files>
+
 Plan path:
 <absolute path returned by planner>
 
@@ -24,6 +27,7 @@ User answer, if any:
 
 Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
+- Read every listed Project context file, unless the list is `- none`, before reading the plan or inspecting/editing code/tests/configuration.
 - Read the plan as guidance/advice, not a hard script. The current finding, binding user
   preference/adjustment, stage policies, and acceptance needs define scope; the plan does not.
 - Follow the plan by default to avoid duplicate research, but make reasonable, repo-evidenced,

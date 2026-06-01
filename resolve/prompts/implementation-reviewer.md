@@ -18,6 +18,9 @@ Aliases from `workflow.md`:
 - `REVIEWS_DIR` = `<insert run-specific reviews directory>`
 - `HANDOFF_DIR` = `<insert run-specific handoff directory>`
 
+Project context files (repo-root-relative, ordered broadest to most specific):
+<project_context_files>
+
 Issue packet (canonical schema from `workflow.md`; current finding only):
 <insert only the current finding's issue-specific context>
 
@@ -53,6 +56,7 @@ Independence rules:
 
 Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
+- Read every listed Project context file, unless the list is `- none`, before inspecting diffs/code/tests or deciding the verdict; return `needs_fix` for violations of binding context-file instructions.
 - If a handoff path is provided, read it first.
 - Run targeted verification independently when practical, following `COMMON_STAGE_POLICY` repository build/toolchain rules.
 - If `userPreferenceOptionNumber` in the issue packet is non-null, follow `COMMON_STAGE_POLICY`
@@ -60,7 +64,7 @@ Rules:
   and any safe `userPreferenceAdjustment`.
 
 Task:
-1. Verify whether the current code resolves the finding and is minimal, maintainable, robust, expressive, and testable.
+1. Verify whether the current code resolves the finding and complies with the listed Project context files while remaining minimal, maintainable, robust, expressive, and testable.
 2. Record only reviewer-run commands, or commands not run and why.
 3. Classify implemented approach as `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`, or `Custom`, while enforcing any binding user preference from the issue packet.
 4. If reopened after disputed false-positive verification, set `Effective follow-up severity for commit labeling:` from the dispute report's independently re-evaluated severity when available: `blocker`, `major`, `minor`, or `severity-unknown`; do not copy source-document severity.

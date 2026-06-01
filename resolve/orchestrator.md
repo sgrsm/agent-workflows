@@ -42,8 +42,8 @@ exists, ask for `RUN_ID` before creating the branch.
 ## Required References
 
 Before each stage, read the exact prompt and relevant policy aliases from `workflow.md`:
-`COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, `CONTINUATION_POLICY`, `SOURCE_DOC_POLICY`, and
-`FP_POLICY`.
+`COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, `CONTINUATION_POLICY`, `SOURCE_DOC_POLICY`,
+`FP_POLICY`, and the `PROJECT_CONTEXT_FILES` list.
 
 ## Hard Invariants
 
@@ -62,14 +62,17 @@ Before each stage, read the exact prompt and relevant policy aliases from `workf
 8. Evidence-gathering, planning, implementation, and implementation-review stages follow
    `COMMON_STAGE_POLICY`; source-doc updater follows only `SOURCE_DOC_POLICY` and its prompt unless
    stated otherwise.
-9. Plan boundary: orchestrator must not read planner output content; only verify/manage the plan
-   path, pass it to the implementer, and clear `RUN_DOCS_DIR/plans/` after implementer success
-   before independent review.
-10. Reviewer/scout independence: plan-blind; no implementer notes, command output, explanations,
+9. Pass `PROJECT_CONTEXT_FILES` explicitly to every false-positive reviewer, planner, implementer,
+   implementation reviewer, and any child scout. Do not assume module-local `AGENTS.md` files were
+   injected by the harness.
+10. Plan boundary: orchestrator must not read planner output content; only verify/manage the plan
+    path, pass it to the implementer, and clear `RUN_DOCS_DIR/plans/` after implementer success
+    before independent review.
+11. Reviewer/scout independence: plan-blind; no implementer notes, command output, explanations,
     or plan-derived summaries.
-11. On `blocked: user clarification required - ...`, follow `CONTINUATION_POLICY`: pause finding,
+12. On `blocked: user clarification required - ...`, follow `CONTINUATION_POLICY`: pause finding,
     ask user, respawn same role/stage with original inputs, answer, and handoff path.
-12. Until source-doc reconciliation, record/finalize statuses only in the outcome ledger; do not
+13. Until source-doc reconciliation, record/finalize statuses only in the outcome ledger; do not
     edit `SOURCE_DOC` early.
 
 ## Outcome Taxonomy
@@ -84,21 +87,24 @@ Use `workflow.md` Outcome Taxonomy. Final ledger statuses are only those listed 
 2. Choose a unique `RUN_ID`, matching branch name, and `RUN_DOCS_DIR`; if candidate `RUN_DOCS_DIR`
    already contains Markdown artifacts, choose another run id. Abort only if a safe unique run
    cannot be chosen.
-3. Read `SOURCE_DOC`, then `SOURCE_DOC_POLICY`. Continue only if at least one finding has
+3. If `PROJECT_CONTEXT_FILES` is not exactly `- none`, read/verify every listed repo-root-relative
+   path. If any listed file is missing or unreadable, abort before branching; do not silently
+   continue with only harness auto-loaded context.
+4. Read `SOURCE_DOC`, then `SOURCE_DOC_POLICY`. Continue only if at least one finding has
    `Resolution status: pending` or `Confirmation status: pending`; otherwise abort as already
    reconciled or not seeded. Do not treat legacy/manual non-pending markers such as `ignore`,
    `ignored`, `skip`, `skipped`, `resolved`, `non-actionable`, `non_actionable`, or `invalid`
    as actionable.
-4. Enumerate findings from `## Final Evaluation By Finding`. Capture only issue-specific fields
+5. Enumerate findings from `## Final Evaluation By Finding`. Capture only issue-specific fields
    needed to build the canonical issue packet from `workflow.md`; keep source-report locators
    minimal.
-5. Do not eagerly extract full source-report finding sections. Store minimal locators and extract
+6. Do not eagerly extract full source-report finding sections. Store minimal locators and extract
    only directly relevant passages when needed; for disputed false-positive follow-up, extract the
    isolated original source-report section lazily under `FP_POLICY`.
-6. Record starting branch and SHA: `git branch --show-current`, `git rev-parse HEAD`.
-7. Create the resolution branch using the branch name pattern from `workflow.md` and `RUN_ID`
+7. Record starting branch and SHA: `git branch --show-current`, `git rev-parse HEAD`.
+8. Create the resolution branch using the branch name pattern from `workflow.md` and `RUN_ID`
    unless the user provided a branch. Abort if branch creation fails.
-8. Create `RUN_DOCS_DIR/{plans,reviews,false-positive-disputes,handoff,final}/`.
+9. Create `RUN_DOCS_DIR/{plans,reviews,false-positive-disputes,handoff,final}/`.
 
 ## Per-Finding Primary Pass
 
@@ -138,8 +144,8 @@ clarification if it conflicts with workflow/stage policy or safety.
 ## False-Positive Workflow
 
 Read `COMMON_STAGE_POLICY`, `FP_POLICY`, and `FALSE_POSITIVE_REVIEWER_PROMPT`; spawn exactly one
-`reviewer` using the prompt, issue packet, and run-specific directories. Wait before doing anything
-else.
+`reviewer` using the prompt, `PROJECT_CONTEXT_FILES`, issue packet, and run-specific directories.
+Wait before doing anything else.
 
 Handle outputs:
 
@@ -159,12 +165,13 @@ Handle outputs:
 Read `COMMON_STAGE_POLICY`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`, and
 `IMPLEMENTATION_REVIEWER_PROMPT` before use.
 
-1. Spawn one `planner`; wait. It must return only an absolute plan path under `RUN_DOCS_DIR/plans/`,
-   or `blocked...`.
+1. Spawn one `planner` with `PROJECT_CONTEXT_FILES`; wait. It must return only an absolute plan
+   path under `RUN_DOCS_DIR/plans/`, or `blocked...`.
 2. Planner clarification -> follow `CONTINUATION_POLICY`. Planner blocked/invalid plan -> ledger
    `blocked`, preserve useful docs, cleanup. Do not read the plan; verify only that the path
    exists.
-3. Spawn one `worker` implementer with only the plan path and minimal workflow constraints; wait.
+3. Spawn one `worker` implementer with only `PROJECT_CONTEXT_FILES`, the plan path, and minimal
+   workflow constraints; wait.
 4. Implementer clarification -> follow `CONTINUATION_POLICY`. Implementer `blocked` -> ledger
    `blocked`, no reviewer, cleanup. Implementer `failed` -> ledger `implementation_failed`, no
    reviewer, cleanup.
@@ -173,9 +180,9 @@ Read `COMMON_STAGE_POLICY`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`, and
    current run's `RUN_DOCS_DIR/plans/`; never delete outside that directory. If plan cleanup fails
    or plan files remain visible, ledger `verification_blocked`, no reviewer, cleanup/report the
    coordinator error.
-6. Spawn one independent `reviewer` with the original issue packet and `<finding-start-sha>` only.
-   Do not provide plan path, implementer notes, implementer command output, or plan-derived
-   summaries.
+6. Spawn one independent `reviewer` with `PROJECT_CONTEXT_FILES`, the original issue packet, and
+   `<finding-start-sha>` only. Do not provide plan path, implementer notes, implementer command
+   output, or plan-derived summaries.
 7. Reviewer `pass: <absolute review doc>` -> read reviewer report and extract the exact labels
    `Implemented resolution approach:`, `Selected resolution approach label:`, and
    `Effective follow-up severity for commit labeling:` when applicable. If the issue packet carries

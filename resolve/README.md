@@ -17,7 +17,8 @@ Recommended order:
    values, copy runtime files, replace placeholders, and audit the result.
 2. Manual alternative: copy the runtime pack files to the real resolve-pack location.
 3. Fill `workflow.md` first.
-4. Resolve the remaining instantiation placeholders in the policy and prompt files.
+4. Resolve the remaining instantiation placeholders in the policy and prompt files, including the
+   discovered/confirmed Project context files (`AGENTS.md`) list.
 5. Confirm `<source_doc_path>` already follows the seeded resolver shape from
    `review/templates/final-evaluation.md`.
 6. Choose an execution mode:
@@ -85,9 +86,12 @@ Manual alternative:
    review template pack schema.
 5. Confirm `<review_reports_dir>` matches the source-report references expected by the source
    document.
-6. Confirm `<run_docs_base_path>` and `<final_report_output_path>` are aligned with the run layout
+6. Confirm the workflow's Project context files list includes the repo-wide `AGENTS.md` and any
+   module-local `AGENTS.md` that applies to the copied pack scope, ordered broadest to most
+   specific. If none exist, record `- none`.
+7. Confirm `<run_docs_base_path>` and `<final_report_output_path>` are aligned with the run layout
    in `workflow.md`.
-7. Confirm the copied policy and prompt files still read naturally after placeholder replacement.
+8. Confirm the copied policy and prompt files still read naturally after placeholder replacement.
 
 ## Post-Instantiation Validation Checklist
 
@@ -95,6 +99,8 @@ Before running the copied pack, verify:
 
 - no unresolved instantiation placeholders remain in active workflow files; only the runtime and
   example/schema placeholders allowed by the source template's `naming-and-placeholders.md` remain
+- the Project context files list contains the confirmed repo-root-relative `AGENTS.md` paths, such
+  as repo-wide plus module-local files, or exactly `- none`
 - `<source_doc_path>` exists and is seeded for resolver work with at least one pending resolver line
 - `<review_reports_dir>` exists and matches the report references cited by the source document
 - `<run_docs_base_path>` exists or can be created during the run
@@ -123,6 +129,8 @@ Use this mode for normal end-to-end resolver execution.
 - Shared roles/profiles required by the copied workflow, normally `planner`, `worker`, and
   `reviewer`.
 - Repository-root execution for the orchestrator and all top-level stages.
+- Explicit Project context files list in `workflow.md`; stages read these files rather than relying
+  solely on harness auto-loading of `AGENTS.md`.
 - Clean worktree before the run starts.
 - Seeded `<source_doc_path>` with at least one `Resolution status: pending` or
   `Confirmation status: pending` line.

@@ -11,6 +11,16 @@ Companion files: `<resolve_pack_base_path>/workflow.md`,
 `<resolve_pack_base_path>/policies/scout-delegation.md`, and
 `<resolve_pack_base_path>/policies/continuation.md`.
 
+## Project Context Files
+
+Before issue-specific work, read all paths in the stage prompt's `Project context files` block
+unless it is exactly `- none`. Treat listed files as binding repository instructions; more-specific
+files add to or override parent instructions for files under their scope.
+
+This explicit read is required because repo-root cwd may not auto-load descendant `AGENTS.md`.
+Missing/unreadable files, or conflicts with resolver policy, stage restrictions, or binding user
+preference, require blocking/clarification.
+
 ## Core Rules
 
 1. Local repository evidence is primary for repository behavior. Prefer code, tests, specs,
@@ -34,9 +44,12 @@ Companion files: `<resolve_pack_base_path>/workflow.md`,
 9. Follow the dedicated policy files for scout delegation, continuation handoffs,
    false-positive/dispute handling, and source-document reconciliation rather than recreating those
    rules informally.
-10. Stage agents must not stage, commit, branch, reset, clean, or otherwise perform Git lifecycle
-   operations. Leave repository changes uncommitted for the coordinating layer unless a stage prompt
-   explicitly permits otherwise.
+10. Apply the listed project context files when selecting approaches, editing code/tests/config,
+    choosing verification commands, and reviewing compliance; implementation reviewers should return
+    `needs_fix` for violations of binding context-file instructions.
+11. Stage agents must not stage, commit, branch, reset, clean, or otherwise perform Git lifecycle
+    operations. Leave repository changes uncommitted for the coordinating layer unless a stage prompt
+    explicitly permits otherwise.
 
 ## Binding User Preferences
 
