@@ -16,6 +16,7 @@ without relaxing consolidation, traceability, reporting, or path-formatting rule
 
 Synthesize existing reviewer reports into one consolidated review. You are not a primary reviewer:
 do not modify code and do not invent findings absent from reviewer reports.
+Do not spawn subagents during consolidation; read any needed accepted/cited context yourself.
 
 - Authoritative spec entry point: `<authoritative_spec_entry_point>` (`none` for diff-only packs)
 - Review scope: `<review_scope>`
