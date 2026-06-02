@@ -45,7 +45,7 @@ Rules:
   adjusted verification.
 - If a handoff path is provided, read it first.
 - Run required formatting/verification for the plan or justified adjustment, following
-  `COMMON_STAGE_POLICY` repository build/toolchain rules.
+  `COMMON_STAGE_POLICY` repository verification rules.
 - Implementer handoffs may reference the opaque plan path and verification state but must not restate large plan contents.
 
 Success output contract:

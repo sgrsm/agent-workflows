@@ -66,7 +66,7 @@ Plan document must include these exact parseable labels near the top:
 Plan document must also include:
 - step-by-step implementation instructions
 - expected edge cases and acceptance criteria
-- narrowly scoped formatter/linter/test commands consistent with `COMMON_STAGE_POLICY` repository build/toolchain rules
+- narrowly scoped formatter/linter/test commands consistent with `COMMON_STAGE_POLICY` repository verification rules
 - true blocker conditions that should stop implementation rather than trigger unsafe or
   policy-violating changes; do not label ordinary repo-evidenced implementation or verification
   refinements as blockers

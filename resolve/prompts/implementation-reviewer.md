@@ -58,7 +58,7 @@ Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
 - Read every listed Project context file, unless the list is `- none`, before inspecting diffs/code/tests or deciding the verdict; return `needs_fix` for violations of binding context-file instructions.
 - If a handoff path is provided, read it first.
-- Run targeted verification independently when practical, following `COMMON_STAGE_POLICY` repository build/toolchain rules.
+- Run targeted verification independently when practical, following `COMMON_STAGE_POLICY` repository verification rules.
 - If `userPreferenceOptionNumber` in the issue packet is non-null, follow `COMMON_STAGE_POLICY`
   binding-user-preference rules: pass only an implementation that materially follows that option
   and any safe `userPreferenceAdjustment`.

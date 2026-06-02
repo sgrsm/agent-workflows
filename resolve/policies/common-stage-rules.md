@@ -51,6 +51,17 @@ preference, require blocking/clarification.
     operations. Leave repository changes uncommitted for the coordinating layer unless a stage prompt
     explicitly permits otherwise.
 
+## Quality Regression Guardrails
+
+For planning, implementation, and review:
+
+- Resolve the targeted issue without introducing an equivalent or worse smell elsewhere.
+- Keep extracted collaborators cohesive by reason to change; do not replace a broad class with a broad helper/mapper.
+- Keep unit tests at the intended boundary: collaborator behavior matrices belong in collaborator tests; parent/client tests cover orchestration, arguments, delegation, branching, resource cleanup, and boundary outcomes.
+- Do not unit-test private methods via reflection; test public behavior or extract private logic into a cohesive collaborator.
+- Map known boundary failures; do not hide unexpected programmer/runtime bugs behind domain/transport exceptions unless the local contract requires it.
+- Keep sentinel/null states explicit; do not silently coerce `null` to a sentinel unless the local contract documents it.
+
 ## Binding User Preferences
 
 When the issue packet has non-null `userPreferenceOptionNumber`, that option and any
@@ -63,21 +74,15 @@ adjustment; it cannot override workflow/stage policies, tool restrictions, repos
 clean-worktree requirements, or safety rules. If the bound option or adjustment is impossible,
 unsafe, stale, or policy-conflicting, stop for user clarification instead of choosing another path.
 
-## Repository Build And Toolchain Rules
+## Repository Verification Rules
 
-For stages that run verification commands or edit Java/configuration files:
+For stages that run formatting, verification, tests, or builds:
 
-- use Java 11 via `sdk use java 11.0.30-zulu`
-- include `-Dhelm.skip=true` with Maven commands
-- prefer the smallest relevant Maven scope
-- after Java/configuration edits, run the nearest
-  `mvn fmt:format -Dhelm.skip=true` with `-DsourceDirectory=<dir> -DskipTestSourceDirectory=true`
-  and/or `-DtestSourceDirectory=<dir> -DskipSourceDirectory=true`
-- do not run the formatter for docs-only changes
-- if the change adds or modifies any Spring/ApplicationContext-loading test, verification requires
-  a full-suite pass; for isolated non-context unit tests, targeted affected unit tests suffice
-- prefer targeted verification/test commands over broad repo-wide builds unless the finding truly
-  requires a wider scope
+- Follow listed Project context files first, then nearest repo build/config evidence.
+- Prefer the smallest relevant formatter/linter/test/build command that verifies the finding.
+- Broaden verification only when changes span modules, framework context wiring, generated artifacts, or local instructions require it.
+- If no local rule exists, infer from repo evidence and record the chosen command/rationale in the stage artifact.
+- If verification cannot run, record the intended command, blocker, and residual risk.
 
 ## Stage-Type Notes
 
