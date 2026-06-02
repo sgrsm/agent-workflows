@@ -20,7 +20,7 @@ for the instantiated resolve prompt pack. Use repository-root-relative paths eve
 
 - Max concurrent top-level subagents: 1 active top-level stage at a time
 - Max child scouts per top-level subagent: 3
-- Remediation attempts: 0
+- Max remediation attempts per actionable finding: 1
 - Run id pattern: `<run_id_pattern>`
 - Branch name pattern: `<branch_name_pattern>`
 - Run docs base path: `<run_docs_base_path>`
@@ -66,6 +66,8 @@ for the instantiated resolve prompt pack. Use repository-root-relative paths eve
   `<resolve_pack_base_path>/prompts/false-positive-reviewer.md`
 - `PLANNER_PROMPT` = `<resolve_pack_base_path>/prompts/planner.md`
 - `IMPLEMENTER_PROMPT` = `<resolve_pack_base_path>/prompts/implementer.md`
+- `REMEDIATION_IMPLEMENTER_PROMPT` =
+  `<resolve_pack_base_path>/prompts/remediation-implementer.md`
 - `IMPLEMENTATION_REVIEWER_PROMPT` =
   `<resolve_pack_base_path>/prompts/implementation-reviewer.md`
 - `SOURCE_DOCUMENT_UPDATER_PROMPT` =
@@ -81,12 +83,12 @@ specific:
 These files are explicit runtime inputs because descendant/module-local `AGENTS.md` files may not be
 auto-loaded when the harness cwd is the repository root. If the list is exactly `- none`, there are
 no project context files to read. Otherwise, the coordinator and every false-positive reviewer,
-planner, implementer, implementation reviewer, and scout must preserve this list in stage or
-child-task prompts. Stage agents must read every listed file before issue-specific inspection or
-implementation decisions. More-specific files add to or override parent instructions for files under
-their scope. If a listed file is missing/unreadable, or if context instructions conflict with a
-resolver policy or binding user preference, stop for clarification instead of silently ignoring the
-instruction.
+planner, implementer, remediation implementer, implementation reviewer, and scout must preserve this
+list in stage or child-task prompts. Stage agents must read every listed file before issue-specific
+inspection or implementation decisions. More-specific files add to or override parent instructions
+for files under their scope. If a listed file is missing/unreadable, or if context instructions
+conflict with a resolver policy or binding user preference, stop for clarification instead of
+silently ignoring the instruction.
 
 ## Run Artifact Layout
 
@@ -120,6 +122,10 @@ All run artifacts live under `RUN_DOCS_DIR`.
   orchestrator must not read it; after the implementer returns `done`, the coordinator clears the
   contents of `RUN_DOCS_DIR/plans/` before spawning the independent implementation reviewer.
   Human-driven/manual runs should preserve the same separation and clear plans before review.
+- At most one remediation implementer pass may run after an implementation reviewer returns
+  `needs_fix` with `Remediation retry eligible: yes`. Remediation receives the review report, not
+  the deleted plan or implementer notes, and may address only verdict-blocking current-finding
+  follow-up before independent review runs again.
 - Implementation plans are guidance, not hard scripts or scope boundaries; implementers follow them
   by default but may make reasonable, justified, finding-scoped adjustments/refinements when repo
   evidence or command results show a safer, simpler, or more verifiable path. They may adapt planned
@@ -160,7 +166,8 @@ Stage files are the aliases above.
 - Policies: `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, `CONTINUATION_POLICY`,
   `SOURCE_DOC_POLICY`, `FP_POLICY`
 - Prompts: `FALSE_POSITIVE_REVIEWER_PROMPT`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`,
-  `IMPLEMENTATION_REVIEWER_PROMPT`, `SOURCE_DOCUMENT_UPDATER_PROMPT`
+  `REMEDIATION_IMPLEMENTER_PROMPT`, `IMPLEMENTATION_REVIEWER_PROMPT`,
+  `SOURCE_DOCUMENT_UPDATER_PROMPT`
 
 ## Stage I/O Summary
 
@@ -169,6 +176,7 @@ Stage files are the aliases above.
 | False-positive verification | `FALSE_POSITIVE_REVIEWER_PROMPT` | `reviewer` | `PROJECT_CONTEXT_FILES`; current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `reviews/`, `false-positive-disputes/`, and `handoff/` directories; optional handoff path and user answer | `confirmed: <absolute path>` or `disputed: <absolute path>` plus severity and summary | confirmation or dispute report; optional clarification handoff |
 | Planning | `PLANNER_PROMPT` | `planner` | `PROJECT_CONTEXT_FILES`; current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `plans/` and `handoff/` directories; optional handoff path and user answer | absolute plan path under `RUN_DOCS_DIR/plans/` | ephemeral plan file, cleared after implementer success; optional clarification handoff |
 | Implementation | `IMPLEMENTER_PROMPT` | `worker` | `PROJECT_CONTEXT_FILES`; planner-returned absolute plan path; run-specific `handoff/` directory; optional handoff path and user answer | `done` | code/test/config/docs changes as needed; optional clarification handoff |
+| Review remediation | `REMEDIATION_IMPLEMENTER_PROMPT` | `worker` | `PROJECT_CONTEXT_FILES`; original current-finding issue packet; `finding-start-sha`; implementation review report with `Remediation retry eligible: yes`; run-specific `handoff/` directory; optional handoff path and user answer | `done` | bounded code/test/config/docs changes for verdict-blocking follow-up only; optional clarification handoff |
 | Independent implementation review | `IMPLEMENTATION_REVIEWER_PROMPT` | `reviewer` | `PROJECT_CONTEXT_FILES`; original current-finding issue packet; `finding-start-sha`; run-specific `plans/`, `reviews/`, and `handoff/` directories; optional handoff path and user answer | `pass: <absolute path>`, `needs_fix: <absolute path>`, or `blocked: <absolute path>` | review report; optional clarification handoff |
 | Source-document update | `SOURCE_DOCUMENT_UPDATER_PROMPT` | `worker` | final per-finding outcome ledger matching `SOURCE_DOC_POLICY` | `done` | edits to `SOURCE_DOC` only |
 

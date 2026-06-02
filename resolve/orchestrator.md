@@ -53,7 +53,8 @@ Before each stage, read the exact prompt and relevant policy aliases from `workf
 3. Top-level subagents may use only read-only `scout` children under `DELEGATION_POLICY`; scouts
    spawn no agents.
 4. Process one primary pass in `SOURCE_DOC` order, then one queued follow-up stage for disputed
-   false positives. No remediation loops/retries.
+   false positives. No remediation loops; allow at most one bounded review-remediation retry per
+   actionable finding when the reviewer marks it eligible.
 5. Keep context isolated to the current finding; pass no unrelated findings or review excerpts.
 6. Minimal sufficient change: balance small diff, reviewability, maintainability, robustness,
    expressiveness, testability, and business impact.
@@ -63,8 +64,8 @@ Before each stage, read the exact prompt and relevant policy aliases from `workf
    `COMMON_STAGE_POLICY`; source-doc updater follows only `SOURCE_DOC_POLICY` and its prompt unless
    stated otherwise.
 9. Pass `PROJECT_CONTEXT_FILES` explicitly to every false-positive reviewer, planner, implementer,
-   implementation reviewer, and any child scout. Do not assume module-local `AGENTS.md` files were
-   injected by the harness.
+   remediation implementer, implementation reviewer, and any child scout. Do not assume
+   module-local `AGENTS.md` files were injected by the harness.
 10. Plan boundary: orchestrator must not read planner output content; only verify/manage the plan
     path, pass it to the implementer, and clear `RUN_DOCS_DIR/plans/` after implementer success
     before independent review.
@@ -163,7 +164,8 @@ Handle outputs:
 ## Actionable Workflow
 
 Read `COMMON_STAGE_POLICY`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`, and
-`IMPLEMENTATION_REVIEWER_PROMPT` before use.
+`IMPLEMENTATION_REVIEWER_PROMPT` before normal use. Read `REMEDIATION_IMPLEMENTER_PROMPT` only if
+an eligible remediation retry is needed.
 
 1. Spawn one `planner` with `PROJECT_CONTEXT_FILES`; wait. It must return only an absolute plan
    path under `RUN_DOCS_DIR/plans/`, or `blocked...`.
@@ -180,10 +182,11 @@ Read `COMMON_STAGE_POLICY`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`, and
    current run's `RUN_DOCS_DIR/plans/`; never delete outside that directory. If plan cleanup fails
    or plan files remain visible, ledger `verification_blocked`, no reviewer, cleanup/report the
    coordinator error.
-6. Spawn one independent `reviewer` with `PROJECT_CONTEXT_FILES`, the original issue packet, and
+6. Set current-finding remediation attempts to 0.
+7. Spawn one independent `reviewer` with `PROJECT_CONTEXT_FILES`, the original issue packet, and
    `<finding-start-sha>` only. Do not provide plan path, implementer notes, implementer command
-   output, or plan-derived summaries.
-7. Reviewer `pass: <absolute review doc>` -> read reviewer report and extract the exact labels
+   output, previous review docs, or plan-derived summaries.
+8. Reviewer `pass: <absolute review doc>` -> read reviewer report and extract the exact labels
    `Implemented resolution approach:`, `Selected resolution approach label:`, and
    `Effective follow-up severity for commit labeling:` when applicable. If the issue packet carries
    binding `userPreferenceOptionNumber`, accept the pass only when the selected approach label is
@@ -193,9 +196,20 @@ Read `COMMON_STAGE_POLICY`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`, and
    user-selected option was not followed. On success, ledger `resolved`; commit current-finding
    implementation/tests/config/docs using the resolved-finding commit template from `workflow.md`;
    verify clean.
-8. Reviewer clarification -> follow `CONTINUATION_POLICY`. Reviewer `needs_fix` -> ledger
-   `review_failed`, no retry, cleanup. Reviewer `blocked` -> ledger `verification_blocked`, no
-   retry, cleanup.
+9. Reviewer clarification -> follow `CONTINUATION_POLICY`. Reviewer `blocked` -> ledger
+   `verification_blocked`, cleanup.
+10. Reviewer `needs_fix: <absolute review doc>` -> read reviewer report and extract
+   `Remediation retry eligible:`. If it is `yes` and current-finding remediation attempts are 0,
+   increment attempts and spawn one `worker` using `REMEDIATION_IMPLEMENTER_PROMPT` with only
+   `PROJECT_CONTEXT_FILES`, the original issue packet, `<finding-start-sha>`, the review doc path,
+   and run-specific `HANDOFF_DIR`; do not provide plan path, implementer notes, implementer command
+   output, previous review docs beyond the provided report, or plan-derived summaries.
+11. Remediation clarification -> follow `CONTINUATION_POLICY`. Remediation `blocked` -> ledger
+   `blocked`, preserve useful docs, cleanup. Remediation `failed` -> ledger
+   `implementation_failed`, preserve useful docs, cleanup. Remediation `done` -> rerun step 7 once
+   with the same original issue packet and `<finding-start-sha>`.
+12. Reviewer `needs_fix` with `Remediation retry eligible:` not `yes`, missing, or after the single
+   remediation attempt is exhausted -> ledger `review_failed`, preserve useful docs, cleanup.
 
 ## Disputed False-Positive Follow-Up
 

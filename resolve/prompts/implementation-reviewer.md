@@ -41,22 +41,27 @@ Independence rules:
   success. If plan files remain visible under `PLANS_DIR`, or if plan content appears in command
   output, stop immediately and write a `blocked` review without inspecting the files.
 - Do not use implementer notes, command summaries, explanations, or plan-derived summaries as evidence.
+- Do not read previous implementation review reports under `REVIEWS_DIR` unless this prompt provides
+  your own reviewer continuation handoff as runtime input; if prior review docs exist, choose a
+  unique output filename instead of inspecting or overwriting them.
 - Review resulting code/tests/specs independently against the original finding, acceptance needs, and project rules.
 - First inspect `git status --porcelain=v1 --untracked-files=all` to identify modified and
-  untracked current-finding files; review relevant untracked files too.
+  untracked current-finding source/test/config/docs files; review relevant untracked files too, but
+  do not inspect resolver artifacts under `PLANS_DIR`, `REVIEWS_DIR`, or `HANDOFF_DIR` except for
+  the explicit `PLANS_DIR` emptiness check and your own output file.
 - Focus on current-finding changes since `finding-start-sha`; avoid re-reviewing earlier committed
   findings except for obvious regressions.
 - For tracked-file diffs, exclude resolver artifacts such as `PLANS_DIR`, `REVIEWS_DIR`, and
   unrelated handoffs. Suggested plan-blind diff from repo root:
   `git diff <finding-start-sha> -- . ':(exclude)<repo-relative PLANS_DIR>/**' ':(exclude)<repo-relative REVIEWS_DIR>/**' ':(exclude)<repo-relative HANDOFF_DIR>/**'`.
 - For broad searches, prefer positive scoping to source/test/config paths. If a repo-root search is
-  unavoidable, exclude the current run artifact directories, especially `PLANS_DIR` and
-  `HANDOFF_DIR`.
+  unavoidable, exclude the current run artifact directories, especially `PLANS_DIR`, `REVIEWS_DIR`,
+  and `HANDOFF_DIR`.
 - Do not rely on `git diff` alone because it omits untracked files.
 
 Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
-- Read every listed Project context file, unless the list is `- none`, before inspecting diffs/code/tests or deciding the verdict; return `needs_fix` for violations of binding context-file instructions.
+- Read every listed Project context file, unless the list is `- none`, before inspecting diffs/code/tests or deciding the verdict; return `needs_fix` for violations of binding context-file instructions unless the instruction itself permits the deviation or an explicit local API/behavior contract makes the use intentional and safe. Document any accepted deviation in evidence.
 - If a handoff path is provided, read it first.
 - Run targeted verification independently when practical, following `COMMON_STAGE_POLICY` repository verification rules.
 - If `userPreferenceOptionNumber` in the issue packet is non-null, follow `COMMON_STAGE_POLICY`
@@ -65,19 +70,28 @@ Rules:
 
 Task:
 1. Verify whether the current code resolves the finding and complies with the listed Project context files while remaining minimal, maintainable, robust, expressive, and testable.
-2. Record only reviewer-run commands, or commands not run and why.
-3. Classify implemented approach as `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`, or `Custom`, while enforcing any binding user preference from the issue packet.
-4. If reopened after disputed false-positive verification, set `Effective follow-up severity for commit labeling:` from the dispute report's independently re-evaluated severity when available: `blocker`, `major`, `minor`, or `severity-unknown`; do not copy source-document severity.
-5. If a verdict is possible without user clarification, create a Markdown review document under `REVIEWS_DIR`, named like `finding-<NN>-<short-slug>-review.md`.
+2. Use `pass` only when there are no verdict-blocking findings. Use `needs_fix` when the finding is unresolved, the implementation introduces an equivalent/worse smell, or changed/touched code violates binding project context without an accepted local-contract justification. Use `blocked` when a safe verdict requires clarification or unavailable evidence.
+3. Record only reviewer-run commands, or commands not run and why.
+4. Classify implemented approach as `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`, or `Custom`, while enforcing any binding user preference from the issue packet.
+5. If reopened after disputed false-positive verification, set `Effective follow-up severity for commit labeling:` from the dispute report's independently re-evaluated severity when available: `blocker`, `major`, `minor`, or `severity-unknown`; do not copy source-document severity.
+6. If a verdict is possible without user clarification, create a Markdown review document under `REVIEWS_DIR`, named like `finding-<NN>-<short-slug>-review.md`. If that name already exists, create a unique sibling such as `finding-<NN>-<short-slug>-review-retry-<N>.md` without reading the prior report.
 
 Review document must include these exact parseable labels near the top:
 - `Verdict:` `pass`, `needs_fix`, or `blocked`
 - `Implemented resolution approach:` concise human-readable approach summary
 - `Selected resolution approach label:` `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`, or `Custom`
 - `Effective follow-up severity for commit labeling:` `blocker`, `major`, `minor`, `severity-unknown`, or `n/a`
+- `Remediation retry eligible:` `yes`, `no`, or `n/a`
+
+`Remediation retry eligible:` rules:
+- Use `n/a` for `pass` and `blocked`.
+- Use `yes` for `needs_fix` only when every blocking fix is bounded, current-finding-scoped, safe to apply without switching the selected option, broad redesign, unrelated module work, user clarification, or policy conflict.
+- Use `no` for critical/broad design failures, wrong binding option, unsafe or ambiguous fixes, stale evidence, verification blockers, or multiple intertwined changes.
 
 Review document must also include:
 - brief custom-approach summary if `Custom`
+- `## Blocking findings (must fix before pass)`; if verdict is `needs_fix`, list every verdict-blocking reason here; otherwise write `None`
+- `## Non-blocking warnings`; include only pass-compatible follow-up, or write `None`
 - concise evidence
 - tests/commands run by reviewer, or not run and why
 - residual risks

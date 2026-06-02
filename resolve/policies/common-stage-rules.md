@@ -4,8 +4,9 @@ Shared runtime rules for resolver stages that inspect, verify, or change reposit
 
 ## Scope
 
-Applies to false-positive reviewer, planner, implementer, and implementation-reviewer stage
-prompts. Supports orchestrated runs and direct/manual stage use; subagents are optional.
+Applies to false-positive reviewer, planner, implementer, remediation implementer, and
+implementation-reviewer stage prompts. Supports orchestrated runs and direct/manual stage use;
+subagents are optional.
 
 Companion files: `<resolve_pack_base_path>/workflow.md`,
 `<resolve_pack_base_path>/policies/scout-delegation.md`, and
@@ -46,17 +47,19 @@ preference, require blocking/clarification.
    rules informally.
 10. Apply the listed project context files when selecting approaches, editing code/tests/config,
     choosing verification commands, and reviewing compliance; implementation reviewers should return
-    `needs_fix` for violations of binding context-file instructions.
+    `needs_fix` for unexcused violations of binding context-file instructions, while documenting any
+    accepted deviation whose local contract is explicit and safe.
 11. Stage agents must not stage, commit, branch, reset, clean, or otherwise perform Git lifecycle
     operations. Leave repository changes uncommitted for the coordinating layer unless a stage prompt
     explicitly permits otherwise.
 
 ## Quality Regression Guardrails
 
-For planning, implementation, and review:
+For planning, implementation, remediation, and review:
 
 - Resolve the targeted issue without introducing an equivalent or worse smell elsewhere.
 - Keep extracted collaborators cohesive by reason to change; do not replace a broad class with a broad helper/mapper.
+- When extracting, copying, or moving existing code, treat moved/copied code as edited code: do not carry binding project-context violations into new or changed surfaces when a small behavior-safe correction is available. If exact legacy preservation conflicts with binding guidance, stop for clarification instead of silently keeping the violation.
 - Keep unit tests at the intended boundary: collaborator behavior matrices belong in collaborator tests; parent/client tests cover orchestration, arguments, delegation, branching, resource cleanup, and boundary outcomes.
 - Do not unit-test private methods via reflection; test public behavior or extract private logic into a cohesive collaborator.
 - Map known boundary failures; do not hide unexpected programmer/runtime bugs behind domain/transport exceptions unless the local contract requires it.
@@ -91,6 +94,9 @@ For stages that run formatting, verification, tests, or builds:
 - implementer stages may edit only what is needed for the current finding; use the plan as
   guidance, not a scope boundary, and allow small repo-evidenced implementation/test/verification
   adjustments that preserve binding preferences, policies, and acceptance needs
+- remediation implementer stages may edit only the implementation review's verdict-blocking,
+  current-finding-scoped follow-up; do not read or recreate implementation plans, switch resolution
+  options, or broaden scope
 - implementation reviewers must stay independent and plan-blind
 - the source-document updater has its own restricted prompt and normally does not need this file
 

@@ -37,14 +37,18 @@ runbook.
    matching `FP_POLICY`, run the false-positive reviewer prompt. Otherwise run planner ->
    implementer; after the implementer returns `done`, clear `RUN_DOCS_DIR/plans/` without reading
    plan contents, then run the independent implementation reviewer. Verify the deletion target is
-   the current run's `plans/` directory before clearing.
+   the current run's `plans/` directory before clearing. If the reviewer returns `needs_fix` with
+   `Remediation retry eligible: yes`, run one remediation implementer pass using only the review
+   report and original issue packet, then run independent implementation review again; otherwise
+   treat `needs_fix` as `review_failed`.
 9. If any stage returns a user-clarification blocker, follow `CONTINUATION_POLICY`: ask the user,
    preserve safe artifacts, then rerun only the same role/stage with the original inputs, user
    answer, and handoff path.
 10. Maintain the per-finding outcome ledger throughout the run. Do not update `SOURCE_DOC` until the
     primary pass and disputed-false-positive follow-up pass are complete.
 11. After the primary pass, process queued disputed false positives in original order through the
-    normal actionable planner -> implementer -> reviewer path.
+    normal actionable planner -> implementer -> reviewer path, including the optional single
+    bounded remediation pass when eligible.
 12. Run the source-document updater with the final ledger, write `FINAL_REPORT`, and commit the
     final documentation changes if you are mirroring the automated workflow.
 
@@ -57,14 +61,16 @@ reading plan contents.
 
 Typical inputs:
 
-All false-positive reviewer, planner, implementer, and implementation-reviewer runs also require
-`PROJECT_CONTEXT_FILES` from `workflow.md`.
+All false-positive reviewer, planner, implementer, remediation implementer, and
+implementation-reviewer runs also require `PROJECT_CONTEXT_FILES` from `workflow.md`.
 
 - false-positive reviewer: current-finding issue packet, issue-scoped support, `REVIEWS_DIR`,
   `DISPUTES_DIR`, `HANDOFF_DIR`, optional continuation handoff and user answer
 - planner: current-finding issue packet, issue-scoped support, `PLANS_DIR`, `HANDOFF_DIR`, optional
   continuation handoff and user answer
 - implementer: absolute plan path, `HANDOFF_DIR`, optional continuation handoff and user answer
+- remediation implementer: original issue packet, `finding-start-sha`, implementation review path,
+  `HANDOFF_DIR`, optional continuation handoff and user answer
 - implementation reviewer: original issue packet, `finding-start-sha`, cleared `PLANS_DIR`,
   `REVIEWS_DIR`, `HANDOFF_DIR`, optional continuation handoff and user answer
 - source-document updater: final outcome ledger matching `SOURCE_DOC_POLICY`
@@ -127,9 +133,9 @@ omit
 from `<resolve_pack_base_path>/prompts/implementer.md`, with placeholders resolved]
 ```
 
-Use the same pattern for planner, false-positive reviewer, implementation reviewer, and
-source-document updater: replace the prompt-specific aliases/inputs with the values listed above
-and in `workflow.md`.
+Use the same pattern for planner, false-positive reviewer, remediation implementer,
+implementation reviewer, and source-document updater: replace the prompt-specific aliases/inputs
+with the values listed above and in `workflow.md`.
 
 ## Reviewer Independence In Manual Runs
 

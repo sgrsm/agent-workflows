@@ -171,6 +171,7 @@ Typical direct stage entry points:
 - false-positive verification — `<resolve_pack_base_path>/prompts/false-positive-reviewer.md`
 - planning — `<resolve_pack_base_path>/prompts/planner.md`
 - implementation — `<resolve_pack_base_path>/prompts/implementer.md`
+- review remediation — `<resolve_pack_base_path>/prompts/remediation-implementer.md`
 - independent implementation review — `<resolve_pack_base_path>/prompts/implementation-reviewer.md`
 - final source-document update — `<resolve_pack_base_path>/prompts/source-document-updater.md`
 
@@ -188,6 +189,6 @@ execution map for both automated and manual runs.
 - `orchestrator.md` — automation-oriented main resolver entry point
 - `policies/*.md` — shared resolver rules and specialized policies
 - `prompts/*.md` — directly runnable stage prompts for false-positive verification, planning,
-  implementation, review, and source-document update
+  implementation, bounded review remediation, review, and source-document update
 - generated run artifacts under `<run_docs_base_path>/<RUN_ID>/` — outputs for the copied resolve
   pack, not for this template directory
