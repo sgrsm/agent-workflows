@@ -20,10 +20,16 @@ feature-specific review pack.
   - `prompts/reviewers/persistence-reviewer.md`
   - `prompts/reviewers/runtime-operability-reviewer.md`
   - `prompts/reviewers/documentation-reviewer.md`
+  - `prompts/reviewers/project-guidance-reviewer.md`
   - `prompts/reviewers/clean-code-solid-reviewer.md`
 - `prompts/reviewers/documentation-reviewer.md` is optional. Create it only if the user explicitly
   chooses a dedicated documentation reviewer; otherwise omit it and resolve
   `<documentation_reviewer_report_filename>` to `none`.
+- `prompts/reviewers/project-guidance-reviewer.md` is optional. Create it only when a dedicated
+  reviewer for explicit code/test/style/design guidance compliance is approved. Keep it scoped to
+  those guidance sections; all reviewers still read/apply project guidance as baseline. When
+  auto-naming its report, use that reviewer's two-digit sequential ID plus
+  `-project-guidance-compliance-review.md`.
 - For dedicated cross-cutting Java maintainability/design review, prefer one combined reviewer for
   Java-heavy non-test scope and `none` for little/no changed non-test Java. If the user wants a
   different shape, `prompts/reviewers/clean-code-reviewer.md` and/or
@@ -99,6 +105,9 @@ Replace these in active workflow files before using the copied pack as an actual
 #### Block placeholders
 
 - `<accepted_context_docs_block>`: full nested Markdown block placed under `Accepted context docs:` in `workflow.md`; preserve list indentation when replacing it.
+- `<project_guidance_docs_block>`: full Markdown bullet block placed under `Project guidance docs:`
+  in `workflow.md` and reviewer workflow components. Use two-space-indented bullets with
+  repo-root-relative `AGENTS.md` / `CLAUDE.md` paths in broad-to-specific order, or `  - none`.
 - `<reviewer_rows_block>`: full Markdown table body for the top-level reviewer matrix in `workflow.md`.
 - `<clean_output_gate_files_block>`: full Markdown bullet list of files that must not already exist before a clean orchestrated run.
 - `<relevant_spec_sections_block>`: full Markdown bullet block naming the spec files and sections owned by a reviewer archetype, or `none` when the pack is intentionally diff-only.
@@ -132,7 +141,8 @@ Do **not** replace these when instantiating the template pack. They are filled i
 reviewer, consolidator, verifier, or orchestrator when a report or verification block is produced.
 
 - `<additional context checked or none>`: runtime nested list of additional context checked, or `none`.
-- `<additional context references or none>`: runtime nested accepted-context-reference content, or `none` when not applicable.
+- `<additional context references or none>`: runtime nested accepted-context or project-guidance
+  reference content, or `none` when not applicable.
 - `<checked item>`: runtime item that was checked with no issue found.
 - `<confirmed aspects>`: runtime list or summary of what remains valid after verification.
 - `<consolidated severity>`: runtime original severity from the consolidated report.
@@ -180,8 +190,8 @@ reviewer, consolidator, verifier, or orchestrator when a report or verification 
 - Use repo-root-relative paths everywhere in the instantiated review pack.
 - When a template file refers to a sibling file in the future instantiated pack, keep the reference
   in `<review_pack_base_path>/...` form inside the template.
-- Treat `workflow.md` as the canonical source for paths, outputs, accepted context docs,
-  reviewer-row definitions, clean-output gates, and task assembly.
+- Treat `workflow.md` as the canonical source for paths, outputs, accepted context docs, project
+  guidance docs, reviewer-row definitions, clean-output gates, and task assembly.
 - Verify every Markdown link or path-like reference after instantiation, especially anything copied
   into `workflow.md` or `README.md`.
 
@@ -191,8 +201,8 @@ reviewer, consolidator, verifier, or orchestrator when a report or verification 
 - Verify every repo-root-relative input path exists, unless the workflow explicitly says the file
   will be created by a review run.
 - Ensure `<reports_base_path>` exists or can be created before the first review run.
-- Keep accepted context docs, reviewer rows, copied reviewer prompt paths, consolidated/final report
-  paths, and clean-output-gate files synchronized.
+- Keep accepted context docs, project guidance docs, reviewer rows, copied reviewer prompt paths,
+  consolidated/final report paths, and clean-output-gate files synchronized.
 - Confirm every reviewer row points to a concrete copied reviewer prompt whose per-area placeholders
   are resolved for exactly that row.
 - Keep the shared `templates/area-report.md` neutral: replace instantiation placeholders such as
@@ -211,9 +221,10 @@ Interactive instantiation prompt:
 `review/instantiate.md`
 
 It collects core pack values, inspects the authoritative feature spec when available or the branch
-diff when it is not, uses `focus-checklist-catalog.md` to propose non-test focus-checklist
-categories, gets reviewer-area approval together with review-theme approval in that same first
-choice block, then resolves any unanswered Clean Code / SOLID and documentation-reviewer decisions
+diff when it is not, discovers applicable project guidance docs, uses `focus-checklist-catalog.md`
+to propose non-test focus-checklist categories, gets reviewer-area approval together with
+review-theme/guidance approval in that same first choice block, then resolves any unanswered project
+guidance reviewer, Clean Code / SOLID, and documentation-reviewer decisions
 separately. Recognized final preferences count as resolved. It creates concrete reviewer prompts,
 keeps a tests/proof-strength reviewer by default unless the user explicitly rejects it, replaces
 instantiation placeholders, and runs a normal file/search audit. It does not run the review
@@ -239,8 +250,12 @@ Before running a manually instantiated pack, confirm:
 - non-test reviewer focus-checklist blocks are concrete prompt text and do not leak raw catalog ids
   or helper prose unless the user explicitly wanted that wording
 - `<documentation_reviewer_report_filename>` is `none` or matches one reviewer report filename
+- any dedicated project guidance reviewer is scoped to explicit code/test/style/design guidance
+  compliance, not full code/design/tests/business review
 - clean-output gate matches reviewer reports plus consolidated/final outputs
-- accepted context docs exist when specified
+- accepted context and project guidance docs exist when specified
+- auto-discovered project guidance includes applicable root/module `AGENTS.md` or `CLAUDE.md` files,
+  unless explicitly disabled or overridden
 - spec entry point and specification base path both exist for spec-backed packs, or both are
   literal `none` for diff-only packs
 - reports base path exists or can be created without path conflicts
@@ -257,7 +272,7 @@ Before running a manually instantiated pack, confirm:
   workflow.
 - Remove unused reviewer rows, copied reviewer variants, or theme headings that do not apply to
   the feature.
-- Keep only the accepted context docs and output files that the real workflow needs.
+- Keep only the accepted context docs, project guidance docs, and output files that the real workflow needs.
 - Confirm there are no unintended source-feature identifiers, stale paths, or unresolved
   instantiation placeholders left in active workflow files.
 - Confirm the only remaining angle-bracket placeholders in active workflow files are the runtime

@@ -16,12 +16,12 @@ Before launching subagents, read:
 - `<review_pack_base_path>/workflow.md`
 - every prompt and task component referenced by `workflow.md`
 
-Use `workflow.md` as canonical for roles/profiles, paths, accepted context docs, clean-output files,
-task assembly, expected reports, finding-verification handling, and final-evaluation output.
-Verify accepted context doc paths in preflight when listed, but do not read their contents for
-orchestration; reviewer, consolidator, or verifier tasks read needed content. When exact/verbatim
-file content is required, concatenate exact file contents into the task body; unavoidable harness
-wrappers are acceptable.
+Use `workflow.md` as canonical for roles/profiles, paths, accepted context docs, project guidance
+docs, clean-output files, task assembly, expected reports, finding-verification handling, and
+final-evaluation output. Verify accepted context and project guidance paths in preflight when
+listed, but do not read their contents for orchestration; reviewer, consolidator, or verifier tasks
+read needed content. When exact/verbatim file content is required, concatenate exact file contents
+into the task body; unavoidable harness wrappers are acceptable.
 
 ## Harness and scope rules
 
@@ -31,6 +31,8 @@ wrappers are acceptable.
   agents. If the selector is `agentScope`, choose the value enforcing shared scope.
 - Use shared scope for reviewers, consolidation worker, finding-verification reviewers, and optional
   scout helpers.
+- Project guidance docs are runtime context files for shared agents; they are not permission to use
+  repository-local/project-local/custom agents.
 - Working directory for all top-level reviewer, consolidation, and finding-verification agents:
   repository root.
 - Keep review scope to `<review_scope>` unless an area prompt explicitly allows adjacent context.
@@ -43,8 +45,8 @@ Before any subagent launch:
 
 1. Ensure the reports base path from `workflow.md` exists; create it if missing. If creation fails,
    stop and report the reports-directory blocker.
-2. Verify accepted context doc paths listed in `workflow.md` exist without reading contents. If none
-   are listed, continue. If any are missing, stop and report them.
+2. Verify accepted context and project guidance doc paths listed in `workflow.md` exist without
+   reading contents. If none are listed, continue. If any are missing, stop and report them.
 3. Check every clean-output-gate file in `workflow.md`. If any exists, stop and report the stale
    files. Do not launch subagents.
 4. Verify each reviewer `Prompt file` points to a concrete copied reviewer prompt with per-area
@@ -54,8 +56,8 @@ Before any subagent launch:
 
 ## Execution sequence
 
-1. Load `workflow.md` and exact prompt/task component files above. Do not load specs, code, or
-   accepted context document contents for orchestration.
+1. Load `workflow.md` and exact prompt/task component files above. Do not load specs, code,
+   accepted context, or project guidance document contents for orchestration.
 2. For each reviewer row, build the task by concatenating exact file contents in the reviewer task
    assembly order from `workflow.md`. Add no orchestration commentary, summaries, rewritten policy,
    or extra criteria.
@@ -77,7 +79,8 @@ Before any subagent launch:
 10. Otherwise create one finding-verification task per consolidated finding using the task assembly
     order from `workflow.md`. Each payload must include review scope, diff baseline
     `<diff_baseline>`, exact finding entry, finding number/title, copied source-report/spec/
-    additional-context/file-line references, and read-only/non-delegating instructions.
+    additional-context/project-guidance/file-line references, and read-only/non-delegating
+    instructions.
 11. Spawn exactly one shared-scope repository-root `reviewer` per finding; batch if needed for harness
     limits. Finding-verification agents must not write files or spawn subagents.
 12. Wait for all finding-verification agents. Synthesize completed results plus missing-investigation
@@ -89,8 +92,9 @@ Before any subagent launch:
 
 ## Failure handling
 
-- Missing/uncreatable reports directory, missing accepted context paths, stale clean-output files,
-  unresolved reviewer prompt templates, or missing required roles/profiles block before subagents.
+- Missing/uncreatable reports directory, missing accepted context or project guidance paths, stale
+  clean-output files, unresolved reviewer prompt templates, or missing required roles/profiles block
+  before subagents.
 - Missing reviewer reports are consolidation inputs, not reassignment triggers.
 - Missing `<consolidated_report_output_path>` blocks finding verification.
 - Missing/failed finding-verification outputs do not block final-evaluation writing; list them.
@@ -100,8 +104,8 @@ Before any subagent launch:
 
 Return a short execution summary with:
 
-- reports-directory, accepted-context, clean-output, reviewer-prompt, and role/profile preflight
-  status if blocked
+- reports-directory, accepted-context, project-guidance, clean-output, reviewer-prompt, and
+  role/profile preflight status if blocked
 - reviewer phase status, reports present, and reports missing
 - consolidation status and consolidated report path, if present
 - finding-verification status

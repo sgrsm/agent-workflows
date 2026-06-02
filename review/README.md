@@ -14,9 +14,10 @@ This directory is a copy-and-adapt template pack for building a feature-specific
 Recommended order:
 
 1. Preferred: from the repository root, run `review/instantiate.md`. Let the agent collect core
-   pack values, inspect the feature spec or branch diff, suggest reviewer areas and
-   focus-checklist categories, accept your edits/additions, create concrete reviewer prompts,
-   replace placeholders, and audit the result.
+   pack values, inspect the feature spec or branch diff, discover applicable project guidance docs
+   such as root/module `AGENTS.md` or `CLAUDE.md`, suggest reviewer areas and focus-checklist
+   categories, accept your edits/additions, create concrete reviewer prompts, replace placeholders,
+   and audit the result.
 2. Manual alternative: copy the runtime files to the real review-pack location.
 3. Fill `workflow.md` first.
 4. Copy/rename reviewer prompt templates for each feature-specific review area.
@@ -43,9 +44,9 @@ write its outputs under `<reports_base_path>`.
   one concrete tests reviewer.
 
 The template-only instantiation prompt `review/instantiate.md` can inspect the feature spec when
-available, or fall back to the branch diff when it is not, then propose a reviewer plan plus
-focus-checklist category suggestions for you to accept, edit, remove, or extend before it creates
-the concrete reviewer prompts.
+available, or fall back to the branch diff when it is not, then propose a reviewer plan, applicable
+project guidance docs, and focus-checklist category suggestions for you to accept, edit, remove, or
+extend before it creates the concrete reviewer prompts.
 
 Typical area-reviewer copies or row specializations include:
 
@@ -57,19 +58,23 @@ Typical area-reviewer copies or row specializations include:
 - API or contract compatibility
 - rollout / migration / backfill safety
 - configuration / packaging / deployment wiring
+- optional project guidance compliance review for explicit code/test/style/design rules
 - optional cross-cutting clean code / SOLID / maintainability review for Java-heavy changes
 
 ## Instantiation checklist
 
 Preferred: from the repository root, run `review/instantiate.md` and provide the requested core
 pack/path values. The instantiator inspects the feature spec when available, or the branch diff
-otherwise, proposes reviewer areas, suggests focus-checklist categories from the template catalog,
-and keeps review themes inside that first reviewer-area approval step. It then resolves any
-unanswered Clean Code / SOLID and documentation-reviewer decisions separately; recognized final
-preferences count as resolved. The tests/proof-strength reviewer is included by default unless you
-explicitly reject it. For Clean Code / SOLID, propose one combined reviewer for Java-heavy non-test
-scope and `none` for little/no changed non-test Java; other choices are split Clean Code + SOLID
-reviewers, Clean Code only, SOLID only, or none.
+otherwise, discovers applicable project guidance docs, proposes reviewer areas, suggests
+focus-checklist categories from the template catalog, and keeps review themes plus guidance paths
+inside that first reviewer-area approval step. It then resolves any unanswered project-guidance,
+Clean Code / SOLID, and documentation-reviewer decisions separately; recognized final preferences
+count as resolved. The tests/proof-strength reviewer is included by default unless you explicitly
+reject it. For project guidance compliance, propose a dedicated reviewer only when non-trivial
+code/test/style/design guidance plus meaningful changed code/tests justify separate ownership. For
+Clean Code / SOLID, propose one combined reviewer for Java-heavy non-test scope and `none` for
+little/no changed non-test Java; other choices are split Clean Code + SOLID reviewers, Clean Code only, SOLID
+only, or none.
 
 ### Minimal prompt examples
 
@@ -98,17 +103,21 @@ Manual alternative:
 
 1. Copy this directory to the future review-pack location and set `<review_pack_base_path>`.
 2. Fill `workflow.md` before editing other files; it is the canonical source for scope, paths,
-   accepted context docs, reviewer rows, outputs, clean-output gates, and task assembly.
+   accepted context docs, project guidance docs, reviewer rows, outputs, clean-output gates, and
+   task assembly.
 3. Copy and rename `prompts/reviewers/area-reviewer.md` into one concrete prompt file per
    non-test reviewer row. For the default tests reviewer, keep
    `prompts/reviewers/tests-reviewer.md` as the concrete prompt path and enrich/expand it in place;
    rename only for multiple test reviewers or an explicit filename override.
 4. Use `focus-checklist-catalog.md` to seed non-test reviewer focus-checklist categories or
    concrete checklist bullets. Create a dedicated documentation reviewer only if you explicitly want
-   one; the default is to skip it. For dedicated Java maintainability/design review, propose one
-   combined reviewer for Java-heavy non-test scope and `none` for little/no changed non-test Java.
-   Other valid choices are split Clean Code + SOLID reviewers, Clean Code only, SOLID only, or no
-   dedicated Clean Code / SOLID reviewer.
+   one; the default is to skip it. Create a dedicated project guidance reviewer only when explicit
+   local code/test/style/design guidance is substantial enough to need separate compliance
+   ownership; all reviewers still read/apply project guidance as baseline. For dedicated Java
+   maintainability/design review, propose one combined reviewer for Java-heavy non-test scope and
+   `none` for little/no changed
+   non-test Java. Other valid choices are split Clean Code + SOLID reviewers, Clean Code only,
+   SOLID only, or no dedicated Clean Code / SOLID reviewer.
 5. Replace each copied reviewer prompt's per-area placeholders and point the corresponding
    `workflow.md` row at that concrete prompt file.
 6. Set `<authoritative_spec_entry_point>` / `<specification_base_path>` when a feature spec exists,
@@ -136,13 +145,19 @@ Before running the copied pack, verify:
   `none`; otherwise it matches that reviewer's report filename
 - feature-spec fields are either valid repo-root-relative paths or both literal `none` for a
   diff-only review pack
+- project guidance docs include applicable root/module `AGENTS.md` or `CLAUDE.md` files in
+  broad-to-specific order unless explicitly disabled or overridden
+- if a dedicated project guidance reviewer exists, its prompt/report is scoped to explicit
+  code/test/style/design guidance compliance rather than full code, design, tests, or business
+  review
 - `<reports_base_path>` exists or can be created
 - clean-output-gate files match all reviewer, consolidated, and final-evaluation output paths
 - consolidated and final-evaluation output paths match `workflow.md`
 - policy, prompt, and template refs point to the instantiated pack, not the source template pack
 - non-test reviewer focus checklists are concrete and feature-specific rather than raw catalog dumps
 - source reviewer templates are either removed/unreferenced or intentionally kept as helpers only
-- all referenced source/spec/context paths exist, except files explicitly created by the review run
+- all referenced source/spec/context/project-guidance paths exist, except files explicitly created
+  by the review run
 
 ## Modes
 
@@ -166,7 +181,7 @@ Use this mode for the full end-to-end review when the harness can launch subagen
 - Harness that can launch subagents.
 - Shared roles/profiles required: `reviewer` and `worker`.
 - Reports base path from `workflow.md` must exist or be creatable.
-- Accepted context doc paths listed in `workflow.md`, if any, must exist.
+- Accepted context and project guidance doc paths listed in `workflow.md`, if any, must exist.
 - Clean-output-gate files listed in `workflow.md` must not already exist before the run starts.
 - Reviewer rows must point to concrete copied reviewer prompts with per-area placeholders resolved.
 - Optional child delegation uses only shared, read-only `scout` helpers as defined in
@@ -189,8 +204,8 @@ Run the full multi-agent review workflow from:
 <review_pack_base_path>/orchestrator.md
 
 Follow the prompt pack exactly. Use workflow.md as canonical. Stop before launching agents if
-reports-directory, accepted-context, clean-output, reviewer-prompt instantiation, or role/profile
-preflight fails.
+reports-directory, accepted-context, project-guidance, clean-output, reviewer-prompt instantiation,
+or role/profile preflight fails.
 ```
 
 ## Direct/manual single-agent mode

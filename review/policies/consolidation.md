@@ -9,8 +9,8 @@ Use when consolidating area reviewer reports into the consolidated review report
 - Merge duplicate findings into one consolidated finding and list all source reports.
 - Keep partial overlaps separate unless they clearly share the same root problem.
 - If severities differ, choose the higher severity and briefly note the disagreement.
-- Read accepted/cited context only when needed to reconcile report disagreement or cited context;
-  never invent findings from context alone.
+- Read accepted context, project guidance, or cited context only when needed to reconcile report
+  disagreement or cited context; never invent findings from context alone.
 - Record missing expected input reports.
 - If all available reports say `No issues found`, say so clearly.
 
@@ -36,8 +36,8 @@ Use when consolidating area reviewer reports into the consolidated review report
 ## Coverage notes
 
 - Cite source report filenames under the report-level review-reports base path.
-- If a finding relies on accepted ADR/contract/context for reconciliation, cite it under
-  `Additional context references`.
+- If a finding relies on accepted ADR/contract/context or project guidance for reconciliation, cite
+  it under `Additional context references`.
 - Summarize useful coverage matrices or checked-with-no-issue sections only where useful for final
   consumption.
 - If a no-finding report demonstrates meaningful coverage, record that in `Reviewer Coverage Notes`.

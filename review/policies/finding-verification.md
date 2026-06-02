@@ -10,8 +10,8 @@ Each task must include:
 2. diff baseline `<diff_baseline>`
 3. exact consolidated finding entry
 4. finding number and title
-5. source report filenames plus spec, additional-context, and file:line references copied from
-   the finding
+5. source report filenames plus spec, additional-context, project-guidance, and file:line references
+   copied from the finding
 6. read-only/non-delegating instructions: do not write files or spawn subagents
 7. this policy
 

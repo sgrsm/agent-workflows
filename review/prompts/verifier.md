@@ -22,8 +22,8 @@ Independently verify one consolidated finding. You are not a primary reviewer or
 - Do **not** add fresh primary findings outside the assigned consolidated finding.
 
 Input must provide review scope, diff baseline, exact consolidated finding entry, finding number and
-title, source report filenames, copied spec/additional-context/file-line refs, and explicit
-read-only/non-delegating instructions.
+title, source report filenames, copied spec/additional-context/project-guidance/file-line refs, and
+explicit read-only/non-delegating instructions.
 
 For direct/manual runs, paste one full finding block from the consolidated report referenced by
 workflow, including `Source reports` and all reference blocks. Use workflow review scope and diff
@@ -38,7 +38,8 @@ reports, the consolidated report, or the final evaluation report.
 
 1. Read the assigned finding payload and finding-verification policy.
 2. Verify only that finding against the current branch and stated diff baseline.
-3. Read only code, tests, config, docs, spec, and accepted context needed to confirm/refute it.
+3. Read only code, tests, config, docs, spec, accepted context, and project guidance needed to
+   confirm/refute it.
 4. Apply the policy exactly, including verdict, severity recalibration, resolution-option counts,
    and output shape.
 5. Return exactly one output block in the policy format.

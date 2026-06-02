@@ -3,9 +3,9 @@
 Template-only helper for instantiating non-test reviewer prompts in
 `review/`.
 
-Use it to suggest reusable focus-checklist categories, including area-specific reviewer concerns and
-cross-cutting clean-code / clean-architecture overlays, not to force one fixed checklist into every
-review pack.
+Use it to suggest reusable focus-checklist categories, including area-specific reviewer concerns,
+project guidance compliance, and cross-cutting clean-code / clean-architecture overlays, not to
+force one fixed checklist into every review pack.
 
 ## How To Use
 
@@ -19,6 +19,8 @@ review pack.
   checklist bullets directly from the concrete spec and/or diff plus this catalog.
 - A dedicated documentation reviewer is optional and default-off; create it only if the user
   explicitly chooses it.
+- A dedicated project guidance reviewer is optional; create it when explicit local code, test,
+  style, or design guidance merits separate compliance ownership.
 - For Java-heavy non-test reviewers, combine area-specific categories with cross-cutting `CC-*`
   and `CA-*` categories only when they materially fit the area.
 - If the user asks how to handle a dedicated cross-cutting Java maintainability/design reviewer,
@@ -50,6 +52,8 @@ These are starting bundles, not mandatory presets.
   optional overlays `CC-1`, `CC-2`, `CC-5`, `CA-1`, `CA-4`, `CA-5`
 - Documentation follow-up / cross-doc consistency reviewer:
   `DOC-1`, `DOC-2`, `DOC-3`, `DOC-4`, `DOC-5`, `DOC-6`
+- Dedicated project guidance compliance reviewer:
+  `PG-1`
 - Dedicated cross-cutting clean-code / SOLID reviewer (recommended when a dedicated reviewer is
   wanted):
   `CC-1`, `CC-2`, `CC-3`, `CC-4`, `CC-5`, `CC-6`, `CA-1`, `CA-2`, `CA-3`, `CA-4`, `CA-5`
@@ -399,6 +403,27 @@ Checklist starters:
 - implementation/spec verification is used only as needed to validate the documentation claim
 - documentation does not promise behavior the implementation or accepted spec does not support
 - documentation review stays scoped to accuracy and follow-up correctness rather than expanding into a full code review
+
+## Project Guidance Compliance
+
+### PG-1. Project code/test/style/design guidance compliance
+
+Use for a dedicated reviewer that checks whether the changes under review comply with applicable
+project guidance sections such as `Code/Test Quality Baseline`, `Code Style`, `Test Style`, and
+similar local code, test, style, or design rules.
+
+Checklist starters:
+
+- changed code and tests comply with applicable `AGENTS.md` / `CLAUDE.md` code, test, style, and
+  design guidance
+- broader guidance is applied before more-specific guidance without weakening review-pack rules
+- findings cite the exact guidance file and section/rule that makes the issue actionable
+- report only actionable branch-introduced deviations from explicit local code/test/style/design
+  guidance
+- ignore scope notes, build/test commands, database schema locations, general project information,
+  and other operational guidance unless the section explicitly defines a code/test/style/design
+  compliance rule relevant to changed files
+- do not expand into broad business, test-proof, Clean Code/SOLID, or generic style review
 
 ## Clean Code / Local Maintainability
 

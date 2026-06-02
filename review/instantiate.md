@@ -76,10 +76,12 @@ copyFocusChecklistCatalog: false
 keepSourceReviewerTemplates: false
 staleFeatureTermsToCheck: []
 cleanOutputGateFilesOverride: []
+projectGuidanceDocs: "auto | none | [repo-root-relative paths]"
 reviewAreaHints: []
 manualReviewerDefinitions: []
 documentationReviewerPreference: "ask | create | skip"
 documentationReviewerReportFilenamePreference: "auto | none | <filename>.md"
+projectGuidanceReviewerPreference: "ask | create | skip"
 focusChecklistSelectionPreference: "ask | category_approval | auto_select_items | manual"
 crossCuttingQualityReviewerPreference: "ask | combined | split | clean_code_only | solid_only | none"
 ```
@@ -87,6 +89,9 @@ crossCuttingQualityReviewerPreference: "ask | combined | split | clean_code_only
 Notes:
 
 - `reviewAreaHints` = optional user-supplied area ideas to seed or bias suggestions.
+- `projectGuidanceDocs` = project instruction files to read during review. Omitted or `auto` means
+  discover repo-root and relevant nested `AGENTS.md` / `CLAUDE.md`; `none` disables this; an
+  explicit list is used as given after path validation.
 - `manualReviewerDefinitions` = optional fully specified reviewer configs. If supplied and clearly
   complete, you may skip the suggestion phase or use it only as a comparison aid.
 - `documentationReviewerPreference` = optional decision for whether to create a dedicated
@@ -101,6 +106,11 @@ Notes:
   - `none` = no dedicated documentation reviewer report filename
   - `<filename>.md` = use the supplied filename
   If the documentation reviewer is skipped, resolve this to `none`.
+- `projectGuidanceReviewerPreference` = optional decision for whether to create a dedicated project
+  guidance compliance reviewer:
+  - `ask` or omitted = unresolved; ask in a short named-option choice block
+  - `create` = include one dedicated reviewer for explicit code/test/style/design guidance compliance
+  - `skip` = no dedicated guidance reviewer; all reviewers still read/apply guidance baseline
 - `focusChecklistSelectionPreference` = optional starting preference for non-test reviewer focus
   checklists:
   - `ask` = suggest category bundles and ask the user how to resolve them
@@ -123,6 +133,10 @@ Notes:
   architecture-heavy Java diffs.
 - A tests/proof-strength reviewer is default-on. Propose and create it unless the user explicitly
   rejects/removes it.
+- Default proposal for a project guidance compliance reviewer: `create` when discovered guidance
+  includes non-trivial code/test/style/design rules and meaningful changed code/tests are in scope;
+  `skip` for tiny diffs, docs-only changes, no discovered guidance, generic root-only guidance, or
+  guidance limited to scope/build/database/general project information.
 - Use the source template's `focus-checklist-catalog.md` as the template-only source for sanitized
   non-test focus-checklist categories and checklist starters.
 - If `cleanOutputGateFilesOverride` is omitted, derive the clean-output gate from all reviewer
@@ -167,6 +181,24 @@ If `authoritativeSpecEntryPoint` is `none`:
 5. Read the source template's `focus-checklist-catalog.md` and prepare initial focus-checklist
    category suggestions for each non-test reviewer area.
 
+#### Project guidance discovery for both paths
+
+Resolve `projectGuidanceDocs` before materializing files:
+
+- If it is an explicit list, validate those repo-root-relative paths and keep the supplied order.
+- If it is `none`, render project guidance as `  - none`.
+- If omitted or `auto`, discover existing `AGENTS.md` and `CLAUDE.md` files in broad-to-specific
+  order from repository root through the parent directories of review scope, documentation review
+  scope, authoritative spec, changed files, and proposed/final primary files. De-dupe paths; include
+  nested module guidance that applies to the files under review. Do not include `.pi/agents` or use
+  project-local/custom agents.
+- For auto and explicit guidance docs, inspect headings/relevant sections enough to identify whether
+  substantive code/test/style/design rules exist; scope/build/database/general sections alone do not
+  justify a dedicated project guidance reviewer.
+- More specific guidance supplements or overrides broader guidance for local style/test/design
+  expectations, but never overrides this review pack's read-only, scope, output, traceability, or
+  subagent rules.
+
 ### 2. Build a draft reviewer plan
 
 Draft only the areas that appear justified by the spec and/or diff, with one exception: always
@@ -202,6 +234,18 @@ For each draft area, prepare a compact proposal with at least:
 
 Use `naming-and-placeholders.md` report naming rules: consecutive two-digit draft IDs in proposed
 order, and matching `expectedReport` prefixes.
+
+Also show the resolved/discovered project guidance docs in broad-to-specific order before creating
+files, so the user can add or remove paths in the reviewer-plan custom-instructions path.
+
+Resolve whether to create a dedicated project guidance compliance reviewer. Recommend `create` only
+when explicit code/test/style/design guidance has enough substance to justify separate ownership,
+especially nested/module `AGENTS.md` / `CLAUDE.md` code/test/style/design rules plus meaningful
+changed code/tests. Recommend `skip` for tiny, docs-only, no-guidance, generic root-only guidance,
+or guidance limited to scope/build/database/general project information. When recommending
+`create`, also propose its reviewer label, prompt filename, expected report filename, likely primary
+files, and `PG-1` from `focus-checklist-catalog.md`. Even when this reviewer is created, all
+reviewers still read/apply project guidance as baseline.
 
 Use `reviewAreaHints` if provided. Treat a dedicated documentation reviewer as optional and
 default-off. If documentation scope/obligations are present and `documentationReviewerPreference`
@@ -246,19 +290,20 @@ For tests reviewers, remember that the source template already contains default 
 
 ### 3. Ask the user to approve or adjust the plan
 
-Before creating files, show the draft reviewer plan **together with the proposed review themes** in
-a compact block and ask the user to choose one of these paths for that first reviewer-area/themes
-decision:
+Before creating files, show the draft reviewer plan **together with the proposed review themes and
+project guidance docs** in a compact block and ask the user to choose one of these paths for that
+first reviewer-area/themes/guidance decision:
 
-- accept all suggested areas and themes
-- accept with edits/removals/reordering/renames/theme edits
+- accept all suggested areas, themes, and guidance docs
+- accept with edits/removals/reordering/renames/theme/guidance edits
 - add one or more custom areas
 - replace the draft with a fully manual reviewer definition list
 
 The user must be able to discard suggested areas and add a custom area even if the spec/diff did
 not surface it. The user must also be able to edit, reorder, or replace the proposed review themes
-in that same first decision. If the user adds a custom area with only a short description, derive
-the missing prompt fields when safe and ask follow-up only for truly missing high-impact details.
+and add/remove project guidance docs in that same first decision. If the user adds a custom area
+with only a short description, derive the missing prompt fields when safe and ask follow-up only for
+truly missing high-impact details.
 
 Also ask how focus checklists should be resolved for non-test reviewers when that is not already
 clear from `focusChecklistSelectionPreference`. At minimum, let the user:
@@ -271,8 +316,8 @@ When presenting that checklist-resolution decision in a short named-option choic
 first two options clearly non-equivalent. Use labels/descriptions equivalent to:
 
 - Review and approve suggested category bundles first — the user confirms or edits the suggested
-  `BF-*` / `IR-*` / `PD-*` / `RT-*` / `CC-*` / `CA-*` sets first, then the instantiator expands
-  only those approved bundles into final checklist bullets
+  `BF-*` / `IR-*` / `PD-*` / `RT-*` / `DOC-*` / `PG-1` / `CC-*` / `CA-*` sets first, then the
+  instantiator expands only those approved bundles into final checklist bullets
 - Let the instantiator pick final checklist bullets directly — skip category-bundle approval and
   derive the final checklist bullets straight from the spec, diff, and catalog
 - Edit suggested category bundles first — the user wants to change the suggested bundles before
@@ -286,26 +331,29 @@ by complete manual reviewer definitions or a recognized final preference.
 
 | Decision | Ask when | Default/proposed choice | Valid choices |
 |---|---|---|---|
-| Reviewer areas + themes | always unless complete manual definitions were accepted | derived plan | accept / edit / add / replace |
+| Reviewer areas + themes + guidance | always unless complete manual definitions were accepted | derived plan | accept / edit / add / replace |
+| Project guidance reviewer | `projectGuidanceReviewerPreference` is omitted or `ask` | create for non-trivial code/test/style/design guidance plus meaningful changed code/tests; otherwise skip | skip / create |
 | Clean Code / SOLID | `crossCuttingQualityReviewerPreference` is omitted or `ask` | `combined` for Java-heavy non-test scope; `none` for little/no changed non-test Java | combined / split / clean_code_only / solid_only / none |
 | Documentation reviewer | `documentationReviewerPreference` is `ask`, or it is omitted and docs scope/obligations are present | skip | skip / create |
 | Focus checklist handling | non-test checklist mode is unresolved | category approval | category_approval / auto_select_items / manual |
 
 Treat recognized preferences (`combined`, `split`, `clean_code_only`, `solid_only`, `none`,
 `create`, `skip`) as resolved choices unless the user explicitly asks to review them. Keep any
-unresolved Clean Code / SOLID or documentation question separate from the reviewer-area/themes
-approval block; accepting areas/themes does not answer later separate decisions. If the user chooses
-more than one cross-cutting reviewer, keep scopes distinct enough to reduce duplicate findings.
+unresolved project-guidance-reviewer, Clean Code / SOLID, or documentation question separate from
+the reviewer-area/themes/guidance approval block; accepting areas/themes/guidance does not answer
+later separate decisions. If the user chooses more than one cross-cutting reviewer, keep scopes
+distinct enough to reduce duplicate findings.
 
 Silence is not rejection: do not drop the default tests reviewer unless the user explicitly says to
-remove or skip it. Do not create a dedicated documentation reviewer or Clean Code / SOLID reviewer
-from silence. Do not create files until all table decisions and any other high-impact follow-ups are
-resolved.
+remove or skip it. Do not create a dedicated project guidance, documentation, or Clean Code / SOLID
+reviewer from silence. Do not create files until all table decisions and any other high-impact
+follow-ups are resolved.
 
 ### 4. Materialize full reviewer definitions
 
 After approval, convert the final reviewer list into full reviewer definitions for instantiation.
-For each reviewer area, derive or confirm:
+First finalize shared `projectGuidanceDocs` and its `<project_guidance_docs_block>` in
+broad-to-specific order. For each reviewer area, derive or confirm:
 
 ```yaml
 id:
@@ -349,7 +397,8 @@ Derivation rules:
   reviewers, treat it as feature-specific exclusions beyond the source template's built-in default
   boundaries and use `none` when no additions are needed.
 - `additionalRequiredContextBlock` should include only the accepted context docs relevant to that
-  area, otherwise `none`.
+  area, otherwise `none`. Do not duplicate shared project guidance docs there unless one reviewer
+  needs an extra non-guidance context document.
 - For `tests` reviewers, keep the dedicated ROI/practicality gate and the default Coverage Matrix /
   optional Info pre-findings sections from the source template unless the user wants extra or
   stricter customization. Use `testGapRoiGateBlock` and `specialReportSectionsBlock` only for
@@ -367,6 +416,27 @@ Derivation rules:
   reviewer report filename to `none`.
 - Keep a dedicated documentation reviewer scoped to documentation follow-up, cross-doc consistency,
   and implementation-alignment checks rather than a full code review.
+- A dedicated project guidance reviewer, if approved, uses `template: area`, prompt file
+  `prompts/reviewers/project-guidance-reviewer.md`, and an auto-named report using that reviewer's
+  two-digit sequential ID plus `-project-guidance-compliance-review.md`. If no project guidance docs
+  are resolved, ask or skip; do not create an empty guidance reviewer.
+- Keep a dedicated project guidance reviewer scoped to explicit branch-introduced deviations from
+  applicable project code/test/style/design guidance. Its `primaryFilesBlock` should point to
+  changed code/test files governed by those rules; `relevantSpecSectionsBlock` is usually `none`.
+  Use `additionalContextDefaultsLine` / `additionalContextCheckedDefaultsLine` to cite checked or
+  cited project guidance docs under the report's additional-context blocks.
+  Its `findingCategories` should be explicit guidance-compliance labels such as code quality
+  baseline, code style, test style, or local design. Its focus checklist should use the single
+  `PG-1` catalog item plus the actual relevant sections from `AGENTS.md` / `CLAUDE.md`, such as
+  `Code/Test Quality Baseline`, `Code Style`, `Test Style`, and similar local code, test, style, or
+  design rules. Ignore scope notes, build/test commands, database schema locations, general project
+  information, and other operational guidance unless the section explicitly defines a
+  code/test/style/design compliance rule relevant to changed files. Its finding gate is strict:
+  report only actionable deviations likely to affect maintainability, test reliability, local
+  consistency, or design clarity.
+- Do not let the project guidance reviewer absorb business correctness, broad tests/proof-strength,
+  full Clean Code / SOLID, or generic style preferences not stated in project guidance. If a finding
+  overlaps another reviewer, frame only the explicit guidance-compliance aspect.
 - Dedicated Clean Code / SOLID reviewers, if approved, use `template: area`.
 - When the resolved choice is `combined`, use prompt file
   `prompts/reviewers/clean-code-solid-reviewer.md`; when auto-naming its report, use that
@@ -439,9 +509,11 @@ Derivation rules:
    - `<consolidated_report_output_path>` -> `consolidatedReportOutputPath`
    - `<final_evaluation_output_path>` -> `finalEvaluationOutputPath`
    - `<documentation_reviewer_report_filename>` -> resolved documentation reviewer report filename
-9. Build and replace workflow block placeholders. Before rendering `<reviewer_rows_block>`, apply
-   `naming-and-placeholders.md` report naming rules to the final reviewer order:
+9. Build and replace shared/workflow block placeholders. Before rendering `<reviewer_rows_block>`,
+   apply `naming-and-placeholders.md` report naming rules to the final reviewer order:
    - `<accepted_context_docs_block>` from `acceptedContextDocs` or `- none`
+   - `<project_guidance_docs_block>` from resolved `projectGuidanceDocs` or `  - none`, using
+     two-space-indented bullets and preserving broad-to-specific order
    - `<reviewer_rows_block>` from the approved reviewer list using role/profile `reviewer`, the
      target pack's shared area-report template path, and each reviewer's concrete prompt/report
      paths
@@ -466,7 +538,7 @@ Derivation rules:
     than the source template guide. Keep paths and workflow semantics accurate. At minimum include:
     - a canonical-path summary with the instantiated review-pack, spec, scope, and report paths
     - the concrete reviewer prompt/report table from the approved reviewer list
-    - accepted context docs when any were approved
+    - accepted context docs and project guidance docs when any were approved/discovered
     - a copy/paste-ready minimal orchestrated-run prompt that points to the concrete
       `orchestrator.md` under `targetReviewPackPath`
     - copy/paste-ready minimal direct/manual single-agent prompt examples that use real
@@ -509,10 +581,19 @@ Checks:
 - if the documentation reviewer was approved, its prompt/report paths exist, its resolved report
   filename matches one reviewer's expected report filename, and its focus/out-of-scope blocks keep
   it documentation-scoped
-- accepted-context paths exist when specified
+- if the project guidance reviewer was skipped, no active project-guidance-reviewer row/prompt is
+  left behind unintentionally
+- if the project guidance reviewer was approved, its prompt/report paths exist and its
+  focus/out-of-scope blocks keep it code/test/style/design-guidance-scoped instead of duplicating
+  full code, design, tests, or business review
+- accepted-context and project-guidance paths exist when specified
+- auto-discovered project guidance includes applicable root/module `AGENTS.md` or `CLAUDE.md` files
+  for review scope and primary files, unless `projectGuidanceDocs` is explicit or `none`
 - if a spec-backed pack was requested, `authoritativeSpecEntryPoint` and `specificationBasePath`
   exist; if a diff-only pack was requested, both are set to literal `none`
 - policy/prompt/template refs point to `targetReviewPackPath`, not the source template pack
+- active reviewer workflow/prompt components contain resolved project guidance docs, not
+  `<project_guidance_docs_block>`
 - consolidated-report theme sections match the final theme list; no `<theme_*>` placeholders remain
 - non-test reviewer `focusChecklistBlock` content is concrete, area-specific, and does not leak raw
   catalog-only helper prose or unresolved category placeholders into active prompts
@@ -530,7 +611,9 @@ If a check fails, fix safely or report the blocker. Do not guess values.
 
 Reply briefly with: target path; discovery basis used (spec-backed or diff-only); reviewer areas
 suggested and then created; whether a dedicated documentation reviewer was proposed and created;
-which Clean Code / SOLID reviewer choice was proposed and created; focus-checklist selection
-approach used; shared files/dirs created or updated; path-existence audit result for
-spec/context/reports locations; unresolved placeholders or stale terms; ready for orchestrated use,
-direct/manual use, or blocked; user decisions still needed. Do not paste generated file contents.
+whether a dedicated project guidance reviewer was proposed and created; which Clean Code / SOLID
+reviewer choice was proposed and created; focus-checklist selection approach used; project guidance
+docs discovered/included; shared files/dirs created or updated; path-existence audit result for
+spec/context/project-guidance/reports locations; unresolved placeholders or stale terms; ready for
+orchestrated use, ready for direct/manual use, or blocked; user decisions still needed. Do not paste
+generated file contents.

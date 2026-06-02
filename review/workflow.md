@@ -13,6 +13,8 @@ instantiated review prompt pack. Use repository-root-relative paths everywhere.
 - Specification base path: `<specification_base_path>`
 - Accepted context docs:
   <accepted_context_docs_block>
+- Project guidance docs:
+<project_guidance_docs_block>
 - Reports base path: `<reports_base_path>`
 
 ## Task component paths
