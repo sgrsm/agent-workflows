@@ -223,7 +223,8 @@ inputs, outputs, ledger statuses, cleanup, and commit behavior.
                                                   +-- failed -----> implementation_failed
                                                   |
                                                   v
-                                           [independent reviewer again]
+                                           [independent reviewer again
+                                            with prior needs_fix report]
                                                   |
                                                   +-- pass -------> commit resolution --> resolved
                                                   +-- blocked ----> verification_blocked

@@ -39,9 +39,10 @@ runbook.
    plan contents, then run the independent implementation reviewer. Verify the deletion target is
    the current run's `plans/` directory before clearing. If the reviewer returns `needs_fix` with
    `Remediation retry eligible: yes`, run one remediation implementer pass using only the review
-   report and original issue packet, then run independent implementation review again. After that
-   second review, follow the normal reviewer outcome mapping; no further remediation attempt is
-   allowed. Otherwise treat `needs_fix` as `review_failed`.
+   report and original issue packet, then run independent implementation review again with that same
+   report path as the explicit same-finding prior review context. After that second review, follow
+   the normal reviewer outcome mapping; no further remediation attempt is allowed. Otherwise treat
+   `needs_fix` as `review_failed`.
 9. If any stage returns a user-clarification blocker, follow `CONTINUATION_POLICY`: ask the user,
    preserve safe artifacts, then rerun only the same role/stage with the original inputs, user
    answer, and handoff path.
@@ -73,7 +74,8 @@ implementation-reviewer runs also require `PROJECT_CONTEXT_FILES` from `workflow
 - remediation implementer: original issue packet, `finding-start-sha`, implementation review path,
   `HANDOFF_DIR`, optional continuation handoff and user answer
 - implementation reviewer: original issue packet, `finding-start-sha`, cleared `PLANS_DIR`,
-  `REVIEWS_DIR`, `HANDOFF_DIR`, optional continuation handoff and user answer
+  `REVIEWS_DIR`, `HANDOFF_DIR`, optional same-finding prior `needs_fix` review report path for
+  post-remediation review, optional continuation handoff and user answer
 - source-document updater: final outcome ledger matching `SOURCE_DOC_POLICY`
 
 ## How To Invoke A Stage Prompt
@@ -145,4 +147,6 @@ implementation reviewer run in separate sessions or separate agents.
 
 If one agent or person performs multiple roles, treat that as reduced assurance and record the
 tradeoff in operator notes or the final summary rather than presenting it as fully independent
-review.
+review. Passing the same-finding prior `needs_fix` review report to a post-remediation reviewer is
+expected context, not a reduction in independence; unrelated review reports should be ignored if
+accidentally surfaced.

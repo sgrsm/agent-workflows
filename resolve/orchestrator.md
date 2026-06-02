@@ -55,7 +55,8 @@ Before each stage, read the exact prompt and relevant policy aliases from `workf
 4. Process one primary pass in `SOURCE_DOC` order, then one queued follow-up stage for disputed
    false positives. No remediation loops; allow at most one bounded review-remediation retry per
    actionable finding when the reviewer marks it eligible.
-5. Keep context isolated to the current finding; pass no unrelated findings or review excerpts.
+5. Keep context isolated to the current finding; pass no unrelated findings or review excerpts. For
+   a post-remediation review, pass only the same-finding prior `needs_fix` review report path.
 6. Minimal sufficient change: balance small diff, reviewability, maintainability, robustness,
    expressiveness, testability, and business impact.
 7. Orchestrator may run only Git/filesystem/artifact/commit/final-report commands; no
@@ -70,7 +71,8 @@ Before each stage, read the exact prompt and relevant policy aliases from `workf
     path, pass it to the implementer, and clear `RUN_DOCS_DIR/plans/` after implementer success
     before independent review.
 11. Reviewer/scout independence: plan-blind; no implementer notes, command output, explanations,
-    or plan-derived summaries.
+    or plan-derived summaries. Post-remediation review may receive only the same-finding prior
+    `needs_fix` review report as explicit context.
 12. On `blocked: user clarification required - ...`, follow `CONTINUATION_POLICY`: pause finding,
     ask user, respawn same role/stage with original inputs, answer, and handoff path.
 13. Until source-doc reconciliation, record/finalize statuses only in the outcome ledger; do not
@@ -183,9 +185,9 @@ an eligible remediation retry is needed.
    or plan files remain visible, ledger `verification_blocked`, no reviewer, cleanup/report the
    coordinator error.
 6. Set current-finding remediation attempts to 0.
-7. Spawn one independent `reviewer` with `PROJECT_CONTEXT_FILES`, the original issue packet, and
-   `<finding-start-sha>` only. Do not provide plan path, implementer notes, implementer command
-   output, previous review docs, or plan-derived summaries.
+7. Spawn one independent `reviewer` with `PROJECT_CONTEXT_FILES`, the original issue packet,
+   `<finding-start-sha>`, and no prior review report path. Do not provide plan path, implementer
+   notes, implementer command output, previous review docs, or plan-derived summaries.
 8. Reviewer `pass: <absolute review doc>` -> read reviewer report and extract the exact labels
    `Implemented resolution approach:`, `Selected resolution approach label:`, and
    `Effective follow-up severity for commit labeling:` when applicable. If the issue packet carries
@@ -206,8 +208,11 @@ an eligible remediation retry is needed.
    output, previous review docs beyond the provided report, or plan-derived summaries.
 11. Remediation clarification -> follow `CONTINUATION_POLICY`. Remediation `blocked` -> ledger
    `blocked`, preserve useful docs, cleanup. Remediation `failed` -> ledger
-   `implementation_failed`, preserve useful docs, cleanup. Remediation `done` -> rerun step 7 once
-   with the same original issue packet and `<finding-start-sha>`.
+   `implementation_failed`, preserve useful docs, cleanup. Remediation `done` -> rerun the
+   implementation reviewer once with the same original issue packet, `<finding-start-sha>`, and the
+   step-10 review doc path as the explicit same-finding prior review report path. Do not provide
+   other review docs, plan path, implementer notes, implementer command output, or plan-derived
+   summaries.
 12. Reviewer `needs_fix` with `Remediation retry eligible:` not `yes`, missing, or after the single
    remediation attempt is exhausted -> ledger `review_failed`, preserve useful docs, cleanup.
 

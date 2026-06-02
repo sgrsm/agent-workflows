@@ -110,6 +110,7 @@ For direct/manual stage runs, `workflow.md` is canonical for exact runtime input
 current-finding issue packet; issue-scoped excerpts/locators; run-specific `plans/`, `reviews/`,
 `false-positive-disputes/`, and `handoff/` dirs; optional handoff path/user answer;
 planner-returned absolute plan path; implementation review report path for bounded remediation;
+same-finding prior `needs_fix` review report path for post-remediation implementation review;
 cleared `plans/` before implementation review; `finding-start-sha`; final outcome ledger for
 source-doc update.
 

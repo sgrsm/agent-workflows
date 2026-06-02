@@ -127,13 +127,17 @@ All run artifacts live under `RUN_DOCS_DIR`.
 - At most one remediation implementer pass may run after an implementation reviewer returns
   `needs_fix` with `Remediation retry eligible: yes`. Remediation receives the review report, not
   the deleted plan or implementer notes, and may address only verdict-blocking current-finding
-  follow-up before independent review runs again.
+  follow-up. The post-remediation reviewer receives that same-finding `needs_fix` review report as
+  explicit context and must verify the remediation independently.
 - Implementation plans are guidance, not hard scripts or scope boundaries; implementers follow them
   by default but may make reasonable, justified, finding-scoped adjustments/refinements when repo
   evidence or command results show a safer, simpler, or more verifiable path. They may adapt planned
   steps, in-scope files, and verification commands while preserving binding preferences, policies,
   selected-option intent, and acceptance needs.
-- Implementation reviewers and their scouts must remain plan-blind.
+- Implementation reviewers and their scouts must remain plan-blind. Post-remediation reviewers may
+  read only the explicitly provided same-finding prior `needs_fix` review report. Accidental
+  exposure to unrelated review-report content is not a blocker by itself; reviewers must disregard
+  it and continue from permitted evidence.
 - Until final reconciliation, record outcomes only in the in-memory/per-run outcome ledger; do not
   edit `SOURCE_DOC` early.
 - Only findings whose `Resolution status:` or `Confirmation status:` is exactly `pending` are
@@ -180,7 +184,7 @@ Stage files are the aliases above.
 | Planning | `PLANNER_PROMPT` | `planner` | `PROJECT_CONTEXT_FILES`; current finding issue packet; optional issue-scoped excerpts or source-report locator paths; run-specific `plans/` and `handoff/` directories; optional handoff path and user answer | absolute plan path under `RUN_DOCS_DIR/plans/` | ephemeral plan file, cleared after implementer success; optional clarification handoff |
 | Implementation | `IMPLEMENTER_PROMPT` | `worker` | `PROJECT_CONTEXT_FILES`; planner-returned absolute plan path; run-specific `handoff/` directory; optional handoff path and user answer | `done` | code/test/config/docs changes as needed; optional clarification handoff |
 | Review remediation | `REMEDIATION_IMPLEMENTER_PROMPT` | `worker` | `PROJECT_CONTEXT_FILES`; original current-finding issue packet; `finding-start-sha`; implementation review report with `Remediation retry eligible: yes`; run-specific `handoff/` directory; optional handoff path and user answer | `done` | bounded code/test/config/docs changes for verdict-blocking follow-up only; optional clarification handoff |
-| Independent implementation review | `IMPLEMENTATION_REVIEWER_PROMPT` | `reviewer` | `PROJECT_CONTEXT_FILES`; original current-finding issue packet; `finding-start-sha`; run-specific `plans/`, `reviews/`, and `handoff/` directories; optional handoff path and user answer | `pass: <absolute path>`, `needs_fix: <absolute path>`, or `blocked: <absolute path>` | review report; optional clarification handoff |
+| Independent implementation review | `IMPLEMENTATION_REVIEWER_PROMPT` | `reviewer` | `PROJECT_CONTEXT_FILES`; original current-finding issue packet; `finding-start-sha`; run-specific `plans/`, `reviews/`, and `handoff/` directories; same-finding prior `needs_fix` review report path when post-remediation; optional handoff path and user answer | `pass: <absolute path>`, `needs_fix: <absolute path>`, or `blocked: <absolute path>` | review report; optional clarification handoff |
 | Source-document update | `SOURCE_DOCUMENT_UPDATER_PROMPT` | `worker` | final per-finding outcome ledger matching `SOURCE_DOC_POLICY` | `done` | edits to `SOURCE_DOC` only |
 
 ## Canonical Issue Packet Schema
@@ -279,9 +283,10 @@ Fill stage prompts only with Stage I/O inputs plus these constraints:
 - After the implementer returns `done`, the coordinator clears the contents of the run-specific
   plans directory (`RUN_DOCS_DIR/plans/`, passed to stage prompts as `PLANS_DIR`) without reading
   plan contents. Plan files are not final trace artifacts and must not be committed.
-- Implementation reviewer receives original issue packet, `finding-start-sha`, run dirs, and
-  optional continuation material; never pass plan, implementer notes, command output, or
-  plan-derived summaries.
+- Implementation reviewer receives original issue packet, `finding-start-sha`, run dirs, optional
+  continuation material, and—only for the post-remediation rerun—the exact same-finding prior
+  `needs_fix` review report path; never pass plan, implementer notes, command output,
+  plan-derived summaries, or unrelated review reports.
 - Source-document updater receives only the final outcome ledger matching `SOURCE_DOC_POLICY` and
   may edit only `SOURCE_DOC`.
 

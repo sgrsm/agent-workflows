@@ -18,7 +18,9 @@ use up to 3 read-only child scouts. If scout support is unavailable, continue wi
    issue-specific inspection and apply those instructions as binding repository rules.
 5. Context must be issue-scoped and minimal for the current finding.
 6. Implementation-reviewer scouts stay plan-blind; do not disclose, request, or infer plan content;
-   do not search `PLANS_DIR` or planner/implementer handoffs.
+   do not search `PLANS_DIR` or planner/implementer handoffs. They must not read unprovided review
+   reports under `REVIEWS_DIR`; in post-remediation review, the parent reviewer handles the
+   explicit same-finding prior review report and delegates only narrow code/test/spec questions.
 7. Implementer scouts may do only read-only plan/code/test discovery; implementer owns edits,
    commands, and final reporting.
 8. Local repo evidence is primary. Web/web_search is allowed for external APIs/tooling/background;
@@ -54,6 +56,9 @@ For implementation reviewers add:
 - Scouts must remain plan-blind; do not disclose, request, or infer implementation plan content.
 - Scouts must not search `PLANS_DIR` or planner/implementer handoffs; if plan content appears in
   command output, stop and report contamination to the parent.
+- Scouts must not read unprovided review reports under `REVIEWS_DIR`. If unrelated review-report
+  content appears accidentally, ignore it, do not use it as evidence, and report that exposure to
+  the parent without treating it as plan contamination.
 ```
 
 For implementers add:

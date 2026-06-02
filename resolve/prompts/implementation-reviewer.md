@@ -29,6 +29,9 @@ Issue packet (canonical schema from `workflow.md`; current finding only):
 Finding start SHA:
 <insert finding-start-sha>
 
+Prior implementation review report path for post-remediation review, if any:
+<insert absolute same-finding needs_fix review report path or omit>
+
 Continuation handoff path, if any:
 <insert absolute path or omit>
 
@@ -43,15 +46,23 @@ Independence rules:
   success. If plan files remain visible under `PLANS_DIR`, or if plan content appears in command
   output, stop immediately and write a `blocked` review without inspecting the files.
 - Do not use implementer notes, command summaries, explanations, or plan-derived summaries as evidence.
-- Do not read previous implementation review report contents under `REVIEWS_DIR` unless this prompt
-  provides your own reviewer continuation handoff as runtime input. You may list filenames or check
-  path existence under `REVIEWS_DIR` only to avoid overwriting an existing report; if prior review
-  docs exist, choose a unique output filename.
+- Review artifacts:
+  - Initial review: do not read previous implementation-review contents under `REVIEWS_DIR` unless
+    this prompt provides your own reviewer continuation handoff. You may list filenames/check path
+    existence only to avoid overwriting; choose a unique output filename if needed.
+  - Post-remediation review: read exactly the provided same-finding prior report. Use it only to
+    identify prior blocking follow-up/retry eligibility; verify code/tests/specs independently and
+    do not treat report statements as source evidence. Do not read other review report contents.
+  - Accidental unrelated review-report exposure is not a blocker. Stop reading it, disregard it, and
+    continue from permitted evidence. Block only for forbidden plan/implementer content,
+    same-finding prior-review content read outside an allowed continuation/post-remediation path, or
+    an independently unresolvable safe-verdict evidence gap.
 - Review resulting code/tests/specs independently against the original finding, acceptance needs, and project rules.
 - First inspect `git status --porcelain=v1 --untracked-files=all` to identify modified and
   untracked current-finding source/test/config/docs files; review relevant untracked files too, but
   do not inspect resolver artifacts under `PLANS_DIR`, `REVIEWS_DIR`, or `HANDOFF_DIR` except for
-  the explicit `PLANS_DIR` emptiness check and your own output file.
+  the explicit `PLANS_DIR` emptiness check, your own output file, and the provided same-finding
+  prior review report path in post-remediation mode.
 - Focus on current-finding changes since `finding-start-sha`; avoid re-reviewing earlier committed
   findings except for obvious regressions.
 - For tracked-file diffs, exclude resolver artifacts such as `PLANS_DIR`, `REVIEWS_DIR`, and
@@ -69,18 +80,22 @@ Rules:
   logs, and broad context inventories in the bottom `<details>` sections.
 - Read every listed Project context file, unless the list is `- none`, before inspecting diffs/code/tests or deciding the verdict; return `needs_fix` for violations of binding context-file instructions unless the instruction itself permits the deviation or an explicit local API/behavior contract makes the use intentional and safe. Document any accepted deviation in evidence.
 - If a handoff path is provided, read it first.
+- If a prior implementation review report path is provided, read it after Project context files and
+  before diffs/code/tests. It must have `Verdict: needs_fix` with `Remediation retry eligible: yes`.
+  Treat it as the intended same-finding report unless filename/header/content clearly conflicts with
+  the current issue packet; block on clear mismatch, not missing redundant identity metadata.
 - Run targeted verification independently when practical, following `COMMON_STAGE_POLICY` repository verification rules.
 - If `userPreferenceOptionNumber` in the issue packet is non-null, follow `COMMON_STAGE_POLICY`
   binding-user-preference rules: pass only an implementation that materially follows that option
   and any safe `userPreferenceAdjustment`.
 
 Task:
-1. Verify whether the current code resolves the finding and complies with the listed Project context files while remaining minimal, maintainable, robust, expressive, and testable.
-2. Use `pass` only when there are no verdict-blocking findings. Use `needs_fix` when the finding is unresolved, the implementation introduces an equivalent/worse smell, or changed/touched code violates binding project context without an accepted local-contract justification. Use `blocked` when a safe verdict requires clarification or unavailable evidence.
+1. Verify whether current code resolves the finding and follows Project context files while remaining minimal, maintainable, robust, expressive, and testable. In post-remediation mode, also verify every prior blocking finding from the provided same-finding report is fixed.
+2. Use `pass` only with no verdict-blocking findings. Use `needs_fix` when the finding or prior post-remediation blocker remains unresolved, the implementation introduces an equivalent/worse smell, or touched code violates binding project context without accepted local-contract justification. Use `blocked` when a safe verdict needs clarification or unavailable evidence.
 3. Record only reviewer-run commands, or commands not run and why.
 4. Classify implemented approach as `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`, or `Custom`, while enforcing any binding user preference from the issue packet.
 5. If reopened after disputed false-positive verification, set `Effective follow-up severity for commit labeling:` from the dispute report's independently re-evaluated severity when available: `blocker`, `major`, `minor`, or `severity-unknown`; do not copy source-document severity.
-6. If a verdict is possible without user clarification, create a Markdown review document under `REVIEWS_DIR`, named like `finding-<NN>-<short-slug>-review.md`. If that name already exists, create a unique sibling such as `finding-<NN>-<short-slug>-review-retry-<N>.md` without reading the prior report.
+6. If a verdict is possible without user clarification, create a Markdown review document under `REVIEWS_DIR`, named like `finding-<NN>-<short-slug>-review.md`. If that name already exists, create a unique sibling such as `finding-<NN>-<short-slug>-review-retry-<N>.md` without reading any unprovided prior report.
 
 Review document format:
 - Use `IMPLEMENTATION_REVIEW_REPORT_TEMPLATE`; preserve its section order and bottom `<details>`
@@ -104,7 +119,8 @@ Review document format:
 
 `Remediation retry eligible:` rules:
 - Use `n/a` for `pass` and `blocked`.
-- Use `yes` for `needs_fix` only when every blocking fix is bounded, current-finding-scoped, safe to apply without switching the selected option, broad redesign, unrelated module work, user clarification, or policy conflict.
+- Initial-review `needs_fix`: use `yes` only when every blocking fix is bounded, current-finding-scoped, and safe without switching the selected option, broad redesign, unrelated module work, user clarification, or policy conflict.
+- Post-remediation `needs_fix`: use `no` because the single remediation attempt has been consumed.
 - Use `no` for critical/broad design failures, wrong binding option, unsafe or ambiguous fixes, stale evidence, verification blockers, or multiple intertwined changes.
 
 Output contract:

@@ -97,7 +97,10 @@ For stages that run formatting, verification, tests, or builds:
 - remediation implementer stages may edit only the implementation review's verdict-blocking,
   current-finding-scoped follow-up; do not read or recreate implementation plans, switch resolution
   options, or broaden scope
-- implementation reviewers must stay independent and plan-blind
+- implementation reviewers must stay independent and plan-blind; post-remediation reviewers may
+  read the explicitly provided same-finding prior `needs_fix` review report as context, but must
+  disregard unrelated review reports if they are accidentally surfaced and must not use them as
+  evidence
 - the source-document updater has its own restricted prompt and normally does not need this file
 
 ## Direct/Manual Compatibility
