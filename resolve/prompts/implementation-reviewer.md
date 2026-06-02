@@ -14,6 +14,8 @@ Aliases from `workflow.md`:
 - `COMMON_STAGE_POLICY` = `<resolve_pack_base_path>/policies/common-stage-rules.md`
 - `DELEGATION_POLICY` = `<resolve_pack_base_path>/policies/scout-delegation.md`
 - `CONTINUATION_POLICY` = `<resolve_pack_base_path>/policies/continuation.md`
+- `IMPLEMENTATION_REVIEW_REPORT_TEMPLATE` =
+  `<resolve_pack_base_path>/templates/implementation-review-report.md`
 - `PLANS_DIR` = `<insert run-specific plans directory>`
 - `REVIEWS_DIR` = `<insert run-specific reviews directory>`
 - `HANDOFF_DIR` = `<insert run-specific handoff directory>`
@@ -61,6 +63,9 @@ Independence rules:
 
 Rules:
 - Read and follow `COMMON_STAGE_POLICY`, `DELEGATION_POLICY`, and `CONTINUATION_POLICY`.
+- Read `IMPLEMENTATION_REVIEW_REPORT_TEMPLATE` before writing the review document and use its
+  section order. Put verdict-driving facts before inventories; keep reviewed-file lists, command
+  logs, and broad context inventories in the bottom `<details>` sections.
 - Read every listed Project context file, unless the list is `- none`, before inspecting diffs/code/tests or deciding the verdict; return `needs_fix` for violations of binding context-file instructions unless the instruction itself permits the deviation or an explicit local API/behavior contract makes the use intentional and safe. Document any accepted deviation in evidence.
 - If a handoff path is provided, read it first.
 - Run targeted verification independently when practical, following `COMMON_STAGE_POLICY` repository verification rules.
@@ -76,26 +81,30 @@ Task:
 5. If reopened after disputed false-positive verification, set `Effective follow-up severity for commit labeling:` from the dispute report's independently re-evaluated severity when available: `blocker`, `major`, `minor`, or `severity-unknown`; do not copy source-document severity.
 6. If a verdict is possible without user clarification, create a Markdown review document under `REVIEWS_DIR`, named like `finding-<NN>-<short-slug>-review.md`. If that name already exists, create a unique sibling such as `finding-<NN>-<short-slug>-review-retry-<N>.md` without reading the prior report.
 
-Review document must include these exact parseable labels near the top:
-- `Verdict:` `pass`, `needs_fix`, or `blocked`
-- `Implemented resolution approach:` concise human-readable approach summary
-- `Selected resolution approach label:` `Option <N> (recommended)`, `Option <N> with slight refinement`, `Option <N>`, or `Custom`
-- `Effective follow-up severity for commit labeling:` `blocker`, `major`, `minor`, `severity-unknown`, or `n/a`
-- `Remediation retry eligible:` `yes`, `no`, or `n/a`
+Review document format:
+- Use `IMPLEMENTATION_REVIEW_REPORT_TEMPLATE`; preserve its section order and bottom `<details>`
+  appendices unless a clarification blocker makes a shorter blocked report necessary.
+- Include these exact parseable labels near the top:
+  - `Verdict:` `pass`, `needs_fix`, or `blocked`
+  - `Implemented resolution approach:` concise human-readable approach summary
+  - `Selected resolution approach label:` `Option <N> (recommended)`, `Option <N> with slight refinement`,
+    `Option <N>`, or `Custom`
+  - `Effective follow-up severity for commit labeling:` `blocker`, `major`, `minor`, `severity-unknown`, or `n/a`
+  - `Remediation retry eligible:` `yes`, `no`, or `n/a`
+  - `Finding resolved:` `yes`, `partially`, `no`, or `unknown`
+  - `Context-rule compliance:` `pass`, `fail`, or `not assessed`
+  - `Verification status:` `passed`, `failed`, `partial`, or `not run`
+  - `Primary decision reason:` one sentence explaining the verdict
+- Keep all verdict-blocking reasons under `## Blocking findings (must fix before pass)`. If
+  verdict is `needs_fix`, list every blocking reason there; otherwise write `None`.
+- Keep pass-compatible suggestions under `## Non-blocking warnings`; write `None` if empty.
+- Put reviewed files, command logs, and context references in the template's bottom `<details>`
+  sections, not before the decision sections.
 
 `Remediation retry eligible:` rules:
 - Use `n/a` for `pass` and `blocked`.
 - Use `yes` for `needs_fix` only when every blocking fix is bounded, current-finding-scoped, safe to apply without switching the selected option, broad redesign, unrelated module work, user clarification, or policy conflict.
 - Use `no` for critical/broad design failures, wrong binding option, unsafe or ambiguous fixes, stale evidence, verification blockers, or multiple intertwined changes.
-
-Review document must also include:
-- brief custom-approach summary if `Custom`
-- `## Blocking findings (must fix before pass)`; if verdict is `needs_fix`, list every verdict-blocking reason here; otherwise write `None`
-- `## Non-blocking warnings`; include only pass-compatible follow-up, or write `None`
-- concise evidence
-- tests/commands run by reviewer, or not run and why
-- residual risks
-- required follow-up if verdict is not `pass`
 
 Output contract:
 - `pass: <absolute path to review document>`

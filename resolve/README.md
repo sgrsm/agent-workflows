@@ -54,6 +54,7 @@ should write run artifacts under `<run_docs_base_path>/<RUN_ID>/`.
   reconciliation
 - `<resolve_pack_base_path>/prompts/*.md` — directly runnable stage prompts after the operator or
   orchestrator fills the runtime placeholders
+- `<resolve_pack_base_path>/templates/*.md` — report/output templates used by stage prompts
 
 ## Instantiation Checklist
 
@@ -73,7 +74,8 @@ do not run the resolver workflow.
 
 Manual alternative:
 
-1. Copy the runtime pack files to the future resolve-pack location and set
+1. Copy the runtime pack files (`README.md`, `workflow.md`, `manual.md`, `orchestrator.md`,
+   `policies/`, `prompts/`, and `templates/`) to the future resolve-pack location and set
    `<resolve_pack_base_path>`. Template-only helper files such as `instantiate.md` and
    `naming-and-placeholders.md` do not need to be copied unless you intentionally want local
    operator/reference copies.
@@ -81,7 +83,7 @@ Manual alternative:
    review-report paths, run-id/branch patterns, commit templates, output locations, artifact
    directories, support file references, issue-packet shape, and stage inputs/outputs.
 3. Replace the remaining instantiation placeholders in `README.md`, `manual.md`,
-   `orchestrator.md`, the policy files, and the prompt files.
+   `orchestrator.md`, the policy files, prompt files, and template files.
 4. Confirm `<source_doc_path>` points to the seeded final evaluation produced from the current
    review template pack schema.
 5. Confirm `<review_reports_dir>` matches the source-report references expected by the source
@@ -91,7 +93,7 @@ Manual alternative:
    specific. If none exist, record `- none`.
 7. Confirm `<run_docs_base_path>` and `<final_report_output_path>` are aligned with the run layout
    in `workflow.md`.
-8. Confirm the copied policy and prompt files still read naturally after placeholder replacement.
+8. Confirm the copied policy, prompt, and template files still read naturally after placeholder replacement.
 
 ## Post-Instantiation Validation Checklist
 
@@ -105,8 +107,9 @@ Before running the copied pack, verify:
 - `<review_reports_dir>` exists and matches the report references cited by the source document
 - `<run_docs_base_path>` exists or can be created during the run
 - `<final_report_output_path>` matches the final-path convention in `workflow.md`
-- all policy references under `<resolve_pack_base_path>/policies/` and all stage-prompt references
-  under `<resolve_pack_base_path>/prompts/` are correct
+- all policy references under `<resolve_pack_base_path>/policies/`, stage-prompt references under
+  `<resolve_pack_base_path>/prompts/`, and report-template references under
+  `<resolve_pack_base_path>/templates/` are correct
 - no stale source-feature identifiers or paths remain in active files
 - the tool-assisted audit described by the source template's `instantiate.md` or the manual audit
   in the source template's `naming-and-placeholders.md` has no blockers
@@ -190,5 +193,6 @@ execution map for both automated and manual runs.
 - `policies/*.md` — shared resolver rules and specialized policies
 - `prompts/*.md` — directly runnable stage prompts for false-positive verification, planning,
   implementation, bounded review remediation, review, and source-document update
+- `templates/*.md` — report/output templates referenced by stage prompts
 - generated run artifacts under `<run_docs_base_path>/<RUN_ID>/` — outputs for the copied resolve
   pack, not for this template directory

@@ -21,6 +21,8 @@ pack. Not required in instantiated runtime packs unless copied for operator/refe
   - `prompts/remediation-implementer.md`
   - `prompts/implementation-reviewer.md`
   - `prompts/source-document-updater.md`
+- Report/output templates under `templates/`, stable lowercase kebab-case:
+  - `templates/implementation-review-report.md`
 - Finding-scoped run artifacts stay stable and zero-padded, for example:
   - `finding-<NN>-<short-slug>-plan.md` for ephemeral planner-to-implementer transfer files
     that are cleared after implementation succeeds
@@ -50,7 +52,8 @@ Three contexts:
 3. **Example/schema placeholders** — keep only inside examples, output contracts, and YAML schemas.
 
 Files may mix contexts; e.g. a final-report path can combine instantiation
-`<run_docs_base_path>` with runtime `<RUN_ID>`.
+`<run_docs_base_path>` with runtime `<RUN_ID>`. Markdown/HTML tags used for rendering, such as
+`<details>`, `</details>`, `<summary>`, and `</summary>`, are not placeholders.
 
 ### Placeholder Allowlist
 
@@ -141,10 +144,11 @@ instantiation placeholders; classify them by the allowlist table.
 - Ensure `<final_report_output_path>` resolves to the
   `RUN_DOCS_DIR/final/100-resolution-final-report.md` convention and normally contains runtime
   `<RUN_ID>`.
-- Confirm policy refs under `<resolve_pack_base_path>/policies/` and prompt refs under
-  `<resolve_pack_base_path>/prompts/` are correct.
-- If artifact naming/layout changes, keep `README.md`, `workflow.md`, `manual.md`, and stage
-  prompts synchronized.
+- Confirm policy refs under `<resolve_pack_base_path>/policies/`, prompt refs under
+  `<resolve_pack_base_path>/prompts/`, and report-template refs under
+  `<resolve_pack_base_path>/templates/` are correct.
+- If artifact naming/layout changes, keep `README.md`, `workflow.md`, `manual.md`, stage prompts,
+  and report templates synchronized.
 
 ## Instantiation Support
 
@@ -152,16 +156,16 @@ Interactive instantiation prompt:
 
 `resolve/instantiate.md`
 
-It collects feature/path values, copies runtime files, replaces instantiation placeholders, and
-runs a normal file/search audit. It avoids embedded validation scripts and does not copy helper
-files by default.
+It collects feature/path values, copies runtime files/templates, replaces instantiation
+placeholders, and runs a normal file/search audit. It avoids embedded validation scripts and does
+not copy helper files by default.
 
 ## Manual Post-Instantiation Audit
 
 Before running a manually instantiated pack, confirm:
 
-- target pack contains `README.md`, `workflow.md`, `manual.md`, `orchestrator.md`, `policies/`, and
-  `prompts/`
+- target pack contains `README.md`, `workflow.md`, `manual.md`, `orchestrator.md`, `policies/`,
+  `prompts/`, and `templates/`
 - active files contain no instantiation placeholders except explicit template-source notes
 - remaining angle-bracket placeholders are allowed runtime or example/schema placeholders
 - `SOURCE_DOC` exists, follows seeded resolver-ready shape, and has at least one pending
@@ -171,7 +175,7 @@ Before running a manually instantiated pack, confirm:
   `<RUN_ID>`
 - Project context files list is confirmed, ordered broadest to most specific, and includes both
   repo-wide and module-local `AGENTS.md` files when applicable
-- policy/prompt refs point to the instantiated target pack, not source template pack
+- policy/prompt/template refs point to the instantiated target pack, not source template pack
 - no old feature names, slugs, branch examples, paths, or source-doc refs remain in active files
 - readiness is classified as ready for orchestrated use, ready for manual use, or blocked
 

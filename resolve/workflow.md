@@ -70,6 +70,8 @@ for the instantiated resolve prompt pack. Use repository-root-relative paths eve
   `<resolve_pack_base_path>/prompts/remediation-implementer.md`
 - `IMPLEMENTATION_REVIEWER_PROMPT` =
   `<resolve_pack_base_path>/prompts/implementation-reviewer.md`
+- `IMPLEMENTATION_REVIEW_REPORT_TEMPLATE` =
+  `<resolve_pack_base_path>/templates/implementation-review-report.md`
 - `SOURCE_DOCUMENT_UPDATER_PROMPT` =
   `<resolve_pack_base_path>/prompts/source-document-updater.md`
 

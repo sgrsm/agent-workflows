@@ -102,11 +102,11 @@ Algorithm:
 2. Confirm source template path, target pack path, and discovered/confirmed `projectContextFiles`.
    If target exists, ask whether to abort, overwrite selected files, or update in place.
 3. Copy runtime files by default: `README.md`, `workflow.md`, `manual.md`, `orchestrator.md`,
-   `policies/`, and `prompts/`.
+   `policies/`, `prompts/`, and `templates/`.
 4. Copy template helpers only when requested: `instantiate.md` if `copyInstantiatePrompt` is true
    or explicit; `naming-and-placeholders.md` if `copyNamingAndPlaceholdersGuide` is true or
    explicit.
-5. Replace these instantiation placeholders in copied runtime files and copied helpers:
+5. Replace these instantiation placeholders in copied runtime files, copied templates, and copied helpers:
    - `<feature_name>` -> `featureName`
    - `<feature_slug>` -> `featureSlug`
    - `<resolve_pack_base_path>` -> `targetResolvePackPath`
@@ -140,7 +140,7 @@ Checks:
 - `sourceDocPath` exists and has `## Current Resolution State` plus at least one
   `Resolution status: pending` or `Confirmation status: pending`
 - `reviewReportsDir` exists and matches source-report refs expected by `SOURCE_DOC`
-- policy/prompt refs point to `targetResolvePackPath`, not source template pack
+- policy/prompt/template refs point to `targetResolvePackPath`, not source template pack
 - no stale feature names, slugs, branch examples, paths, or source-doc refs remain in active files;
   if `staleFeatureTermsToCheck` exists, search each term
 - copied files still describe the intended resolver-pack scope and do not broaden
