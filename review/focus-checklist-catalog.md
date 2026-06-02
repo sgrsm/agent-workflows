@@ -4,7 +4,7 @@ Template-only helper for instantiating non-test reviewer prompts in
 `review/`.
 
 Use it to suggest reusable focus-checklist categories, including area-specific reviewer concerns,
-project guidance compliance, and cross-cutting clean-code / clean-architecture overlays, not to
+project guidance compliance, and cross-cutting clean-code / SOLID / class-design overlays, not to
 force one fixed checklist into every review pack.
 
 ## How To Use
@@ -63,7 +63,7 @@ These are starting bundles, not mandatory presets.
   `CA-1`, `CA-2`, `CA-3`, `CA-4`, `CA-5`
 - Cross-cutting Java clean-code overlay for non-test code reviewers:
   `CC-1`, `CC-2`, `CC-3`, `CC-4`, `CC-5`, `CC-6`
-- Cross-cutting Java clean-architecture overlay for non-test code reviewers:
+- Cross-cutting Java SOLID / class-design overlay for non-test code reviewers:
   `CA-1`, `CA-2`, `CA-3`, `CA-4`, `CA-5`
 
 ## Business Flow / Validation / Orchestration
@@ -457,6 +457,7 @@ Checklist starters:
 
 - parameter lists stay small and obvious; data clumps become dedicated request/value types when helpful
 - flag arguments are avoided in favor of explicit operations or stable variation points
+- long parameter lists, primitive-heavy inputs, or magic literals become named concepts when that reduces misuse
 - command/query boundaries are clear enough that readers can tell whether state changes occur
 - side effects are explicit rather than hidden behind innocent-looking method names
 
@@ -490,10 +491,10 @@ Checklist starters:
 
 - tests are readable and behavior-focused enough to support safe refactoring
 - characterization tests exist before risky legacy cleanup where needed
-- repeated conditionals, primitive obsession, or long parameter lists are reduced incrementally rather than in one risky rewrite
+- cleanup proceeds incrementally through small rollback-safe steps instead of one broad rewrite
 - state/concurrency assumptions are kept explicit enough that cleanup does not silently break behavior
 
-## Clean Architecture / SOLID / Class Design
+## SOLID / Class Design
 
 ### CA-1. Responsibility boundaries and cohesion
 
@@ -514,6 +515,7 @@ Checklist starters:
 
 - stable variation is handled through explicit strategies, policies, handlers, or other clear extension points when that reduces ripple edits
 - repeated type checks or parallel switch/if trees for the same concept are treated as design pressure
+- shotgun-surgery change paths for one stable variation are treated as evidence that a variation point is missing
 - adding a new case should not require touching many unrelated classes when the variation is part of the core model
 - abstraction is introduced only where the variation is real and recurring, not as ceremony
 
@@ -525,7 +527,7 @@ Checklist starters:
 
 - subtypes preserve caller expectations instead of weakening guarantees or disabling core behavior
 - composition is preferred when inheritance is being used only for code reuse
-- interfaces stay role-focused instead of forcing consumers to depend on unused operations
+- interfaces stay role-focused instead of forcing consumers or tests to depend on unused operations or broad mocks
 - callers should not need `instanceof` checks or `UnsupportedOperationException` to use the abstraction safely
 
 ### CA-4. Dependency direction and boundary inversion
@@ -536,7 +538,7 @@ Checklist starters:
 
 - high-level policy depends on stable abstractions where change safety or testability matters
 - infrastructure details plug into the core through seams instead of driving the core design directly
-- business logic does not need to construct or understand low-level implementation details unnecessarily
+- core/use-case logic does not directly construct or import framework, HTTP, SQL, persistence, or vendor details unless the contract truly requires it
 - key behavior stays testable without full framework startup unless that dependency is truly part of the contract
 
 ### CA-5. Pragmatic abstraction and change-surface control
@@ -545,7 +547,8 @@ Use when the design may have either too little structure or too much ceremony.
 
 Checklist starters:
 
-- abstractions are justified by clarity, replaceability, or reduced coupling rather than habit
+- abstractions are justified by clarity, replaceability, or reduced coupling rather than habit or speculative generality
+- pass-through or unused abstractions are simplified or removed instead of preserved as ceremony
 - utility dumping grounds, service locators, and other hidden-coupling patterns are challenged
 - behavior lives near the data or concept it belongs to when that improves cohesion
 - the overall indirection level stays low enough that change paths remain understandable
