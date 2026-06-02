@@ -116,11 +116,119 @@ Before running the copied pack, verify:
 
 ## Modes
 
-| Mode | Use when | Start here | What happens |
-|---|---|---|---|
-| **Orchestrated multi-agent** | Normal full resolver run and your harness can launch the required top-level stages. | `<resolve_pack_base_path>/orchestrator.md` | Prepares a resolver branch/run directory, processes pending findings in order, performs same-run disputed-false-positive follow-up, reconciles the source document, and writes the final run summary. |
-| **Human-orchestrated stage-by-stage** | You want the full resolver workflow without making subagent support a hard requirement. | `<resolve_pack_base_path>/manual.md`, with `workflow.md` as canonical reference | A human operator drives the same per-finding sequence manually: preflight, issue-packet assembly, false-positive or actionable path, outcome-ledger maintenance, source-document update, and final report writing. |
-| **Direct/manual single-stage run** | You need to rerun or debug one stage in isolation. | The exact stage prompt you need under `<resolve_pack_base_path>/prompts/`, with operator-supplied runtime placeholders filled in | Runs only one top-level stage. The operator must supply the issue packet or plan path, run-specific directories, and any continuation handoff path. |
+Use one of these entry paths:
+
+### Orchestrated multi-agent
+
+- Use when: normal full resolver run and the harness can launch the required top-level stages.
+- Start: `<resolve_pack_base_path>/orchestrator.md`.
+- Does: prepares the resolver branch/run directory, processes pending findings, handles disputed
+  false-positive follow-up, reconciles the source document, and writes the final run summary.
+
+### Human-orchestrated stage-by-stage
+
+- Use when: you want the full resolver workflow without making subagent support a hard requirement.
+- Start: `<resolve_pack_base_path>/manual.md`, with `workflow.md` as canonical reference.
+- Does: lets a human operator drive preflight, issue-packet assembly, false-positive/actionable
+  routing, outcome-ledger maintenance, source-document update, and final reporting.
+
+### Direct/manual single-stage run
+
+- Use when: you need to rerun or debug one stage in isolation.
+- Start: the exact stage prompt under `<resolve_pack_base_path>/prompts/`, with runtime
+  placeholders filled in.
+- Does: runs one top-level stage. The operator supplies the issue packet or plan path, run-specific
+  directories, and any continuation handoff path.
+
+## Flow Diagrams
+
+These diagrams summarize the normal resolver paths. `workflow.md` remains canonical for exact stage
+inputs, outputs, ledger statuses, cleanup, and commit behavior.
+
+### Full Run
+
+```text
+[clean worktree + seeded SOURCE_DOC]
+        |
+        v
+[choose RUN_ID / branch / RUN_DOCS_DIR]
+        |
+        v
+[primary pass: pending findings in SOURCE_DOC order]
+        |
+        +--> [false-positive workflow] -- disputed --> [queued disputed FP follow-up]
+        |              |                                      |
+        |              +-- confirmed/blocked terminal         v
+        |                                             [actionable workflow]
+        |
+        +--> [actionable workflow]
+        |
+        v
+[source-document updater] --> [FINAL_REPORT] --> [final docs commit]
+```
+
+### Per-Finding Routing
+
+```text
+[pending finding]
+        |
+        +-- user skip / explicit non-actionable --> skipped_by_user / non_actionable
+        |
+        +-- Verification verdict: inconclusive --> verification_blocked
+        |
+        +-- false_positive + no resolution path --> false-positive workflow
+        |
+        +-- otherwise --------------------------> actionable workflow
+```
+
+### False-Positive Workflow
+
+```text
+[false-positive reviewer]
+        |
+        +-- confirmed --> commit confirmation docs --> false_positive_confirmed
+        |
+        +-- disputed  --> commit dispute docs ------> queue for actionable follow-up
+        |
+        +-- blocked / unavailable evidence --------> verification_blocked
+```
+
+### Actionable Workflow With Optional Remediation
+
+```text
+[planner]
+   |
+   +-- blocked ------------------------------> blocked
+   |
+   v
+[implementer]
+   |
+   +-- blocked ------------------------------> blocked
+   +-- failed -------------------------------> implementation_failed
+   |
+   v
+[clear plans without reading them]
+   |
+   v
+[independent reviewer]
+   |
+   +-- pass ---------------------------------> commit resolution --> resolved
+   +-- blocked ------------------------------> verification_blocked
+   |
+   +-- needs_fix + remediation not eligible -> review_failed
+   |
+   +-- needs_fix + remediation eligible ----> [remediation implementer]
+                                                  |
+                                                  +-- blocked ----> blocked
+                                                  +-- failed -----> implementation_failed
+                                                  |
+                                                  v
+                                           [independent reviewer again]
+                                                  |
+                                                  +-- pass -------> commit resolution --> resolved
+                                                  +-- blocked ----> verification_blocked
+                                                  +-- needs_fix --> review_failed
+```
 
 ## Orchestrated Multi-Agent Mode
 
