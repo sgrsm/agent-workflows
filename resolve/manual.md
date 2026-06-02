@@ -39,8 +39,9 @@ runbook.
    plan contents, then run the independent implementation reviewer. Verify the deletion target is
    the current run's `plans/` directory before clearing. If the reviewer returns `needs_fix` with
    `Remediation retry eligible: yes`, run one remediation implementer pass using only the review
-   report and original issue packet, then run independent implementation review again; otherwise
-   treat `needs_fix` as `review_failed`.
+   report and original issue packet, then run independent implementation review again. After that
+   second review, follow the normal reviewer outcome mapping; no further remediation attempt is
+   allowed. Otherwise treat `needs_fix` as `review_failed`.
 9. If any stage returns a user-clarification blocker, follow `CONTINUATION_POLICY`: ask the user,
    preserve safe artifacts, then rerun only the same role/stage with the original inputs, user
    answer, and handoff path.

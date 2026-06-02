@@ -170,6 +170,7 @@ Stage files are the aliases above.
 - Prompts: `FALSE_POSITIVE_REVIEWER_PROMPT`, `PLANNER_PROMPT`, `IMPLEMENTER_PROMPT`,
   `REMEDIATION_IMPLEMENTER_PROMPT`, `IMPLEMENTATION_REVIEWER_PROMPT`,
   `SOURCE_DOCUMENT_UPDATER_PROMPT`
+- Templates: `IMPLEMENTATION_REVIEW_REPORT_TEMPLATE`
 
 ## Stage I/O Summary
 
@@ -266,8 +267,8 @@ execution details.
 Fill stage prompts only with Stage I/O inputs plus these constraints:
 
 - Include the exact `PROJECT_CONTEXT_FILES` list from this workflow in false-positive reviewer,
-  planner, implementer, and implementation-reviewer prompts; do not pass only an implicit harness
-  context assumption.
+  planner, implementer, remediation implementer, and implementation-reviewer prompts; do not pass
+  only an implicit harness context assumption.
 - False-positive reviewer/planner issue packets use the canonical schema plus only issue-scoped
   support, including raw `userPreference` plus normalized `userPreferenceOptionNumber` and
   `userPreferenceAdjustment` when present in `SOURCE_DOC`.

@@ -43,9 +43,10 @@ Independence rules:
   success. If plan files remain visible under `PLANS_DIR`, or if plan content appears in command
   output, stop immediately and write a `blocked` review without inspecting the files.
 - Do not use implementer notes, command summaries, explanations, or plan-derived summaries as evidence.
-- Do not read previous implementation review reports under `REVIEWS_DIR` unless this prompt provides
-  your own reviewer continuation handoff as runtime input; if prior review docs exist, choose a
-  unique output filename instead of inspecting or overwriting them.
+- Do not read previous implementation review report contents under `REVIEWS_DIR` unless this prompt
+  provides your own reviewer continuation handoff as runtime input. You may list filenames or check
+  path existence under `REVIEWS_DIR` only to avoid overwriting an existing report; if prior review
+  docs exist, choose a unique output filename.
 - Review resulting code/tests/specs independently against the original finding, acceptance needs, and project rules.
 - First inspect `git status --porcelain=v1 --untracked-files=all` to identify modified and
   untracked current-finding source/test/config/docs files; review relevant untracked files too, but
