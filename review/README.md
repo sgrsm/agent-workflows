@@ -163,10 +163,24 @@ Before running the copied pack, verify:
 
 Choose a mode after instantiation:
 
-| Mode | Use when | Start here | What happens |
-|---|---|---|---|
-| **Orchestrated multi-agent** | Your harness can launch subagents and you want the full end-to-end review. | `<review_pack_base_path>/orchestrator.md` | Runs one isolated area reviewer per reviewer row in `workflow.md`, consolidates their reports, verifies each consolidated finding, and writes the final evaluation artifact defined by `workflow.md`. |
-| **Direct/manual single-agent** | Subagents are unavailable, or you want to run one review step manually. | A concrete copied reviewer prompt under `<review_pack_base_path>/prompts/reviewers/`, `<review_pack_base_path>/prompts/consolidator.md`, or `<review_pack_base_path>/prompts/verifier.md` | Runs one area review, consolidation, or per-finding verification at a time. Consolidation requires existing reviewer reports; verification requires one full consolidated finding block pasted into the same request. |
+### Orchestrated multi-agent
+
+- **Use when:** Your harness can launch subagents and you want the full end-to-end review.
+- **Start here:** `<review_pack_base_path>/orchestrator.md`
+- **What happens:** Runs one isolated area reviewer per reviewer row in `workflow.md`,
+  consolidates their reports, verifies each consolidated finding, and writes the final
+  evaluation artifact defined by `workflow.md`.
+
+### Direct/manual single-agent
+
+- **Use when:** Subagents are unavailable, or you want to run one review step manually.
+- **Start here:**
+  - A concrete copied reviewer prompt under `<review_pack_base_path>/prompts/reviewers/`
+  - `<review_pack_base_path>/prompts/consolidator.md`
+  - `<review_pack_base_path>/prompts/verifier.md`
+- **What happens:** Runs one area review, consolidation, or per-finding verification at a time.
+  Consolidation requires existing reviewer reports; verification requires one full consolidated
+  finding block pasted into the same request.
 
 When this template is instantiated into a feature-local pack, rewrite the copied `README.md` so it
 keeps copy/paste-ready minimal prompt examples for the concrete orchestrated run and the
@@ -227,11 +241,25 @@ manually with a repo-aware agent.
 
 ### Supported single-agent runs
 
-| Task | Entry point | Needs existing reports? | Extra input needed |
-|---|---|---:|---|
-| Area review | A concrete copied reviewer prompt under `<review_pack_base_path>/prompts/reviewers/` | No | No |
-| Consolidation | `<review_pack_base_path>/prompts/consolidator.md` | Yes — existing reviewer reports; missing expected reports are recorded | No |
-| Per-finding verification | `<review_pack_base_path>/prompts/verifier.md` | Yes — consolidated report defined by `workflow.md` | Yes — paste one full finding block into the same request |
+#### Area review
+
+- **Entry point:** A concrete copied reviewer prompt under
+  `<review_pack_base_path>/prompts/reviewers/`
+- **Needs existing reports:** No
+- **Extra input needed:** No
+
+#### Consolidation
+
+- **Entry point:** `<review_pack_base_path>/prompts/consolidator.md`
+- **Needs existing reports:** Yes — existing reviewer reports; missing expected reports are
+  recorded
+- **Extra input needed:** No
+
+#### Per-finding verification
+
+- **Entry point:** `<review_pack_base_path>/prompts/verifier.md`
+- **Needs existing reports:** Yes — consolidated report defined by `workflow.md`
+- **Extra input needed:** Yes — paste one full finding block into the same request
 
 ### Standalone area review
 
